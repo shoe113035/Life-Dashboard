@@ -10,38 +10,41 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
 <style>
 :root { color-scheme: light;
-  --ink:#2a2440; --muted:#7d7894; --line:#e6e1f0;
-  --teal:#14b3a0; --teal-dk:#0f8f81; --teal-bright:#0e9d8d; --purple:#6d33d1; --purple-md:#7c4dd4; --indigo:#4a63c8;
-  --spirit:#7c4dd4; --spirit-bg:#ece0fc;
-  --mental:#4a63c8; --mental-bg:#e3eafd;
-  --phys:#0f9d8c; --phys-bg:#d8f4ec;
-  --home:#66788c; --home-bg:#eaf0f6;
-  --good:#0f9d8c; --warn:#d8a938; --bad:#d1685a;
-  --bg:#f4f0fb;
+  --ink:#331a5e; --muted:#7a6f99; --line:#e2d9f2;
+  --teal:#12bfa9; --teal-dk:#0d9284; --teal-bright:#0da393; --purple:#5b2d8f; --purple-md:#6f3ac2; --indigo:#6f3ac2;
+  --spirit:#5b2d8f; --spirit-bg:#e7daf9;
+  --mental:#8a5fd6; --mental-bg:#efe6fc;
+  --phys:#0d9284; --phys-bg:#cef2ea;
+  --home:#0a6c60; --home-bg:#def5f0;
+  --good:#0d9284; --warn:#8a5fd6; --bad:#5b2d8f;
+  --bg:#f4effc;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(160deg,#f0e6fd 0%,#fdf6ec 45%,#ddf4ec 100%) fixed;color:var(--ink);padding:16px 14px calc(96px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;min-height:100vh}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(165deg,#e6d7fb 0%,#ffffff 48%,#c9f1e8 100%) fixed;color:var(--ink);padding:16px 14px calc(96px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;min-height:100vh}
 .hdr{display:flex;align-items:center;gap:10px}
-.hdr img{width:44px;height:44px;border-radius:13px;border:1px solid #eee;background:#fff;box-shadow:0 2px 8px rgba(80,50,140,.12)}
-h1{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:.01em}
+.hdr img{width:44px;height:44px;border-radius:13px;border:1px solid #eee;background:#fff;box-shadow:0 2px 8px rgba(80,50,140,.15)}
+h1{font-size:24px;font-weight:800;background:linear-gradient(90deg,#0d9284,#5b2d8f);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.01em}
 .sub{color:var(--muted);font-size:12.5px;margin-top:1px}
 /* ===== home grid ===== */
 .home{margin-top:14px}
-.sumstrip{background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 4px 16px rgba(90,60,150,.10);cursor:pointer;margin-bottom:12px}
+.sumstrip{background:linear-gradient(120deg,#fff 55%,#ecdffb);border-radius:20px;padding:14px 16px;box-shadow:0 4px 16px rgba(90,60,150,.12);cursor:pointer;margin-bottom:12px;border-left:5px solid #12bfa9}
+.footer{margin:28px auto 6px;text-align:center}
+.footer img{width:62%;max-width:280px;opacity:.96;filter:drop-shadow(0 4px 10px rgba(72,24,120,.18))}
+.footer .slogan{font-size:15px;font-weight:800;font-style:italic;letter-spacing:.10em;text-transform:lowercase;background:linear-gradient(90deg,#0d9284,#5b2d8f);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:2px}
 .sumstrip .bstat{margin-top:6px}
 .heroes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .hero{border-radius:20px;padding:14px;color:#fff;min-height:136px;cursor:pointer;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 18px rgba(70,40,130,.22)}
-.hero.p{background:linear-gradient(150deg,#8b5cf6,#5b21b6)}
-.hero.t{background:linear-gradient(150deg,#16bca8,#0b7568)}
+.hero.p{background:linear-gradient(150deg,#7b3ff2,#481878)}
+.hero.t{background:linear-gradient(150deg,#14ceb6,#0a6c60)}
 .hero .htitle{font-weight:800;font-size:15px}
 .hero .hline{font-size:12.5px;color:rgba(255,255,255,.9);line-height:1.45}
 .hero .hbig{font-size:22px;font-weight:800}
 .hero .hmut{color:rgba(255,255,255,.7);font-size:11.5px}
 .blocks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
 .block{border-radius:20px;padding:14px;cursor:pointer;min-height:118px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 14px rgba(90,60,150,.10);border:1px solid rgba(255,255,255,.7)}
-.block.bw{background:#fff}
-.block.bp{background:var(--spirit-bg)}
-.block.bt{background:var(--phys-bg)}
+.block.bw{background:#fff;border-top:4px solid #12bfa9}
+.block.bp{background:linear-gradient(160deg,#eadcfb,#dcc8f7)}
+.block.bt{background:linear-gradient(160deg,#d3f4ec,#b8ecdf)}
 .block .bic{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(90,60,150,.14)}
 .block .btitle{font-weight:800;font-size:14.5px}
 .block .bstat{font-size:12px;color:var(--muted)}
@@ -354,6 +357,8 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     <p class="muted">Thrive³ — Spiritual · Mental · Physical. All data stored locally on your device.</p>
   </div>
 </div>
+
+<div class="footer"><img src="logo.png" alt="Thrive³"><div class="slogan">to be better daily</div></div>
 
 <div id="printArea" class="rpt"></div>
 
@@ -1108,7 +1113,7 @@ function renderMonth(){
     const pct=dd?Math.round(dayDone(dd,items)/nItems*100):null;
     if(pct!==null && day<=TODAY.getDate()){sum+=pct;n++;}
     const c=document.createElement('div'); c.className='mg-cell'+(day===TODAY.getDate()?' mg-today':'')+(selectedDay===k?' mg-sel':'');
-    if(pct!==null){ c.style.background = pct>=80?'rgba(20,179,160,.22)':pct>=50?'rgba(216,169,56,.20)':'rgba(209,104,90,.18)'; }
+    if(pct!==null){ c.style.background = pct>=80?'rgba(18,191,169,.32)':pct>=50?'rgba(138,95,214,.22)':'rgba(72,24,120,.12)'; }
     const evs=(CAL_BY_DAY[k]||[]);
     c.innerHTML=`<span class="d">${day}</span>${pct!==null?`<span class="pc">${pct}%</span>`:''}`+(evs.length?'<span class="dots">'+'<i></i>'.repeat(Math.min(evs.length,3))+'</span>':'');
     c.onclick=()=>{ selectedDay=k; renderMonth(); showDayDetail(k, day); };

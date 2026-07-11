@@ -1,9 +1,10 @@
-const CACHE = 'life-dash-v6';
+const CACHE = 'life-dash-v7';
 const ASSETS = [
   './index.html',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',
+  './logo.png',
   'https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js'
 ];
 self.addEventListener('install', e => {
