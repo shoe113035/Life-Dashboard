@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#26251f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Life Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+<style>
+:root { color-scheme: light;
+  --bg:#f7f6f2; --card:#ffffff; --ink:#26251f; --muted:#8a877c; --line:#e8e6de;
+  --spirit:#7c5cbf; --spirit-bg:#f3effc;
+  --mental:#2f8fa3; --mental-bg:#eaf6f8;
+  --phys:#c96f3b; --phys-bg:#fdf1e8;
+  --home:#6f8f4f; --home-bg:#f0f5e9;
+  --good:#3e8e5a; --warn:#c9a13b; --bad:#c05a4e;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);padding:16px 14px calc(76px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+h1{font-size:19px;font-weight:800}
+.sub{color:var(--muted);font-size:12.5px;margin-top:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
+.card h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.item{display:flex;align-items:center;gap:10px;padding:9px 6px;border-radius:9px;font-size:15px}
+.item input[type=checkbox]{width:21px;height:21px;accent-color:var(--good);flex-shrink:0}
+.item.done label{text-decoration:line-through;color:var(--muted)}
+.item label{flex:1}
+.pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
+.p-spirit{background:var(--spirit-bg);color:var(--spirit)}
+.p-mental{background:var(--mental-bg);color:var(--mental)}
+.p-phys{background:var(--phys-bg);color:var(--phys)}
+.p-home{background:var(--home-bg);color:var(--home)}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar>div{height:100%;background:var(--good);border-radius:99px;transition:width .3s}
+.big{font-size:24px;font-weight:800}
+.statrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.stat{background:var(--bg);border-radius:10px;padding:9px 11px;flex:1;min-width:90px}
+.stat .v{font-size:18px;font-weight:800}
+.stat .l{font-size:10.5px;color:var(--muted);margin-top:2px}
+input[type=text],input[type=number],input[type=url],select{border:1px solid var(--line);border-radius:8px;padding:10px;font-size:15px;background:#fff;color:var(--ink)}
+input[type=text],input[type=url]{width:100%}
+input[type=number]{width:80px}
+.top3row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.top3row input[type=checkbox]{width:21px;height:21px;accent-color:var(--good);flex-shrink:0}
+.top3row.done input[type=text]{text-decoration:line-through;color:var(--muted)}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+.hrow:last-child{border-bottom:none}
+.hrow .lbl{flex:1}
+.hrow .unit{color:var(--muted);font-size:12px}
+.counter{display:flex;align-items:center;gap:8px}
+.counter button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;font-size:18px;cursor:pointer;font-weight:700;color:var(--ink)}
+.counter .cv{min-width:56px;text-align:center;font-weight:700;font-size:13.5px}
+.counter .cv.met{color:var(--good)}
+ul.cal{list-style:none}
+ul.cal li{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px;display:flex;gap:8px}
+ul.cal li:last-child{border-bottom:none}
+ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:tabular-nums}
+.dayhdr{font-weight:700;font-size:13px;margin:12px 0 4px}
+.dayhdr:first-child{margin-top:0}
+.monthgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:6px}
+.mg-cell{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;background:var(--bg);color:var(--muted)}
+.mg-cell .d{font-weight:700;font-size:11px;color:var(--ink)}
+.mg-cell .pc{font-size:9px}
+.mg-hdr{text-align:center;font-size:10px;color:var(--muted);font-weight:700;padding-bottom:2px}
+.mg-today{outline:2px solid var(--ink)}
+.btn{border:none;background:var(--ink);color:#fff;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer}
+.btn.ghost{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.daterow{display:flex;align-items:center;gap:8px;padding:8px 2px;border-bottom:1px dashed var(--line);font-size:14px;flex-wrap:wrap}
+.daterow .del{margin-left:auto;background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:4px}
+.emoji{width:22px;text-align:center}
+.muted{color:var(--muted);font-size:13px}
+.summary-note{font-size:13.5px;line-height:1.5;margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:10px}
+.err{color:var(--bad);font-size:13px}
+.chartbox{position:relative;height:170px;margin-top:8px}
+.pillarhead{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:700;margin-bottom:6px}
+.dot{width:10px;height:10px;border-radius:50%}
+.addform{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;align-items:center}
+.navbar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:10}
+.navbtn{background:none;border:none;font-size:11px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 10px;border-radius:10px;font-weight:600}
+.navbtn .ico{font-size:20px}
+.navbtn.active{color:var(--ink);background:var(--bg)}
+.pillarcard{border-radius:12px;padding:12px;margin-top:10px}
+.printbtn{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;text-transform:none;letter-spacing:0}
+#printArea{display:none}
+.rpt h1{font-size:20px;margin-bottom:2px}
+.rpt .rsub{color:#666;font-size:12px;margin-bottom:12px}
+.rpt h3{font-size:14px;margin:16px 0 6px}
+.rpt table{width:100%;border-collapse:collapse;font-size:11.5px}
+.rpt th,.rpt td{border:1px solid #bbb;padding:4px 6px;text-align:center}
+.rpt th.l,.rpt td.l{text-align:left}
+.rpt .ok{color:#1d7a41;font-weight:700}
+.rpt .note{font-size:12px;color:#444;margin-top:10px;line-height:1.5}
+@media print{
+  body{background:#fff;padding:10px;max-width:none}
+  body>:not(#printArea){display:none !important}
+  #printArea{display:block !important}
+  .navbar{display:none !important}
+}
+</style>
+</head>
+<body>
+<h1>Life Dashboard</h1>
+<div class="sub" id="todayLabel"></div>
+
+<!-- ============ TODAY ============ -->
+<div id="tab-today">
+  <div class="card">
+    <h2>Daily Summary <span id="dailyPct" class="big" style="text-transform:none"></span></h2>
+    <div class="bar"><div id="dailyBar" style="width:0%"></div></div>
+    <div class="summary-note" id="dailyNote"></div>
+  </div>
+  <div class="card">
+    <h2>Top 3 Today</h2>
+    <div id="top3main"></div>
+    <h2 style="margin-top:14px">Top 3 — If I Have Time</h2>
+    <div id="top3extra"></div>
+  </div>
+  <div class="card">
+    <h2>Daily To-Do List</h2>
+    <div id="dailyList"></div>
+  </div>
+  <div class="card">
+    <h2>Health Log <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">Sleep Number · Samsung Health</span></h2>
+    <div class="hrow"><span class="lbl">😴 Hours in bed <span class="unit">(Sleep Number)</span></span><input type="number" step="0.5" min="0" max="14" id="h_sleep"></div>
+    <div class="hrow"><span class="lbl">💧 Water <span class="unit">oz</span></span><input type="number" step="5" min="0" max="300" id="h_water"></div>
+    <div class="hrow"><span class="lbl">🏋️ Total workout <span class="unit">min</span></span><input type="number" step="5" min="0" max="600" id="h_workout"></div>
+    <div class="hrow"><span class="lbl">🫀 Zone 2 <span class="unit">min</span></span><input type="number" step="5" min="0" max="600" id="h_z2"></div>
+    <div class="hrow"><span class="lbl">🔥 Zone 4 <span class="unit">min</span></span><input type="number" step="5" min="0" max="600" id="h_z4"></div>
+    <div class="muted" style="margin-top:8px">Sleep ≥ 7 hrs and water ≥ 75 oz auto-check those daily items.</div>
+  </div>
+  <div class="card">
+    <h2>Today's Calendar</h2>
+    <ul class="cal" id="calToday"><li class="muted">Connect your calendar in Settings.</li></ul>
+  </div>
+  <div class="card">
+    <h2>Three Pillars</h2>
+    <div id="pillars"></div>
+  </div>
+</div>
+
+<!-- ============ WEEK ============ -->
+<div id="tab-week" style="display:none">
+  <div class="card">
+    <h2>Weekly Tasks <span class="muted" id="weekLabel" style="font-weight:400;text-transform:none;letter-spacing:0"></span></h2>
+    <div id="weeklyList"></div>
+  </div>
+  <div class="card">
+    <h2>Weekly Snapshot — Daily Completion <button class="printbtn" onclick="printWeekReport()">🖨 Print report</button></h2>
+    <div class="chartbox"><canvas id="weekChart"></canvas></div>
+    <div class="summary-note" id="weekNote"></div>
+  </div>
+  <div class="card">
+    <h2>Week Look-Ahead</h2>
+    <div id="calWeek"><span class="muted">Connect your calendar in Settings.</span></div>
+  </div>
+</div>
+
+<!-- ============ MONTH ============ -->
+<div id="tab-month" style="display:none">
+  <div class="card">
+    <h2>Monthly Snapshot — Daily To-Do % <button class="printbtn" onclick="printMonthReport()">🖨 Print report</button></h2>
+    <div class="monthgrid" id="monthGrid"></div>
+    <div class="summary-note" id="monthNote"></div>
+  </div>
+  <div class="card">
+    <h2>This Month — Birthdays · Anniversaries · Dog Meds</h2>
+    <div id="monthDates"></div>
+  </div>
+  <div class="card">
+    <h2>Manage Important Dates</h2>
+    <div id="allDates"></div>
+    <div class="addform">
+      <input type="text" id="d_name" placeholder="Name (e.g., Mom, Rex heartworm)" style="grid-column:1/-1">
+      <select id="d_type"><option>Birthday</option><option>Anniversary</option><option>Dog medication</option></select>
+      <select id="d_month"></select>
+      <input type="number" id="d_day" min="1" max="31" placeholder="Day">
+      <button class="btn" onclick="addDate()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div id="tab-settings" style="display:none">
+  <div class="card">
+    <h2>Google Calendar Connection</h2>
+    <p class="muted" style="margin-bottom:8px">Paste your Google Apps Script web-app URL here (see the setup guide). The app pulls your next 7 days of events each time it opens.</p>
+    <input type="url" id="s_calurl" placeholder="https://script.google.com/macros/s/…/exec">
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn" onclick="saveCalUrl()">Save & Test</button>
+    </div>
+    <div id="calTestResult" class="muted" style="margin-top:8px"></div>
+  </div>
+  <div class="card">
+    <h2>Backup & Restore</h2>
+    <p class="muted" style="margin-bottom:10px">Your data lives on this phone. Export a backup occasionally.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn ghost" onclick="exportData()">Export backup</button>
+      <button class="btn ghost" onclick="document.getElementById('importFile').click()">Restore backup</button>
+      <input type="file" id="importFile" accept=".json" style="display:none">
+    </div>
+  </div>
+  <div class="card">
+    <h2>About</h2>
+    <p class="muted">Life Dashboard — Spiritual · Mental · Physical. All data stored locally on your device. Log Sleep Number and Samsung Health numbers manually in the Health Log.</p>
+  </div>
+</div>
+
+<div id="printArea" class="rpt"></div>
+
+<nav class="navbar">
+  <button class="navbtn active" data-tab="today"><span class="ico">☀️</span>Today</button>
+  <button class="navbtn" data-tab="week"><span class="ico">📊</span>Week</button>
+  <button class="navbtn" data-tab="month"><span class="ico">🗓️</span>Month</button>
+  <button class="navbtn" data-tab="settings"><span class="ico">⚙️</span>Settings</button>
+</nav>
+
+<script>
+/* ================= CONFIG ================= */
+const DAILY_ITEMS = [
+  {id:'bible',    label:'Bible-in-a-Year reading', cat:'spirit'},
+  {id:'prayer',   label:'Prayer',                  cat:'spirit'},
+  {id:'madison',  label:'Madison therapy',         cat:'mental'},
+  {id:'sleep7',   label:'7+ hours in bed',         cat:'phys'},
+  {id:'water',    label:'75–100 oz water',         cat:'phys'},
+  {id:'teethAM',  label:'Brush teeth (morning)',   cat:'phys'},
+  {id:'teethPM',  label:'Brush teeth (night)',     cat:'phys'},
+  {id:'nightguard',label:'Night guard',            cat:'phys'},
+  {id:'makebed',  label:'Make bed',                cat:'home'},
+  {id:'tidy',     label:'Tidy up (dishes, laundry, clean up)', cat:'home'},
+];
+const CAT_META = {spirit:['Spiritual','p-spirit'],mental:['Mental','p-mental'],phys:['Physical','p-phys'],home:['Home','p-home']};
+const WEEKLY_ITEMS = [
+  {id:'lifts',  label:'Lifts',                       type:'count', goal:3, max:4, unit:'lifts'},
+  {id:'runs',   label:'Runs',                        type:'count', goal:3, max:7, unit:'runs'},
+  {id:'yoga',   label:'Yoga sessions',               type:'count', goal:2, max:7, unit:'sessions'},
+  {id:'pt',     label:'Calf & hip therapy',          type:'count', goal:3, max:7, unit:'sessions'},
+  {id:'blinkist',label:'Blinkist books',             type:'count', goal:3, max:10, unit:'books'},
+  {id:'prospect',label:'Prospecting for lunch & learns', type:'count', goal:2, max:10, unit:'hrs'},
+  {id:'vacuum', label:'Vacuum both levels',          type:'check'},
+  {id:'leaves', label:'Leaves & debris in backyard', type:'check'},
+  {id:'budget', label:'Go through budget',           type:'check'},
+];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+/* ================= STORAGE ================= */
+const store = {
+  get(k, fb){ try{ const v = localStorage.getItem('ld_'+k); return v?JSON.parse(v):fb; }catch(e){ return fb; } },
+  set(k, v){ localStorage.setItem('ld_'+k, JSON.stringify(v)); }
+};
+function dkey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function wkey(d){ const t=new Date(d); t.setHours(0,0,0,0); t.setDate(t.getDate()+3-((t.getDay()+6)%7)); const w1=new Date(t.getFullYear(),0,4); return t.getFullYear()+'-W'+String(1+Math.round(((t-w1)/864e5-3+((w1.getDay()+6)%7))/7)).padStart(2,'0'); }
+const TODAY = new Date(); const TKEY = dkey(TODAY); const WKEY = wkey(TODAY);
+function dayData(k){ const all = store.get('days',{}); return all[k] || {checks:{},top3:[{},{},{}],top3x:[{},{},{}],health:{}}; }
+function saveDay(k, data){ const all = store.get('days',{}); all[k]=data; store.set('days',all); }
+function weekData(k){ const all = store.get('weeks',{}); return all[k] || {counts:{},checks:{}}; }
+function saveWeek(k, data){ const all = store.get('weeks',{}); all[k]=data; store.set('weeks',all); }
+
+/* ================= NAV ================= */
+document.querySelectorAll('.navbtn').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  ['today','week','month','settings'].forEach(n=>document.getElementById('tab-'+n).style.display = n===t.dataset.tab?'':'none');
+  if(t.dataset.tab==='week') renderWeek();
+  if(t.dataset.tab==='month') renderMonth();
+  window.scrollTo(0,0);
+});
+
+/* ================= TODAY ================= */
+document.getElementById('todayLabel').textContent = TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+function renderDaily(){
+  const d = dayData(TKEY);
+  const el = document.getElementById('dailyList'); el.innerHTML='';
+  let done=0;
+  ['spirit','mental','phys','home'].forEach(cat=>{
+    DAILY_ITEMS.filter(i=>i.cat===cat).forEach(item=>{
+      const checked = !!d.checks[item.id]; if(checked) done++;
+      const row = document.createElement('div'); row.className='item'+(checked?' done':'');
+      row.innerHTML = `<input type="checkbox" ${checked?'checked':''} id="c_${item.id}"><label for="c_${item.id}">${item.label}</label><span class="pill ${CAT_META[item.cat][1]}">${CAT_META[item.cat][0]}</span>`;
+      row.querySelector('input').onchange = e=>{ const dd=dayData(TKEY); dd.checks[item.id]=e.target.checked; saveDay(TKEY,dd); renderDaily(); renderPillars(); };
+      el.appendChild(row);
+    });
+  });
+  const pct = Math.round(done/DAILY_ITEMS.length*100);
+  document.getElementById('dailyPct').textContent = pct+'%';
+  document.getElementById('dailyBar').style.width = pct+'%';
+  const t3 = d.top3.filter(t=>t.done).length, t3t = d.top3.filter(t=>t.text).length;
+  let note;
+  if(pct===100) note = '💯 Perfect day — every daily item done.';
+  else if(pct>=70) note = `Strong day: ${done}/${DAILY_ITEMS.length} daily items done. Still open: ${DAILY_ITEMS.filter(i=>!d.checks[i.id]).map(i=>i.label).join(', ')}.`;
+  else note = `${done}/${DAILY_ITEMS.length} daily items done so far. Remaining: ${DAILY_ITEMS.filter(i=>!d.checks[i.id]).map(i=>i.label).join(', ')}.`;
+  if(t3t) note += ` Top 3: ${t3}/${t3t} complete.`;
+  document.getElementById('dailyNote').textContent = note;
+}
+
+function renderTop3(){
+  const d = dayData(TKEY);
+  [['top3main','top3'],['top3extra','top3x']].forEach(([elId,key])=>{
+    const el = document.getElementById(elId); el.innerHTML='';
+    d[key].forEach((t,i)=>{
+      const row=document.createElement('div'); row.className='top3row'+(t.done?' done':'');
+      row.innerHTML=`<input type="checkbox" ${t.done?'checked':''}><input type="text" placeholder="${i+1}." value="${(t.text||'').replace(/"/g,'&quot;')}">`;
+      const [cb,txt]=row.querySelectorAll('input');
+      cb.onchange=()=>{const dd=dayData(TKEY);dd[key][i].done=cb.checked;saveDay(TKEY,dd);renderTop3();renderDaily();};
+      txt.onchange=()=>{const dd=dayData(TKEY);dd[key][i].text=txt.value;saveDay(TKEY,dd);};
+      el.appendChild(row);
+    });
+  });
+}
+
+function renderHealth(){
+  const d = dayData(TKEY); const h=d.health||{};
+  const map={h_sleep:'sleep',h_water:'water',h_workout:'workout',h_z2:'z2',h_z4:'z4'};
+  Object.entries(map).forEach(([id,k])=>{
+    const inp=document.getElementById(id); inp.value = h[k]??'';
+    inp.onchange=()=>{
+      const dd=dayData(TKEY); dd.health=dd.health||{};
+      dd.health[k]=inp.value===''?null:parseFloat(inp.value);
+      if(k==='sleep'&&dd.health[k]>=7) dd.checks.sleep7=true;
+      if(k==='water'&&dd.health[k]>=75) dd.checks.water=true;
+      saveDay(TKEY,dd); renderDaily(); renderPillars();
+    };
+  });
+}
+
+function streak(itemId){
+  let s=0; const all=store.get('days',{}); const d=new Date(TODAY);
+  if(all[dkey(d)]&&all[dkey(d)].checks[itemId]) s++;
+  d.setDate(d.getDate()-1);
+  while(all[dkey(d)]&&all[dkey(d)].checks[itemId]){ s++; d.setDate(d.getDate()-1); }
+  return s;
+}
+function weekHealthTotals(){
+  const all=store.get('days',{}); let z2=0,z4=0,wo=0,slN=0,slSum=0;
+  const d=new Date(TODAY);
+  for(let i=0;i<7;i++){ const dd=all[dkey(d)];
+    if(dd&&dd.health){ z2+=dd.health.z2||0; z4+=dd.health.z4||0; wo+=dd.health.workout||0; if(dd.health.sleep){slSum+=dd.health.sleep;slN++;} }
+    d.setDate(d.getDate()-1); }
+  return {z2,z4,wo,avgSleep: slN?(slSum/slN).toFixed(1):'—'};
+}
+function renderPillars(){
+  const w=weekData(WKEY); const h=weekHealthTotals();
+  document.getElementById('pillars').innerHTML=`
+    <div class="pillarcard" style="background:var(--spirit-bg)">
+      <div class="pillarhead"><span class="dot" style="background:var(--spirit)"></span>Spiritual</div>
+      <div class="statrow"><div class="stat"><div class="v">${streak('bible')}🔥</div><div class="l">Bible streak (days)</div></div>
+      <div class="stat"><div class="v">${streak('prayer')}🔥</div><div class="l">Prayer streak (days)</div></div></div>
+    </div>
+    <div class="pillarcard" style="background:var(--mental-bg)">
+      <div class="pillarhead"><span class="dot" style="background:var(--mental)"></span>Mental</div>
+      <div class="statrow"><div class="stat"><div class="v">${w.counts.blinkist||0}/3</div><div class="l">Blinkist books this week</div></div>
+      <div class="stat"><div class="v">${streak('madison')}🔥</div><div class="l">Madison therapy streak</div></div></div>
+    </div>
+    <div class="pillarcard" style="background:var(--phys-bg)">
+      <div class="pillarhead"><span class="dot" style="background:var(--phys)"></span>Physical</div>
+      <div class="statrow">
+        <div class="stat"><div class="v">${h.z2}m</div><div class="l">Zone 2 (7 days)</div></div>
+        <div class="stat"><div class="v">${h.z4}m</div><div class="l">Zone 4 (7 days)</div></div>
+        <div class="stat"><div class="v">${h.wo}m</div><div class="l">Workout (7 days)</div></div>
+        <div class="stat"><div class="v">${h.avgSleep}</div><div class="l">Avg hrs in bed</div></div>
+      </div>
+    </div>`;
+}
+
+/* ================= WEEK ================= */
+let weekChart=null;
+function renderWeek(){
+  document.getElementById('weekLabel').textContent = ' '+WKEY;
+  const w = weekData(WKEY);
+  const el = document.getElementById('weeklyList'); el.innerHTML='';
+  WEEKLY_ITEMS.forEach(item=>{
+    if(item.type==='count'){
+      const v = w.counts[item.id]||0;
+      const row=document.createElement('div'); row.className='hrow';
+      row.innerHTML=`<span class="lbl">${item.label}</span>
+        <div class="counter"><button>−</button><span class="cv ${v>=item.goal?'met':''}">${v} / ${item.goal}${item.id==='lifts'?'–4':''}</span><button>+</button></div>`;
+      const [minus,plus]=row.querySelectorAll('button');
+      minus.onclick=()=>{const ww=weekData(WKEY);ww.counts[item.id]=Math.max(0,(ww.counts[item.id]||0)-1);saveWeek(WKEY,ww);renderWeek();renderPillars();};
+      plus.onclick=()=>{const ww=weekData(WKEY);ww.counts[item.id]=Math.min(item.max,(ww.counts[item.id]||0)+1);saveWeek(WKEY,ww);renderWeek();renderPillars();};
+      el.appendChild(row);
+    } else {
+      const checked=!!w.checks[item.id];
+      const row=document.createElement('div'); row.className='item'+(checked?' done':'');
+      row.innerHTML=`<input type="checkbox" ${checked?'checked':''} id="w_${item.id}"><label for="w_${item.id}">${item.label}</label>`;
+      row.querySelector('input').onchange=e=>{const ww=weekData(WKEY);ww.checks[item.id]=e.target.checked;saveWeek(WKEY,ww);renderWeek();};
+      el.appendChild(row);
+    }
+  });
+  const all=store.get('days',{}); const labels=[],vals=[];
+  const d=new Date(TODAY); d.setDate(d.getDate()-6);
+  for(let i=0;i<7;i++){
+    labels.push(d.toLocaleDateString('en-US',{weekday:'short'}));
+    const dd=all[dkey(d)];
+    vals.push(dd?Math.round(Object.values(dd.checks).filter(Boolean).length/DAILY_ITEMS.length*100):0);
+    d.setDate(d.getDate()+1);
+  }
+  if(typeof Chart!=='undefined'){
+    if(weekChart) weekChart.destroy();
+    weekChart = new Chart(document.getElementById('weekChart'),{type:'bar',
+      data:{labels,datasets:[{data:vals,backgroundColor:'#3e8e5a',borderRadius:6}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}}});
+  }
+  const avg = Math.round(vals.reduce((a,b)=>a+b,0)/7);
+  const met = WEEKLY_ITEMS.filter(i=> i.type==='count' ? (w.counts[i.id]||0)>=i.goal : w.checks[i.id]).length;
+  document.getElementById('weekNote').textContent = `7-day average: ${avg}% of daily items completed. Weekly tasks on target: ${met}/${WEEKLY_ITEMS.length}.`;
+}
+
+/* ================= MONTH ================= */
+function renderMonth(){
+  const y=TODAY.getFullYear(), m=TODAY.getMonth();
+  const first=new Date(y,m,1), days=new Date(y,m+1,0).getDate();
+  const all=store.get('days',{});
+  const grid=document.getElementById('monthGrid'); grid.innerHTML='';
+  ['S','M','T','W','T','F','S'].forEach(h=>{const c=document.createElement('div');c.className='mg-hdr';c.textContent=h;grid.appendChild(c);});
+  for(let i=0;i<first.getDay();i++) grid.appendChild(document.createElement('div'));
+  let sum=0,n=0;
+  for(let day=1;day<=days;day++){
+    const k=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    const dd=all[k];
+    const pct=dd?Math.round(Object.values(dd.checks).filter(Boolean).length/DAILY_ITEMS.length*100):null;
+    if(pct!==null && day<=TODAY.getDate()){sum+=pct;n++;}
+    const c=document.createElement('div'); c.className='mg-cell'+(day===TODAY.getDate()?' mg-today':'');
+    if(pct!==null){ c.style.background = pct>=80?'#d3ead9':pct>=50?'#f1ead0':'#f3ddda'; }
+    c.innerHTML=`<span class="d">${day}</span>${pct!==null?`<span class="pc">${pct}%</span>`:''}`;
+    grid.appendChild(c);
+  }
+  document.getElementById('monthNote').textContent = n?`Month-to-date average: ${Math.round(sum/n)}% across ${n} tracked day${n>1?'s':''}.`:'No days tracked yet this month — check items off on the Today tab.';
+  renderDates();
+}
+
+function renderDates(){
+  const dates=store.get('dates',[]);
+  const m=TODAY.getMonth()+1;
+  const icon=t=>t==='Birthday'?'🎂':t==='Anniversary'?'💍':'💊';
+  const thisMonth=dates.filter(d=>d.month===m).sort((a,b)=>a.day-b.day);
+  const mEl=document.getElementById('monthDates');
+  mEl.innerHTML = thisMonth.length? '' : '<span class="muted">Nothing added for '+MONTHS[m-1]+' yet. Add dates below.</span>';
+  thisMonth.forEach(d=>{
+    const row=document.createElement('div'); row.className='daterow';
+    row.innerHTML=`<span class="emoji">${icon(d.type)}</span><b>${MONTHS[d.month-1].slice(0,3)} ${d.day}</b> — ${d.name} <span class="muted">(${d.type})</span>`;
+    mEl.appendChild(row);
+  });
+  const aEl=document.getElementById('allDates');
+  aEl.innerHTML = dates.length?'':'<span class="muted">No dates saved yet.</span>';
+  dates.slice().sort((a,b)=>a.month-b.month||a.day-b.day).forEach(d=>{
+    const row=document.createElement('div'); row.className='daterow';
+    row.innerHTML=`<span class="emoji">${icon(d.type)}</span>${MONTHS[d.month-1].slice(0,3)} ${d.day} — ${d.name} <span class="muted">(${d.type})</span><button class="del" title="Delete">✕</button>`;
+    row.querySelector('.del').onclick=()=>{ store.set('dates',store.get('dates',[]).filter(x=>x.id!==d.id)); renderDates(); };
+    aEl.appendChild(row);
+  });
+}
+function addDate(){
+  const name=document.getElementById('d_name').value.trim();
+  const day=parseInt(document.getElementById('d_day').value);
+  if(!name||!day){alert('Enter a name and day.');return;}
+  const dates=store.get('dates',[]);
+  dates.push({id:Date.now(),name,type:document.getElementById('d_type').value,month:parseInt(document.getElementById('d_month').value),day});
+  store.set('dates',dates);
+  document.getElementById('d_name').value='';document.getElementById('d_day').value='';
+  renderDates();
+}
+MONTHS.forEach((mo,i)=>{const o=document.createElement('option');o.value=i+1;o.textContent=mo;if(i===TODAY.getMonth())o.selected=true;document.getElementById('d_month').appendChild(o);});
+
+/* ================= CALENDAR (Apps Script) ================= */
+function evTime(e){ return new Date(e.start); }
+function fmtTime(e){ return e.allDay ? 'All day' : evTime(e).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
+async function loadCalendar(){
+  const url = store.get('calurl','');
+  if(!url) return;
+  try{
+    const resp = await fetch(url+(url.includes('?')?'&':'?')+'days=7');
+    const data = await resp.json();
+    const events = (data.events||[]);
+    const tEl=document.getElementById('calToday');
+    const todays=events.filter(e=>dkey(evTime(e))===TKEY);
+    tEl.innerHTML = todays.length?'':'<li class="muted">Nothing on the calendar today.</li>';
+    todays.forEach(e=>{const li=document.createElement('li');li.innerHTML=`<span class="t">${fmtTime(e)}</span><span></span>`;li.lastChild.textContent=e.title||'(no title)';tEl.appendChild(li);});
+    const wEl=document.getElementById('calWeek'); wEl.innerHTML='';
+    const byDay={};
+    events.forEach(e=>{const k=dkey(evTime(e));(byDay[k]=byDay[k]||[]).push(e);});
+    const d=new Date(TODAY); d.setHours(0,0,0,0); let any=false;
+    for(let i=0;i<7;i++){
+      const k=dkey(d); const list=byDay[k]||[];
+      if(list.length){
+        any=true;
+        const hdr=document.createElement('div');hdr.className='dayhdr';
+        hdr.textContent=(k===TKEY?'Today — ':'')+d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+        wEl.appendChild(hdr);
+        const ul=document.createElement('ul');ul.className='cal';
+        list.forEach(e=>{const li=document.createElement('li');li.innerHTML=`<span class="t">${fmtTime(e)}</span><span></span>`;li.lastChild.textContent=e.title||'(no title)';ul.appendChild(li);});
+        wEl.appendChild(ul);
+      }
+      d.setDate(d.getDate()+1);
+    }
+    if(!any) wEl.innerHTML='<span class="muted">No events in the next 7 days.</span>';
+  }catch(err){
+    document.getElementById('calToday').innerHTML='<li class="err">Couldn\'t reach your calendar script. Check the URL in Settings.</li>';
+    document.getElementById('calWeek').innerHTML='<span class="err">Couldn\'t reach your calendar script. Check the URL in Settings.</span>';
+  }
+}
+async function saveCalUrl(){
+  const url=document.getElementById('s_calurl').value.trim();
+  store.set('calurl',url);
+  const res=document.getElementById('calTestResult');
+  if(!url){res.textContent='Cleared. Calendar disconnected.';loadCalendar();return;}
+  res.textContent='Testing…';
+  try{
+    const r=await fetch(url+(url.includes('?')?'&':'?')+'days=7');
+    const data=await r.json();
+    res.textContent='✅ Connected — found '+(data.events||[]).length+' events in the next 7 days.';
+    loadCalendar();
+  }catch(e){ res.innerHTML='<span class="err">❌ Couldn\'t connect. Make sure the script is deployed as a web app with access set to "Anyone".</span>'; }
+}
+
+/* ================= PRINT REPORTS ================= */
+function esc(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
+function fireAndPrint(html){
+  document.getElementById('printArea').innerHTML=html;
+  setTimeout(()=>window.print(),50);
+}
+function printWeekReport(){
+  // Monday–Sunday of the current week
+  const d=new Date(TODAY); d.setDate(d.getDate()-((d.getDay()+6)%7));
+  const days=[]; for(let i=0;i<7;i++){ days.push(new Date(d)); d.setDate(d.getDate()+1); }
+  const all=store.get('days',{});
+  const range=days[0].toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+days[6].toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  let html=`<h1>Weekly Report — ${WKEY}</h1><div class="rsub">${range} · printed ${new Date().toLocaleDateString('en-US')}</div>`;
+  // daily items grid
+  html+='<h3>Daily To-Do List</h3><table><tr><th class="l">Item</th>'+days.map(x=>'<th>'+x.toLocaleDateString('en-US',{weekday:'short'})+'<br>'+(x.getMonth()+1)+'/'+x.getDate()+'</th>').join('')+'</tr>';
+  DAILY_ITEMS.forEach(item=>{
+    html+='<tr><td class="l">'+esc(item.label)+' <small>('+CAT_META[item.cat][0]+')</small></td>';
+    days.forEach(x=>{ const dd=all[dkey(x)]; html+='<td>'+(dd&&dd.checks[item.id]?'<span class="ok">✓</span>':(x>TODAY?'':'·'))+'</td>'; });
+    html+='</tr>';
+  });
+  html+='<tr><th class="l">Daily %</th>';
+  let pcts=[];
+  days.forEach(x=>{ const dd=all[dkey(x)];
+    if(x>TODAY){html+='<th></th>';return;}
+    const p=dd?Math.round(Object.values(dd.checks).filter(Boolean).length/DAILY_ITEMS.length*100):0;
+    pcts.push(p); html+='<th>'+p+'%</th>'; });
+  html+='</tr></table>';
+  // weekly tasks
+  const w=weekData(WKEY);
+  html+='<h3>Weekly Tasks</h3><table><tr><th class="l">Task</th><th>Goal</th><th>Done</th><th>Status</th></tr>';
+  WEEKLY_ITEMS.forEach(item=>{
+    const done=item.type==='count'?(w.counts[item.id]||0):(w.checks[item.id]?1:0);
+    const goal=item.type==='count'?item.goal:1;
+    html+='<tr><td class="l">'+esc(item.label)+'</td><td>'+goal+(item.type==='count'?' '+item.unit:'')+'</td><td>'+done+'</td><td>'+(done>=goal?'<span class="ok">✓ Met</span>':'Open')+'</td></tr>';
+  });
+  html+='</table>';
+  // health + top3
+  let z2=0,z4=0,wo=0,slN=0,slSum=0;
+  days.forEach(x=>{const dd=all[dkey(x)]; if(dd&&dd.health){z2+=dd.health.z2||0;z4+=dd.health.z4||0;wo+=dd.health.workout||0;if(dd.health.sleep){slSum+=dd.health.sleep;slN++;}}});
+  html+='<h3>Health (Samsung Health · Sleep Number)</h3><table><tr><th>Zone 2</th><th>Zone 4</th><th>Total workout</th><th>Avg hrs in bed</th></tr>'
+      +`<tr><td>${z2} min</td><td>${z4} min</td><td>${wo} min</td><td>${slN?(slSum/slN).toFixed(1):'—'}</td></tr></table>`;
+  const avg=pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0;
+  const met=WEEKLY_ITEMS.filter(i=>i.type==='count'?(w.counts[i.id]||0)>=i.goal:w.checks[i.id]).length;
+  html+=`<div class="note"><b>Week summary:</b> ${avg}% average daily completion across ${pcts.length} day${pcts.length!==1?'s':''}. Weekly tasks met: ${met}/${WEEKLY_ITEMS.length}.</div>`;
+  fireAndPrint(html);
+}
+function printMonthReport(){
+  const y=TODAY.getFullYear(), m=TODAY.getMonth();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const all=store.get('days',{});
+  let html=`<h1>Monthly Report — ${MONTHS[m]} ${y}</h1><div class="rsub">printed ${new Date().toLocaleDateString('en-US')}</div>`;
+  // item-by-item completion
+  let tracked=0,sum=0,perItem={};
+  DAILY_ITEMS.forEach(i=>perItem[i.id]=0);
+  const dayRows=[];
+  for(let day=1;day<=daysInMonth;day++){
+    if(new Date(y,m,day)>TODAY) break;
+    const k=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    const dd=all[k]; if(!dd) continue;
+    const done=Object.values(dd.checks).filter(Boolean).length;
+    const p=Math.round(done/DAILY_ITEMS.length*100);
+    tracked++; sum+=p;
+    DAILY_ITEMS.forEach(i=>{ if(dd.checks[i.id]) perItem[i.id]++; });
+    dayRows.push([day,p,done]);
+  }
+  html+='<h3>Habit Consistency</h3><table><tr><th class="l">Daily item</th><th>Days done</th><th>Rate</th></tr>';
+  DAILY_ITEMS.forEach(i=>{
+    const r=tracked?Math.round(perItem[i.id]/tracked*100):0;
+    html+='<tr><td class="l">'+esc(i.label)+' <small>('+CAT_META[i.cat][0]+')</small></td><td>'+perItem[i.id]+'/'+tracked+'</td><td>'+(r>=80?'<span class="ok">'+r+'%</span>':r+'%')+'</td></tr>';
+  });
+  html+='</table>';
+  html+='<h3>Day by Day</h3><table><tr><th>Day</th><th>Items done</th><th>%</th></tr>';
+  dayRows.forEach(([day,p,done])=>{ html+='<tr><td>'+MONTHS[m].slice(0,3)+' '+day+'</td><td>'+done+'/'+DAILY_ITEMS.length+'</td><td>'+(p>=80?'<span class="ok">'+p+'%</span>':p+'%')+'</td></tr>'; });
+  html+='</table>';
+  const dates=store.get('dates',[]).filter(d=>d.month===m+1).sort((a,b)=>a.day-b.day);
+  if(dates.length){
+    html+='<h3>Birthdays · Anniversaries · Dog Meds</h3><table><tr><th>Date</th><th class="l">Who / What</th><th>Type</th></tr>';
+    dates.forEach(d=>{ html+='<tr><td>'+MONTHS[m].slice(0,3)+' '+d.day+'</td><td class="l">'+esc(d.name)+'</td><td>'+esc(d.type)+'</td></tr>'; });
+    html+='</table>';
+  }
+  html+=`<div class="note"><b>Month summary:</b> ${tracked?Math.round(sum/tracked):0}% average daily completion across ${tracked} tracked day${tracked!==1?'s':''} in ${MONTHS[m]}.</div>`;
+  fireAndPrint(html);
+}
+
+/* ================= BACKUP ================= */
+function exportData(){
+  const data={days:store.get('days',{}),weeks:store.get('weeks',{}),dates:store.get('dates',[]),calurl:store.get('calurl','')};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='life-dashboard-backup-'+TKEY+'.json';a.click();
+}
+document.getElementById('importFile').onchange=function(){
+  const f=this.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{try{
+    const d=JSON.parse(r.result);
+    if(d.days)store.set('days',d.days); if(d.weeks)store.set('weeks',d.weeks);
+    if(d.dates)store.set('dates',d.dates); if(d.calurl)store.set('calurl',d.calurl);
+    alert('Backup restored.'); location.reload();
+  }catch(e){alert('Invalid backup file.');}};
+  r.readAsText(f);
+};
+
+/* ================= INIT ================= */
+document.getElementById('s_calurl').value = store.get('calurl','');
+renderDaily(); renderTop3(); renderHealth(); renderPillars(); loadCalendar();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
