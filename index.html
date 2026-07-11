@@ -3,28 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#26251f">
+<meta name="theme-color" content="#4b1f7e">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Life Dashboard</title>
+<title>Thrive³</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
 <style>
 :root { color-scheme: light;
-  --bg:#f7f6f2; --card:#ffffff; --ink:#26251f; --muted:#8a877c; --line:#e8e6de;
-  --spirit:#7c5cbf; --spirit-bg:#f3effc;
-  --mental:#2f8fa3; --mental-bg:#eaf6f8;
-  --phys:#c96f3b; --phys-bg:#fdf1e8;
-  --home:#6f8f4f; --home-bg:#f0f5e9;
-  --good:#3e8e5a; --warn:#c9a13b; --bad:#c05a4e;
+  --bg:#f4f7f7; --card:#ffffff; --ink:#232336; --muted:#8a8f9c; --line:#e2e6e8;
+  --teal:#18b3a2; --teal-dk:#0f8f81; --purple:#4b1f7e; --purple-md:#5e35a8; --indigo:#4553b8;
+  --spirit:#5e35a8; --spirit-bg:#f2edfa;
+  --mental:#4553b8; --mental-bg:#edf0fb;
+  --phys:#0f8f81; --phys-bg:#e6f6f4;
+  --home:#5f7285; --home-bg:#eef2f5;
+  --good:#0f8f81; --warn:#c9a13b; --bad:#c05a4e;
+  --grad:linear-gradient(90deg,#18b3a2,#5e35a8);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);padding:16px 14px calc(76px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
-h1{font-size:19px;font-weight:800}
-.sub{color:var(--muted);font-size:12.5px;margin-top:2px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
-.card h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.item{display:flex;align-items:center;gap:10px;padding:9px 6px;border-radius:9px;font-size:15px}
-.item input[type=checkbox]{width:21px;height:21px;accent-color:var(--good);flex-shrink:0}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);padding:16px 14px calc(80px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+.hdr{display:flex;align-items:center;gap:10px}
+.hdr img{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:#fff}
+h1{font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.01em}
+.sub{color:var(--muted);font-size:12.5px;margin-top:1px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px;box-shadow:0 1px 3px rgba(35,35,54,.04)}
+.card h2{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--purple-md);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.item{display:flex;align-items:center;gap:10px;padding:9px 6px;border-radius:10px;font-size:15px}
+.item input[type=checkbox]{width:21px;height:21px;accent-color:var(--teal-dk);flex-shrink:0}
 .item.done label{text-decoration:line-through;color:var(--muted)}
 .item label{flex:1}
 .pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
@@ -32,41 +36,48 @@ h1{font-size:19px;font-weight:800}
 .p-mental{background:var(--mental-bg);color:var(--mental)}
 .p-phys{background:var(--phys-bg);color:var(--phys)}
 .p-home{background:var(--home-bg);color:var(--home)}
-.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
-.bar>div{height:100%;background:var(--good);border-radius:99px;transition:width .3s}
-.big{font-size:24px;font-weight:800}
+.bar{height:9px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar>div{height:100%;background:var(--grad);border-radius:99px;transition:width .3s}
+.big{font-size:24px;font-weight:800;color:var(--teal-dk)}
 .statrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-.stat{background:var(--bg);border-radius:10px;padding:9px 11px;flex:1;min-width:90px}
+.stat{background:var(--bg);border-radius:10px;padding:9px 11px;flex:1;min-width:88px}
 .stat .v{font-size:18px;font-weight:800}
 .stat .l{font-size:10.5px;color:var(--muted);margin-top:2px}
-input[type=text],input[type=number],input[type=url],select{border:1px solid var(--line);border-radius:8px;padding:10px;font-size:15px;background:#fff;color:var(--ink)}
-input[type=text],input[type=url]{width:100%}
-input[type=number]{width:80px}
+input[type=text],input[type=number],input[type=url],select,textarea{border:1px solid var(--line);border-radius:9px;padding:10px;font-size:15px;background:#fff;color:var(--ink);font-family:inherit}
+input[type=text],input[type=url],textarea{width:100%}
+input[type=number]{width:84px}
+select{padding:8px}
+textarea{min-height:74px;resize:vertical}
 .top3row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.top3row input[type=checkbox]{width:21px;height:21px;accent-color:var(--good);flex-shrink:0}
+.top3row input[type=checkbox]{width:21px;height:21px;accent-color:var(--teal-dk);flex-shrink:0}
 .top3row.done input[type=text]{text-decoration:line-through;color:var(--muted)}
 .hrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
 .hrow:last-child{border-bottom:none}
 .hrow .lbl{flex:1}
 .hrow .unit{color:var(--muted);font-size:12px}
+.goalhint{font-size:11px;color:var(--muted);white-space:nowrap}
 .counter{display:flex;align-items:center;gap:8px}
 .counter button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;font-size:18px;cursor:pointer;font-weight:700;color:var(--ink)}
-.counter .cv{min-width:56px;text-align:center;font-weight:700;font-size:13.5px}
-.counter .cv.met{color:var(--good)}
+.counter .cv{min-width:52px;text-align:center;font-weight:700;font-size:13.5px}
+.met{color:var(--teal-dk)}
 ul.cal{list-style:none}
 ul.cal li{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px;display:flex;gap:8px}
 ul.cal li:last-child{border-bottom:none}
 ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:tabular-nums}
-.dayhdr{font-weight:700;font-size:13px;margin:12px 0 4px}
+.dayhdr{font-weight:700;font-size:13px;margin:12px 0 4px;color:var(--purple-md)}
 .dayhdr:first-child{margin-top:0}
 .monthgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:6px}
-.mg-cell{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;background:var(--bg);color:var(--muted)}
-.mg-cell .d{font-weight:700;font-size:11px;color:var(--ink)}
-.mg-cell .pc{font-size:9px}
+.mg-cell{aspect-ratio:1;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;background:var(--bg);color:var(--muted);cursor:pointer;border:1px solid transparent;position:relative}
+.mg-cell .d{font-weight:700;font-size:12px;color:var(--ink)}
+.mg-cell .pc{font-size:8.5px}
 .mg-hdr{text-align:center;font-size:10px;color:var(--muted);font-weight:700;padding-bottom:2px}
-.mg-today{outline:2px solid var(--ink)}
-.btn{border:none;background:var(--ink);color:#fff;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer}
+.mg-today{outline:2px solid var(--purple-md)}
+.mg-sel{border-color:var(--teal-dk);background:#fff}
+.dots{display:flex;gap:2px;position:absolute;bottom:4px}
+.dots i{width:4px;height:4px;border-radius:50%;background:var(--indigo)}
+.btn{border:none;background:var(--purple-md);color:#fff;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer}
 .btn.ghost{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.btn.teal{background:var(--teal-dk)}
 .daterow{display:flex;align-items:center;gap:8px;padding:8px 2px;border-bottom:1px dashed var(--line);font-size:14px;flex-wrap:wrap}
 .daterow .del{margin-left:auto;background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:4px}
 .emoji{width:22px;text-align:center}
@@ -77,20 +88,32 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 .pillarhead{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:700;margin-bottom:6px}
 .dot{width:10px;height:10px;border-radius:50%}
 .addform{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;align-items:center}
-.navbar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:10}
-.navbtn{background:none;border:none;font-size:11px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 10px;border-radius:10px;font-weight:600}
-.navbtn .ico{font-size:20px}
-.navbtn.active{color:var(--ink);background:var(--bg)}
+.navbar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:7px 2px calc(7px + env(safe-area-inset-bottom));z-index:10}
+.navbtn{background:none;border:none;font-size:10.5px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 8px;border-radius:10px;font-weight:600}
+.navbtn .ico{font-size:19px}
+.navbtn.active{color:var(--purple-md);background:var(--spirit-bg)}
 .pillarcard{border-radius:12px;padding:12px;margin-top:10px}
 .printbtn{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;text-transform:none;letter-spacing:0}
+.editrow{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px dashed var(--line);font-size:14px}
+.editrow .nm{flex:1}
+.editrow select{font-size:13px;padding:6px}
+.editrow .del{background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:2px 6px}
+.replist button{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:7px;cursor:pointer;color:var(--ink)}
+.replist button b{color:var(--purple-md)}
+.coach{margin-top:10px;padding:11px 12px;background:var(--phys-bg);border-radius:10px;font-size:13.5px;line-height:1.55}
+.coach b{color:var(--teal-dk)}
+.coach ul{margin:6px 0 0 16px}
+.coach li{margin-bottom:5px}
+.disc{font-size:11px;color:var(--muted);margin-top:6px}
 #printArea{display:none}
-.rpt h1{font-size:20px;margin-bottom:2px}
+.rpt h1{font-size:20px;margin-bottom:2px;background:none;color:#232336;-webkit-background-clip:border-box}
 .rpt .rsub{color:#666;font-size:12px;margin-bottom:12px}
-.rpt h3{font-size:14px;margin:16px 0 6px}
+.rpt h3{font-size:14px;margin:16px 0 6px;color:#4b1f7e}
 .rpt table{width:100%;border-collapse:collapse;font-size:11.5px}
-.rpt th,.rpt td{border:1px solid #bbb;padding:4px 6px;text-align:center}
+.rpt th,.rpt td{border:1px solid #bbb;padding:4px 5px;text-align:center}
 .rpt th.l,.rpt td.l{text-align:left}
-.rpt .ok{color:#1d7a41;font-weight:700}
+.rpt .ok{color:#0f8f81;font-weight:700}
+.rpt .no{color:#c05a4e;font-weight:700}
 .rpt .note{font-size:12px;color:#444;margin-top:10px;line-height:1.5}
 @media print{
   body{background:#fff;padding:10px;max-width:none}
@@ -101,8 +124,7 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 </style>
 </head>
 <body>
-<h1>Life Dashboard</h1>
-<div class="sub" id="todayLabel"></div>
+<div class="hdr"><img src="icon-192.png" alt="Thrive³"><div><h1>Thrive³</h1><div class="sub" id="todayLabel"></div></div></div>
 
 <!-- ============ TODAY ============ -->
 <div id="tab-today">
@@ -118,17 +140,34 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     <div id="top3extra"></div>
   </div>
   <div class="card">
-    <h2>Daily To-Do List</h2>
+    <h2>Daily To-Do List <button class="printbtn" id="editBtn" onclick="toggleEdit()">✎ Edit list</button></h2>
     <div id="dailyList"></div>
+    <div id="editPanel" style="display:none">
+      <div class="muted" style="margin:8px 0 4px">Change any item's category, remove custom items, or add your own:</div>
+      <div id="editList"></div>
+      <div class="addform">
+        <input type="text" id="new_item" placeholder="New daily item…" style="grid-column:1/-1">
+        <select id="new_cat"><option value="spirit">Spiritual</option><option value="mental">Mental</option><option value="phys">Physical</option><option value="home">Home</option></select>
+        <select id="new_type" onchange="goalFields('new')"><option value="check">✓ Checkbox — did / didn't</option><option value="gte">≥ At least a number</option><option value="lte">≤ At most a number</option><option value="count"># Counter — reach a quantity</option></select>
+        <input type="number" id="new_goal" placeholder="Goal #" style="display:none;width:100%">
+        <input type="text" id="new_unit" placeholder="Unit (oz, min, pages…)" style="display:none">
+        <button class="btn teal" onclick="addItem()" style="grid-column:1/-1">Add item</button>
+      </div>
+    </div>
   </div>
   <div class="card">
     <h2>Health Log <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">Sleep Number · Samsung Health</span></h2>
-    <div class="hrow"><span class="lbl">😴 Hours in bed <span class="unit">(Sleep Number)</span></span><input type="number" step="0.5" min="0" max="14" id="h_sleep"></div>
-    <div class="hrow"><span class="lbl">💧 Water <span class="unit">oz</span></span><input type="number" step="5" min="0" max="300" id="h_water"></div>
+    <div class="hrow"><span class="lbl">😴 Sleep Number score <span class="unit">(0–100)</span></span><input type="number" step="1" min="0" max="100" id="h_score"></div>
+    <div class="hrow"><span class="lbl">💧 Water <span class="unit">oz · goal 75–100</span></span><input type="number" step="5" min="0" max="300" id="h_water"></div>
+    <div class="hrow"><span class="lbl">👟 Steps <span class="unit">ideal 7k–10k</span></span><input type="number" step="100" min="0" max="60000" id="h_steps"></div>
     <div class="hrow"><span class="lbl">🏋️ Total workout <span class="unit">min</span></span><input type="number" step="5" min="0" max="600" id="h_workout"></div>
     <div class="hrow"><span class="lbl">🫀 Zone 2 <span class="unit">min</span></span><input type="number" step="5" min="0" max="600" id="h_z2"></div>
     <div class="hrow"><span class="lbl">🔥 Zone 4 <span class="unit">min</span></span><input type="number" step="5" min="0" max="600" id="h_z4"></div>
-    <div class="muted" style="margin-top:8px">Sleep ≥ 7 hrs and water ≥ 75 oz auto-check those daily items.</div>
+    <div class="muted" style="margin-top:8px">Water ≥ 75 oz auto-completes the water item; under 75 doesn't count.</div>
+    <h2 style="margin-top:16px">Food Diary & Coach <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">goal: 200 → 190 lbs</span></h2>
+    <textarea id="h_food" placeholder="What did you eat today? e.g. eggs & oatmeal, chicken salad, salmon + rice, protein shake…"></textarea>
+    <div class="coach" id="coachBox"></div>
+    <div class="disc">General guidance to support your cut — not medical or dietetic advice.</div>
   </div>
   <div class="card">
     <h2>Today's Calendar</h2>
@@ -143,11 +182,22 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 <!-- ============ WEEK ============ -->
 <div id="tab-week" style="display:none">
   <div class="card">
-    <h2>Weekly Tasks <span class="muted" id="weekLabel" style="font-weight:400;text-transform:none;letter-spacing:0"></span></h2>
+    <h2>Weekly Tasks <span class="muted" id="weekLabel" style="font-weight:400;text-transform:none;letter-spacing:0"></span> <button class="printbtn" id="editWBtn" onclick="toggleEditW()">✎ Edit list</button></h2>
     <div id="weeklyList"></div>
+    <div id="editPanelW" style="display:none">
+      <div class="muted" style="margin:8px 0 4px">Add your own weekly tasks — pick how success is measured:</div>
+      <div id="editListW"></div>
+      <div class="addform">
+        <input type="text" id="neww_item" placeholder="New weekly task…" style="grid-column:1/-1">
+        <select id="neww_type" onchange="goalFields('neww')"><option value="check">✓ Checkbox — did / didn't</option><option value="gte">≥ At least a number</option><option value="lte">≤ At most a number</option><option value="count"># Counter — reach a quantity</option></select>
+        <input type="number" id="neww_goal" placeholder="Goal #" style="display:none;width:100%">
+        <input type="text" id="neww_unit" placeholder="Unit (x, hrs, books…)" style="display:none">
+        <button class="btn teal" onclick="addItemW()" style="grid-column:1/-1">Add weekly task</button>
+      </div>
+    </div>
   </div>
   <div class="card">
-    <h2>Weekly Snapshot — Daily Completion <button class="printbtn" onclick="printWeekReport()">🖨 Print report</button></h2>
+    <h2>Weekly Snapshot <button class="printbtn" onclick="printWeekReport()">🖨 Print report</button></h2>
     <div class="chartbox"><canvas id="weekChart"></canvas></div>
     <div class="summary-note" id="weekNote"></div>
   </div>
@@ -160,9 +210,29 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 <!-- ============ MONTH ============ -->
 <div id="tab-month" style="display:none">
   <div class="card">
-    <h2>Monthly Snapshot — Daily To-Do % <button class="printbtn" onclick="printMonthReport()">🖨 Print report</button></h2>
+    <h2>Monthly Tasks <span class="muted" id="monthTasksLabel" style="font-weight:400;text-transform:none;letter-spacing:0"></span> <button class="printbtn" id="editMBtn" onclick="toggleEditM()">✎ Edit list</button></h2>
+    <div id="monthlyList"></div>
+    <div id="editPanelM" style="display:none">
+      <div class="muted" style="margin:8px 0 4px">Add monthly tasks — pick how success is measured:</div>
+      <div id="editListM"></div>
+      <div class="addform">
+        <input type="text" id="newm_item" placeholder="New monthly task…" style="grid-column:1/-1">
+        <select id="newm_type" onchange="goalFields('newm')"><option value="check">✓ Checkbox — did / didn't</option><option value="gte">≥ At least a number</option><option value="lte">≤ At most a number</option><option value="count"># Counter — reach a quantity</option></select>
+        <input type="number" id="newm_goal" placeholder="Goal #" style="display:none;width:100%">
+        <input type="text" id="newm_unit" placeholder="Unit (x, hrs…)" style="display:none">
+        <button class="btn teal" onclick="addItemM()" style="grid-column:1/-1">Add monthly task</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Month Calendar <button class="printbtn" onclick="printMonthReport()">🖨 Print report</button></h2>
+    <div class="muted" style="margin-bottom:4px">Color = daily to-do score · dots = calendar events · tap a day for details</div>
     <div class="monthgrid" id="monthGrid"></div>
     <div class="summary-note" id="monthNote"></div>
+  </div>
+  <div class="card" id="dayDetailCard" style="display:none">
+    <h2 id="dayDetailTitle">Day</h2>
+    <div id="dayDetail"></div>
   </div>
   <div class="card">
     <h2>This Month — Birthdays · Anniversaries · Dog Meds</h2>
@@ -181,11 +251,31 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
   </div>
 </div>
 
+<!-- ============ REPORTS ============ -->
+<div id="tab-reports" style="display:none">
+  <div class="card" id="repViewerCard" style="display:none">
+    <h2>Report <span><button class="printbtn" onclick="printViewer()">🖨 Print / Save PDF</button> <button class="printbtn" onclick="closeViewer()">✕ Close</button></span></h2>
+    <div id="repViewer" class="rpt"></div>
+  </div>
+  <div class="card">
+    <h2>📄 Daily Reports</h2>
+    <div class="replist" id="repDaily"></div>
+  </div>
+  <div class="card">
+    <h2>📊 Weekly Reports</h2>
+    <div class="replist" id="repWeekly"></div>
+  </div>
+  <div class="card">
+    <h2>🗓️ Monthly Reports</h2>
+    <div class="replist" id="repMonthly"></div>
+  </div>
+</div>
+
 <!-- ============ SETTINGS ============ -->
 <div id="tab-settings" style="display:none">
   <div class="card">
     <h2>Google Calendar Connection</h2>
-    <p class="muted" style="margin-bottom:8px">Paste your Google Apps Script web-app URL here (see the setup guide). The app pulls your next 7 days of events each time it opens.</p>
+    <p class="muted" style="margin-bottom:8px">Paste your Google Apps Script web-app URL here (see the setup guide). The app pulls this month + 2 weeks ahead each time it opens.</p>
     <input type="url" id="s_calurl" placeholder="https://script.google.com/macros/s/…/exec">
     <div style="display:flex;gap:8px;margin-top:10px">
       <button class="btn" onclick="saveCalUrl()">Save & Test</button>
@@ -203,7 +293,7 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
   </div>
   <div class="card">
     <h2>About</h2>
-    <p class="muted">Life Dashboard — Spiritual · Mental · Physical. All data stored locally on your device. Log Sleep Number and Samsung Health numbers manually in the Health Log.</p>
+    <p class="muted">Thrive³ — Spiritual · Mental · Physical. All data stored locally on your device.</p>
   </div>
 </div>
 
@@ -213,12 +303,13 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
   <button class="navbtn active" data-tab="today"><span class="ico">☀️</span>Today</button>
   <button class="navbtn" data-tab="week"><span class="ico">📊</span>Week</button>
   <button class="navbtn" data-tab="month"><span class="ico">🗓️</span>Month</button>
+  <button class="navbtn" data-tab="reports"><span class="ico">🗂️</span>Reports</button>
   <button class="navbtn" data-tab="settings"><span class="ico">⚙️</span>Settings</button>
 </nav>
 
 <script>
 /* ================= CONFIG ================= */
-const DAILY_ITEMS = [
+const DAILY_BASE = [
   {id:'bible',    label:'Bible-in-a-Year reading', cat:'spirit'},
   {id:'prayer',   label:'Prayer',                  cat:'spirit'},
   {id:'madison',  label:'Madison therapy',         cat:'mental'},
@@ -226,23 +317,28 @@ const DAILY_ITEMS = [
   {id:'water',    label:'75–100 oz water',         cat:'phys'},
   {id:'teethAM',  label:'Brush teeth (morning)',   cat:'phys'},
   {id:'teethPM',  label:'Brush teeth (night)',     cat:'phys'},
+  {id:'floss',    label:'Floss',                   cat:'phys'},
+  {id:'skin',     label:'Skin routine',            cat:'phys'},
   {id:'nightguard',label:'Night guard',            cat:'phys'},
   {id:'makebed',  label:'Make bed',                cat:'home'},
   {id:'tidy',     label:'Tidy up (dishes, laundry, clean up)', cat:'home'},
 ];
 const CAT_META = {spirit:['Spiritual','p-spirit'],mental:['Mental','p-mental'],phys:['Physical','p-phys'],home:['Home','p-home']};
 const WEEKLY_ITEMS = [
-  {id:'lifts',  label:'Lifts',                       type:'count', goal:3, max:4, unit:'lifts'},
-  {id:'runs',   label:'Runs',                        type:'count', goal:3, max:7, unit:'runs'},
-  {id:'yoga',   label:'Yoga sessions',               type:'count', goal:2, max:7, unit:'sessions'},
-  {id:'pt',     label:'Calf & hip therapy',          type:'count', goal:3, max:7, unit:'sessions'},
-  {id:'blinkist',label:'Blinkist books',             type:'count', goal:3, max:10, unit:'books'},
-  {id:'prospect',label:'Prospecting for lunch & learns', type:'count', goal:2, max:10, unit:'hrs'},
-  {id:'vacuum', label:'Vacuum both levels',          type:'check'},
+  {id:'church', label:'Church',                    type:'check', cat:'spirit'},
+  {id:'sermons',label:'Sermons / Verdict / Additional', type:'input', goal:3, goalMax:5, unit:''},
+  {id:'lifts',  label:'Lifts',                     type:'count', goal:3, max:4},
+  {id:'runs',   label:'Runs',                      type:'count', goal:3, max:7},
+  {id:'yoga',   label:'Yoga sessions',             type:'count', goal:2, max:7},
+  {id:'pt',     label:'Calf & hip therapy',        type:'count', goal:3, max:7},
+  {id:'blinkist',label:'Blinkist books',           type:'count', goal:3, max:10},
+  {id:'prospect',label:'Prospecting for lunch & learns (hrs)', type:'count', goal:2, max:10},
+  {id:'vacuum', label:'Vacuum both levels',        type:'check'},
   {id:'leaves', label:'Leaves & debris in backyard', type:'check'},
-  {id:'budget', label:'Go through budget',           type:'check'},
+  {id:'budget', label:'Go through budget',         type:'check'},
 ];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const FLOSS_GOAL = 3;
 
 /* ================= STORAGE ================= */
 const store = {
@@ -251,48 +347,199 @@ const store = {
 };
 function dkey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function wkey(d){ const t=new Date(d); t.setHours(0,0,0,0); t.setDate(t.getDate()+3-((t.getDay()+6)%7)); const w1=new Date(t.getFullYear(),0,4); return t.getFullYear()+'-W'+String(1+Math.round(((t-w1)/864e5-3+((w1.getDay()+6)%7))/7)).padStart(2,'0'); }
+function mondayOf(d){ const t=new Date(d); t.setHours(0,0,0,0); t.setDate(t.getDate()-((t.getDay()+6)%7)); return t; }
 const TODAY = new Date(); const TKEY = dkey(TODAY); const WKEY = wkey(TODAY);
 function dayData(k){ const all = store.get('days',{}); return all[k] || {checks:{},top3:[{},{},{}],top3x:[{},{},{}],health:{}}; }
 function saveDay(k, data){ const all = store.get('days',{}); all[k]=data; store.set('days',all); }
 function weekData(k){ const all = store.get('weeks',{}); return all[k] || {counts:{},checks:{}}; }
 function saveWeek(k, data){ const all = store.get('weeks',{}); all[k]=data; store.set('weeks',all); }
+function dailyItems(){
+  const ov = store.get('catov',{});
+  return DAILY_BASE.map(i=>({...i, cat: ov[i.id]||i.cat})).concat(store.get('custom',[]));
+}
+function esc(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
+const MKEY = TKEY.slice(0,7);
+function monthData(k){ const all = store.get('months',{}); return all[k] || {checks:{},vals:{}}; }
+function saveMonth(k, data){ const all = store.get('months',{}); all[k]=data; store.set('months',all); }
+
+/* ===== custom-task engine: check | gte (≥) | lte (≤) | count ===== */
+function itemSuccess(dd, item){
+  if(!dd) return false;
+  const t = item.type||'check';
+  if(t==='check') return !!(dd.checks||{})[item.id];
+  const v = (dd.vals||{})[item.id];
+  if(v==null) return false;
+  return t==='lte' ? v<=item.goal : v>=item.goal;
+}
+function dayDone(dd, items){ return items.reduce((a,i)=>a+(itemSuccess(dd,i)?1:0),0); }
+function goalDesc(item){
+  const t=item.type||'check';
+  if(t==='check') return 'checkbox';
+  const u=item.unit?' '+item.unit:'';
+  return (t==='lte'?'≤ ':t==='count'?'reach ':'≥ ')+item.goal+u;
+}
+function taskWidgetRow(item, get, save, pillHtml){
+  const t = item.type||'check';
+  const data = get();
+  const row = document.createElement('div');
+  if(t==='check'){
+    const checked = !!(data.checks||{})[item.id];
+    row.className = 'item'+(checked?' done':'');
+    row.innerHTML = `<input type="checkbox" ${checked?'checked':''} id="tw_${item.id}"><label for="tw_${item.id}"></label>`+(pillHtml||'');
+    row.querySelector('label').textContent = item.label;
+    row.querySelector('input').onchange = e=>{ const d=get(); d.checks=d.checks||{}; d.checks[item.id]=e.target.checked; save(d); };
+  } else if(t==='count'){
+    const v = ((data.vals||{})[item.id])||0;
+    row.className = 'hrow';
+    row.innerHTML = `<span class="lbl"></span><div class="counter"><button>−</button><span class="cv ${v>=item.goal?'met':''}">${v} / ${item.goal}${item.unit?' '+esc(item.unit):''}</span><button>+</button></div>`;
+    row.querySelector('.lbl').innerHTML = esc(item.label)+' '+(pillHtml||'');
+    const [minus,plus] = row.querySelectorAll('button');
+    minus.onclick = ()=>{ const d=get(); d.vals=d.vals||{}; d.vals[item.id]=Math.max(0,(d.vals[item.id]||0)-1); save(d); };
+    plus.onclick  = ()=>{ const d=get(); d.vals=d.vals||{}; d.vals[item.id]=(d.vals[item.id]||0)+1; save(d); };
+  } else {
+    const v = (data.vals||{})[item.id];
+    const ok = itemSuccess(data,item);
+    row.className = 'hrow';
+    row.innerHTML = `<span class="lbl"></span>`;
+    row.querySelector('.lbl').innerHTML = esc(item.label)+' <span class="goalhint">'+(t==='lte'?'≤ ':'≥ ')+item.goal+(item.unit?' '+esc(item.unit):'')+'</span>'+(ok?' <span class="met">✓</span>':'')+' '+(pillHtml||'');
+    const inp = document.createElement('input'); inp.type='number'; inp.value = v??'';
+    if(ok) inp.style.color = 'var(--teal-dk)';
+    inp.onchange = ()=>{ const d=get(); d.vals=d.vals||{}; d.vals[item.id]=inp.value===''?null:parseFloat(inp.value); save(d); };
+    row.appendChild(inp);
+  }
+  return row;
+}
+function goalFields(p){
+  const t = document.getElementById(p+'_type').value;
+  const show = t!=='check';
+  document.getElementById(p+'_goal').style.display = show?'':'none';
+  document.getElementById(p+'_unit').style.display = show?'':'none';
+}
+function readNewTask(p){
+  const label = document.getElementById(p+'_item').value.trim();
+  const type = document.getElementById(p+'_type').value;
+  const goal = parseFloat(document.getElementById(p+'_goal').value);
+  const unit = document.getElementById(p+'_unit').value.trim();
+  if(!label){ alert('Type a task name.'); return null; }
+  if(type!=='check' && isNaN(goal)){ alert('Enter a goal number.'); return null; }
+  const item = {id:'x'+Date.now(), label, type};
+  if(type!=='check'){ item.goal=goal; if(unit) item.unit=unit; }
+  document.getElementById(p+'_item').value=''; document.getElementById(p+'_goal').value=''; document.getElementById(p+'_unit').value='';
+  return item;
+}
 
 /* ================= NAV ================= */
 document.querySelectorAll('.navbtn').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
-  ['today','week','month','settings'].forEach(n=>document.getElementById('tab-'+n).style.display = n===t.dataset.tab?'':'none');
+  ['today','week','month','reports','settings'].forEach(n=>document.getElementById('tab-'+n).style.display = n===t.dataset.tab?'':'none');
   if(t.dataset.tab==='week') renderWeek();
   if(t.dataset.tab==='month') renderMonth();
+  if(t.dataset.tab==='reports') renderReports();
   window.scrollTo(0,0);
 });
 
 /* ================= TODAY ================= */
 document.getElementById('todayLabel').textContent = TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+let editMode=false;
+function toggleEdit(){ editMode=!editMode;
+  document.getElementById('editPanel').style.display=editMode?'':'none';
+  document.getElementById('editBtn').textContent=editMode?'✓ Done':'✎ Edit list';
+  renderDaily(); }
 
 function renderDaily(){
+  const items = dailyItems();
   const d = dayData(TKEY);
   const el = document.getElementById('dailyList'); el.innerHTML='';
-  let done=0;
+  const done = dayDone(d, items);
   ['spirit','mental','phys','home'].forEach(cat=>{
-    DAILY_ITEMS.filter(i=>i.cat===cat).forEach(item=>{
-      const checked = !!d.checks[item.id]; if(checked) done++;
-      const row = document.createElement('div'); row.className='item'+(checked?' done':'');
-      row.innerHTML = `<input type="checkbox" ${checked?'checked':''} id="c_${item.id}"><label for="c_${item.id}">${item.label}</label><span class="pill ${CAT_META[item.cat][1]}">${CAT_META[item.cat][0]}</span>`;
-      row.querySelector('input').onchange = e=>{ const dd=dayData(TKEY); dd.checks[item.id]=e.target.checked; saveDay(TKEY,dd); renderDaily(); renderPillars(); };
-      el.appendChild(row);
+    items.filter(i=>i.cat===cat).forEach(item=>{
+      const pill = `<span class="pill ${CAT_META[item.cat][1]}">${CAT_META[item.cat][0]}</span>`;
+      el.appendChild(taskWidgetRow(item, ()=>dayData(TKEY), dd=>{ saveDay(TKEY,dd); renderDaily(); renderPillars(); }, pill));
     });
   });
-  const pct = Math.round(done/DAILY_ITEMS.length*100);
+  if(editMode) renderEditList();
+  const pct = items.length?Math.round(done/items.length*100):0;
   document.getElementById('dailyPct').textContent = pct+'%';
   document.getElementById('dailyBar').style.width = pct+'%';
   const t3 = d.top3.filter(t=>t.done).length, t3t = d.top3.filter(t=>t.text).length;
   let note;
+  const remaining = items.filter(i=>!itemSuccess(d,i)).map(i=>i.label);
   if(pct===100) note = '💯 Perfect day — every daily item done.';
-  else if(pct>=70) note = `Strong day: ${done}/${DAILY_ITEMS.length} daily items done. Still open: ${DAILY_ITEMS.filter(i=>!d.checks[i.id]).map(i=>i.label).join(', ')}.`;
-  else note = `${done}/${DAILY_ITEMS.length} daily items done so far. Remaining: ${DAILY_ITEMS.filter(i=>!d.checks[i.id]).map(i=>i.label).join(', ')}.`;
+  else if(pct>=70) note = `Strong day: ${done}/${items.length} daily items done. Still open: ${remaining.join(', ')}.`;
+  else note = `${done}/${items.length} daily items done so far. Remaining: ${remaining.join(', ')}.`;
   if(t3t) note += ` Top 3: ${t3}/${t3t} complete.`;
   document.getElementById('dailyNote').textContent = note;
+}
+
+function renderEditList(){
+  const el=document.getElementById('editList'); el.innerHTML='';
+  const custom=store.get('custom',[]);
+  dailyItems().forEach(item=>{
+    const isCustom=custom.some(c=>c.id===item.id);
+    const row=document.createElement('div'); row.className='editrow';
+    const sel=document.createElement('select');
+    Object.entries(CAT_META).forEach(([k,[name]])=>{
+      const o=document.createElement('option'); o.value=k; o.textContent=name; if(k===item.cat)o.selected=true; sel.appendChild(o);
+    });
+    sel.onchange=()=>{
+      if(isCustom){ const cs=store.get('custom',[]); const c=cs.find(x=>x.id===item.id); if(c){c.cat=sel.value; store.set('custom',cs);} }
+      else { const ov=store.get('catov',{}); ov[item.id]=sel.value; store.set('catov',ov); }
+      renderDaily();
+    };
+    const nm=document.createElement('span'); nm.className='nm';
+    nm.textContent=item.label;
+    if(isCustom){ const g=document.createElement('span'); g.className='muted'; g.textContent=' ('+goalDesc(item)+')'; nm.appendChild(g); }
+    row.appendChild(nm); row.appendChild(sel);
+    if(isCustom){
+      const del=document.createElement('button'); del.className='del'; del.textContent='✕';
+      del.onclick=()=>{ store.set('custom',store.get('custom',[]).filter(x=>x.id!==item.id)); renderDaily(); };
+      row.appendChild(del);
+    }
+    el.appendChild(row);
+  });
+}
+function addItem(){
+  const item=readNewTask('new'); if(!item) return;
+  item.cat=document.getElementById('new_cat').value;
+  const custom=store.get('custom',[]);
+  custom.push(item);
+  store.set('custom',custom);
+  renderDaily();
+}
+function addItemW(){
+  const item=readNewTask('neww'); if(!item) return;
+  const list=store.get('customW',[]); list.push(item); store.set('customW',list);
+  renderWeek();
+}
+function addItemM(){
+  const item=readNewTask('newm'); if(!item) return;
+  const list=store.get('customM',[]); list.push(item); store.set('customM',list);
+  renderMonthly();
+}
+let editModeW=false, editModeM=false;
+function toggleEditW(){ editModeW=!editModeW;
+  document.getElementById('editPanelW').style.display=editModeW?'':'none';
+  document.getElementById('editWBtn').textContent=editModeW?'✓ Done':'✎ Edit list';
+  renderWeek(); }
+function toggleEditM(){ editModeM=!editModeM;
+  document.getElementById('editPanelM').style.display=editModeM?'':'none';
+  document.getElementById('editMBtn').textContent=editModeM?'✓ Done':'✎ Edit list';
+  renderMonthly(); }
+function renderEditCustom(storeKey, elId, rerender){
+  const el=document.getElementById(elId); el.innerHTML='';
+  const list=store.get(storeKey,[]);
+  if(!list.length){ el.innerHTML='<span class="muted">No custom tasks yet.</span>'; return; }
+  list.forEach(item=>{
+    const row=document.createElement('div'); row.className='editrow';
+    const nm=document.createElement('span'); nm.className='nm'; nm.textContent=item.label;
+    const g=document.createElement('span'); g.className='muted'; g.textContent=' ('+goalDesc(item)+')'; nm.appendChild(g);
+    row.appendChild(nm);
+    const del=document.createElement('button'); del.className='del'; del.textContent='✕';
+    del.onclick=()=>{ store.set(storeKey,store.get(storeKey,[]).filter(x=>x.id!==item.id)); rerender(); };
+    row.appendChild(del);
+    el.appendChild(row);
+  });
 }
 
 function renderTop3(){
@@ -301,8 +548,9 @@ function renderTop3(){
     const el = document.getElementById(elId); el.innerHTML='';
     d[key].forEach((t,i)=>{
       const row=document.createElement('div'); row.className='top3row'+(t.done?' done':'');
-      row.innerHTML=`<input type="checkbox" ${t.done?'checked':''}><input type="text" placeholder="${i+1}." value="${(t.text||'').replace(/"/g,'&quot;')}">`;
+      row.innerHTML=`<input type="checkbox" ${t.done?'checked':''}><input type="text" placeholder="${i+1}.">`;
       const [cb,txt]=row.querySelectorAll('input');
+      txt.value=t.text||'';
       cb.onchange=()=>{const dd=dayData(TKEY);dd[key][i].done=cb.checked;saveDay(TKEY,dd);renderTop3();renderDaily();};
       txt.onchange=()=>{const dd=dayData(TKEY);dd[key][i].text=txt.value;saveDay(TKEY,dd);};
       el.appendChild(row);
@@ -312,19 +560,63 @@ function renderTop3(){
 
 function renderHealth(){
   const d = dayData(TKEY); const h=d.health||{};
-  const map={h_sleep:'sleep',h_water:'water',h_workout:'workout',h_z2:'z2',h_z4:'z4'};
+  const map={h_score:'score',h_water:'water',h_steps:'steps',h_workout:'workout',h_z2:'z2',h_z4:'z4'};
   Object.entries(map).forEach(([id,k])=>{
     const inp=document.getElementById(id); inp.value = h[k]??'';
     inp.onchange=()=>{
       const dd=dayData(TKEY); dd.health=dd.health||{};
       dd.health[k]=inp.value===''?null:parseFloat(inp.value);
-      if(k==='sleep'&&dd.health[k]>=7) dd.checks.sleep7=true;
-      if(k==='water'&&dd.health[k]>=75) dd.checks.water=true;
-      saveDay(TKEY,dd); renderDaily(); renderPillars();
+      if(k==='water'){
+        if(dd.health[k]!=null) dd.checks.water = dd.health[k]>=75;
+      }
+      saveDay(TKEY,dd); renderDaily(); renderPillars(); coach();
     };
   });
+  const food=document.getElementById('h_food');
+  food.value=h.food||'';
+  let foodTimer=null;
+  food.oninput=()=>{
+    clearTimeout(foodTimer);
+    foodTimer=setTimeout(()=>{
+      const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.food=food.value; saveDay(TKEY,dd); coach();
+    },400);
+  };
+  coach();
 }
 
+/* ================= FOOD COACH ================= */
+function coach(){
+  const d=dayData(TKEY); const h=d.health||{};
+  const txt=(h.food||'').toLowerCase();
+  const has=re=>re.test(txt);
+  const PROTEIN=/chicken|beef|steak|turkey|fish|salmon|tuna|egg|protein|greek yogurt|cottage|shrimp|pork|whey/;
+  const VEG=/salad|broccoli|spinach|greens|veggie|vegetable|asparagus|pepper|carrot|kale|brussels|zucchini|cucumber/;
+  const FRUIT=/fruit|berr|apple|banana|orange|grape|melon/;
+  const JUNK=/pizza|fries|chips|soda|candy|cookie|dessert|ice cream|donut|doughnut|cake|pastr|fast food|mcdonald|wendy|taco bell/;
+  const ALC=/beer|wine|whiskey|bourbon|vodka|cocktail|alcohol|seltzer|margarita/;
+  const hour=new Date().getHours();
+  const tips=[];
+  if(!txt){
+    tips.push('<b>Protein anchor:</b> build each meal around 40g+ protein (eggs, chicken, fish, Greek yogurt) — aim ~180–200g/day to hold muscle while cutting.');
+    tips.push('<b>Deficit math:</b> a 300–500 cal/day deficit (~2,300–2,500 cal for your size/activity) loses ~1 lb/week — 10 lbs in about 8–10 weeks without wrecking training.');
+    tips.push('<b>Time your carbs:</b> put most carbs before/after lifts and runs; keep rest-day meals protein + veggies + fats.');
+    tips.push('<b>Cut-off:</b> finish eating 2–3 hrs before bed — helps the stomach-fat goal and your Sleep Number score.');
+  } else {
+    if(!has(PROTEIN)) tips.push('<b>Missing protein so far:</b> your next meal should lead with 40g+ protein — chicken, salmon, lean beef, eggs, or a shake. Protein protects muscle in a deficit and kills late-night cravings.');
+    else tips.push('<b>Protein logged ✓</b> — keep stacking it: ~180–200g/day total is the target for a 200-lb athletic cut.');
+    if(!has(VEG)) tips.push('<b>Add volume:</b> no veggies logged yet. A big salad or 2 cups of greens/broccoli at your next meal adds fullness for almost no calories.');
+    if(has(JUNK)) tips.push('<b>Damage control:</b> processed/fried items spotted. Don\'t "make up for it" by skipping meals — just make the next meal protein + veggies, and take a 10–15 min walk.');
+    if(has(ALC)) tips.push('<b>Alcohol:</b> it pauses fat-burning and hits sleep quality. Cap it at 1–2, drink water between, and skip the late snacks that come with it.');
+    if(!has(FRUIT) && !has(JUNK)) tips.push('<b>Sweet tooth insurance:</b> keep fruit or Greek yogurt + berries handy for dessert cravings.');
+    if(hour>=19) tips.push('<b>Evening:</b> kitchen closes 2–3 hrs before bed. If you truly need something: casein/cottage cheese, not carbs.');
+  }
+  if(h.water!=null && h.water<75) tips.push(`<b>Hydration:</b> you're at ${h.water} oz — get to 75+ before evening. Water first when you feel snacky; thirst masquerades as hunger.`);
+  if(h.steps!=null && h.steps<7000) tips.push(`<b>Steps:</b> ${h.steps.toLocaleString()} so far — a 15-min walk after dinner is the cheapest fat-loss tool you have. Target 7k–10k.`);
+  if(h.workout>0) tips.push('<b>Training day:</b> put carbs + protein within a couple hours after the workout; that\'s where they do the most good.');
+  document.getElementById('coachBox').innerHTML='<b>Coach:</b><ul>'+tips.slice(0,5).map(t=>'<li>'+t+'</li>').join('')+'</ul>';
+}
+
+/* ================= PILLARS ================= */
 function streak(itemId){
   let s=0; const all=store.get('days',{}); const d=new Date(TODAY);
   if(all[dkey(d)]&&all[dkey(d)].checks[itemId]) s++;
@@ -333,12 +625,14 @@ function streak(itemId){
   return s;
 }
 function weekHealthTotals(){
-  const all=store.get('days',{}); let z2=0,z4=0,wo=0,slN=0,slSum=0;
+  const all=store.get('days',{}); let z2=0,z4=0,wo=0,scN=0,scSum=0,stN=0,stSum=0;
   const d=new Date(TODAY);
   for(let i=0;i<7;i++){ const dd=all[dkey(d)];
-    if(dd&&dd.health){ z2+=dd.health.z2||0; z4+=dd.health.z4||0; wo+=dd.health.workout||0; if(dd.health.sleep){slSum+=dd.health.sleep;slN++;} }
+    if(dd&&dd.health){ z2+=dd.health.z2||0; z4+=dd.health.z4||0; wo+=dd.health.workout||0;
+      if(dd.health.score!=null){scSum+=dd.health.score;scN++;}
+      if(dd.health.steps!=null){stSum+=dd.health.steps;stN++;} }
     d.setDate(d.getDate()-1); }
-  return {z2,z4,wo,avgSleep: slN?(slSum/slN).toFixed(1):'—'};
+  return {z2,z4,wo,avgScore: scN?Math.round(scSum/scN):'—', avgSteps: stN?Math.round(stSum/stN).toLocaleString():'—'};
 }
 function renderPillars(){
   const w=weekData(WKEY); const h=weekHealthTotals();
@@ -346,7 +640,8 @@ function renderPillars(){
     <div class="pillarcard" style="background:var(--spirit-bg)">
       <div class="pillarhead"><span class="dot" style="background:var(--spirit)"></span>Spiritual</div>
       <div class="statrow"><div class="stat"><div class="v">${streak('bible')}🔥</div><div class="l">Bible streak (days)</div></div>
-      <div class="stat"><div class="v">${streak('prayer')}🔥</div><div class="l">Prayer streak (days)</div></div></div>
+      <div class="stat"><div class="v">${streak('prayer')}🔥</div><div class="l">Prayer streak (days)</div></div>
+      <div class="stat"><div class="v">${w.counts.sermons||0}/3–5</div><div class="l">Sermons this week</div></div></div>
     </div>
     <div class="pillarcard" style="background:var(--mental-bg)">
       <div class="pillarhead"><span class="dot" style="background:var(--mental)"></span>Mental</div>
@@ -356,16 +651,21 @@ function renderPillars(){
     <div class="pillarcard" style="background:var(--phys-bg)">
       <div class="pillarhead"><span class="dot" style="background:var(--phys)"></span>Physical</div>
       <div class="statrow">
+        <div class="stat"><div class="v">${h.avgScore}</div><div class="l">Avg Sleep Number score</div></div>
+        <div class="stat"><div class="v">${h.avgSteps}</div><div class="l">Avg steps (7 days)</div></div>
         <div class="stat"><div class="v">${h.z2}m</div><div class="l">Zone 2 (7 days)</div></div>
         <div class="stat"><div class="v">${h.z4}m</div><div class="l">Zone 4 (7 days)</div></div>
-        <div class="stat"><div class="v">${h.wo}m</div><div class="l">Workout (7 days)</div></div>
-        <div class="stat"><div class="v">${h.avgSleep}</div><div class="l">Avg hrs in bed</div></div>
       </div>
     </div>`;
 }
 
 /* ================= WEEK ================= */
 let weekChart=null;
+function flossDays(monday){
+  const all=store.get('days',{}); let n=0; const d=new Date(monday);
+  for(let i=0;i<7;i++){ const dd=all[dkey(d)]; if(dd&&dd.checks.floss)n++; d.setDate(d.getDate()+1); }
+  return n;
+}
 function renderWeek(){
   document.getElementById('weekLabel').textContent = ' '+WKEY;
   const w = weekData(WKEY);
@@ -374,44 +674,301 @@ function renderWeek(){
     if(item.type==='count'){
       const v = w.counts[item.id]||0;
       const row=document.createElement('div'); row.className='hrow';
-      row.innerHTML=`<span class="lbl">${item.label}</span>
+      row.innerHTML=`<span class="lbl">${esc(item.label)}</span>
         <div class="counter"><button>−</button><span class="cv ${v>=item.goal?'met':''}">${v} / ${item.goal}${item.id==='lifts'?'–4':''}</span><button>+</button></div>`;
       const [minus,plus]=row.querySelectorAll('button');
       minus.onclick=()=>{const ww=weekData(WKEY);ww.counts[item.id]=Math.max(0,(ww.counts[item.id]||0)-1);saveWeek(WKEY,ww);renderWeek();renderPillars();};
       plus.onclick=()=>{const ww=weekData(WKEY);ww.counts[item.id]=Math.min(item.max,(ww.counts[item.id]||0)+1);saveWeek(WKEY,ww);renderWeek();renderPillars();};
       el.appendChild(row);
+    } else if(item.type==='input'){
+      const v = w.counts[item.id];
+      const row=document.createElement('div'); row.className='hrow';
+      row.innerHTML=`<span class="lbl">${esc(item.label)} <span class="goalhint">goal ${item.goal}–${item.goalMax}</span></span>`;
+      const inp=document.createElement('input'); inp.type='number'; inp.min=0; inp.max=20; inp.value=v??'';
+      if(v>=item.goal) inp.style.color='var(--teal-dk)';
+      inp.onchange=()=>{const ww=weekData(WKEY);ww.counts[item.id]=inp.value===''?null:parseInt(inp.value);saveWeek(WKEY,ww);renderWeek();renderPillars();};
+      row.appendChild(inp);
+      el.appendChild(row);
     } else {
       const checked=!!w.checks[item.id];
       const row=document.createElement('div'); row.className='item'+(checked?' done':'');
-      row.innerHTML=`<input type="checkbox" ${checked?'checked':''} id="w_${item.id}"><label for="w_${item.id}">${item.label}</label>`;
+      row.innerHTML=`<input type="checkbox" ${checked?'checked':''} id="w_${item.id}"><label for="w_${item.id}">${esc(item.label)}</label>`+(item.cat?`<span class="pill ${CAT_META[item.cat][1]}">${CAT_META[item.cat][0]}</span>`:'');
       row.querySelector('input').onchange=e=>{const ww=weekData(WKEY);ww.checks[item.id]=e.target.checked;saveWeek(WKEY,ww);renderWeek();};
       el.appendChild(row);
     }
   });
+  // computed flossing row
+  const fd=flossDays(mondayOf(TODAY));
+  const frow=document.createElement('div'); frow.className='hrow';
+  frow.innerHTML=`<span class="lbl">Flossing (auto from daily) <span class="goalhint">goal 3–5 days</span></span><span class="cv ${fd>=FLOSS_GOAL?'met':''}">${fd} days</span>`;
+  el.appendChild(frow);
+  // custom weekly tasks
+  store.get('customW',[]).forEach(item=>{
+    el.appendChild(taskWidgetRow(item, ()=>weekData(WKEY), ww=>{ saveWeek(WKEY,ww); renderWeek(); renderPillars(); }));
+  });
+  if(editModeW) renderEditCustom('customW','editListW',renderWeek);
+
   const all=store.get('days',{}); const labels=[],vals=[];
+  const items=dailyItems();
   const d=new Date(TODAY); d.setDate(d.getDate()-6);
   for(let i=0;i<7;i++){
     labels.push(d.toLocaleDateString('en-US',{weekday:'short'}));
     const dd=all[dkey(d)];
-    vals.push(dd?Math.round(Object.values(dd.checks).filter(Boolean).length/DAILY_ITEMS.length*100):0);
+    vals.push(dd?Math.round(dayDone(dd,items)/items.length*100):0);
     d.setDate(d.getDate()+1);
   }
   if(typeof Chart!=='undefined'){
     if(weekChart) weekChart.destroy();
     weekChart = new Chart(document.getElementById('weekChart'),{type:'bar',
-      data:{labels,datasets:[{data:vals,backgroundColor:'#3e8e5a',borderRadius:6}]},
+      data:{labels,datasets:[{data:vals,backgroundColor:'#18b3a2',borderRadius:6}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}}}}});
   }
   const avg = Math.round(vals.reduce((a,b)=>a+b,0)/7);
-  const met = WEEKLY_ITEMS.filter(i=> i.type==='count' ? (w.counts[i.id]||0)>=i.goal : w.checks[i.id]).length;
-  document.getElementById('weekNote').textContent = `7-day average: ${avg}% of daily items completed. Weekly tasks on target: ${met}/${WEEKLY_ITEMS.length}.`;
+  document.getElementById('weekNote').textContent = `7-day average: ${avg}% of daily items completed. Flossing: ${fd} day${fd!==1?'s':''} (goal 3–5).`;
 }
 
-/* ================= MONTH ================= */
+/* ================= REPORT BUILDERS ================= */
+function waterMark(v){ if(v==null) return ''; return v>=75?'<span class="ok">✓</span>':'<span class="no">✗</span>'; }
+function stepsMark(v){ if(v==null) return ''; return (v>=7000&&v<=10000)?' <span class="ok">✓</span>':''; }
+
+function dailyReportHTML(k){
+  const all=store.get('days',{}); const dd=all[k];
+  const dt=new Date(k+'T12:00:00');
+  const items=dailyItems();
+  let html=`<h1>Daily Report — ${dt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}</h1><div class="rsub">Thrive³ · printed ${new Date().toLocaleDateString('en-US')}</div>`;
+  if(!dd) return html+'<p>No data recorded for this day.</p>';
+  const done=dayDone(dd,items);
+  html+='<h3>Daily To-Do List — '+Math.round(done/items.length*100)+'%</h3><table><tr><th class="l">Item</th><th>Category</th><th>Result</th></tr>';
+  items.forEach(i=>{
+    const t=i.type||'check';
+    const v=(dd.vals||{})[i.id];
+    const val=(t!=='check'&&v!=null)?v+' ':'';
+    html+='<tr><td class="l">'+esc(i.label)+(t!=='check'?' <small>('+goalDesc(i)+')</small>':'')+'</td><td>'+CAT_META[i.cat][0]+'</td><td>'+val+(itemSuccess(dd,i)?'<span class="ok">✓</span>':'<span class="no">✗</span>')+'</td></tr>';
+  });
+  html+='</table>';
+  const t3=(dd.top3||[]).filter(t=>t.text), t3x=(dd.top3x||[]).filter(t=>t.text);
+  if(t3.length||t3x.length){
+    html+='<h3>Priorities</h3><table><tr><th class="l">Task</th><th>List</th><th>Done</th></tr>';
+    t3.forEach(t=>{html+='<tr><td class="l">'+esc(t.text)+'</td><td>Top 3</td><td>'+(t.done?'<span class="ok">✓</span>':'<span class="no">✗</span>')+'</td></tr>';});
+    t3x.forEach(t=>{html+='<tr><td class="l">'+esc(t.text)+'</td><td>If time</td><td>'+(t.done?'<span class="ok">✓</span>':'<span class="no">✗</span>')+'</td></tr>';});
+    html+='</table>';
+  }
+  const h=dd.health||{};
+  html+='<h3>Health</h3><table><tr><th>Sleep Number score</th><th>Water (oz)</th><th>Steps</th><th>Workout</th><th>Zone 2</th><th>Zone 4</th></tr>';
+  html+=`<tr><td>${h.score??'—'}</td><td>${h.water??'—'} ${waterMark(h.water)}</td><td>${h.steps!=null?h.steps.toLocaleString():'—'}${stepsMark(h.steps)}</td><td>${h.workout??'—'} min</td><td>${h.z2??'—'} min</td><td>${h.z4??'—'} min</td></tr></table>`;
+  if(h.food) html+='<h3>Food Diary</h3><div class="note">'+esc(h.food)+'</div>';
+  return html;
+}
+
+function weeklyReportHTML(monday){
+  const days=[]; const d=new Date(monday);
+  for(let i=0;i<7;i++){ days.push(new Date(d)); d.setDate(d.getDate()+1); }
+  const wk=wkey(monday);
+  const all=store.get('days',{});
+  const items=dailyItems();
+  const range=days[0].toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+days[6].toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  let html=`<h1>Weekly Report — ${wk}</h1><div class="rsub">Thrive³ · ${range} · printed ${new Date().toLocaleDateString('en-US')}</div>`;
+  html+='<h3>Daily To-Do List</h3><table><tr><th class="l">Item</th>'+days.map(x=>'<th>'+x.toLocaleDateString('en-US',{weekday:'short'})+'<br>'+(x.getMonth()+1)+'/'+x.getDate()+'</th>').join('')+'</tr>';
+  items.forEach(item=>{
+    html+='<tr><td class="l">'+esc(item.label)+((item.type&&item.type!=='check')?' <small>('+goalDesc(item)+')</small>':'')+'</td>';
+    days.forEach(x=>{ const dd=all[dkey(x)];
+      let cell = x>TODAY?'':'·';
+      if(dd){
+        if(itemSuccess(dd,item)) cell='<span class="ok">✓</span>';
+        else { const v=(dd.vals||{})[item.id]; if(item.type&&item.type!=='check'&&v!=null) cell=String(v); }
+      }
+      html+='<td>'+cell+'</td>'; });
+    html+='</tr>';
+  });
+  html+='<tr><th class="l">Daily %</th>';
+  const pcts=[];
+  days.forEach(x=>{ const dd=all[dkey(x)];
+    if(x>TODAY){html+='<th></th>';return;}
+    const p=dd?Math.round(dayDone(dd,items)/items.length*100):0;
+    pcts.push(p); html+='<th>'+p+'%</th>'; });
+  html+='</tr></table>';
+  // health rows: sleep score, water, steps
+  let scSum=0,scN=0,wSucc=0,wDays=0,stSum=0,stN=0;
+  html+='<h3>Health — Daily Numbers</h3><table><tr><th class="l">Metric</th>'+days.map(x=>'<th>'+x.toLocaleDateString('en-US',{weekday:'short'})+'</th>').join('')+'<th>Avg / Rate</th></tr>';
+  html+='<tr><td class="l">Sleep Number score</td>';
+  days.forEach(x=>{ const h=(all[dkey(x)]||{}).health||{}; if(h.score!=null){scSum+=h.score;scN++;} html+='<td>'+(h.score??'')+'</td>'; });
+  html+='<th>'+(scN?Math.round(scSum/scN):'—')+'</th></tr>';
+  html+='<tr><td class="l">Water oz (75–100 goal)</td>';
+  days.forEach(x=>{ const h=(all[dkey(x)]||{}).health||{}; if(h.water!=null){wDays++; if(h.water>=75)wSucc++;} html+='<td>'+(h.water!=null?h.water+' '+waterMark(h.water):'')+'</td>'; });
+  html+='<th>'+(wDays?wSucc+'/'+wDays+' ('+Math.round(wSucc/wDays*100)+'%)':'—')+'</th></tr>';
+  html+='<tr><td class="l">Steps (7k–10k ideal)</td>';
+  days.forEach(x=>{ const h=(all[dkey(x)]||{}).health||{}; if(h.steps!=null){stSum+=h.steps;stN++;} html+='<td>'+(h.steps!=null?h.steps.toLocaleString():'')+'</td>'; });
+  html+='<th>'+(stN?Math.round(stSum/stN).toLocaleString():'—')+'</th></tr></table>';
+  // weekly tasks
+  const w=weekData(wk);
+  const fd=flossDays(monday);
+  html+='<h3>Weekly Tasks</h3><table><tr><th class="l">Task</th><th>Goal</th><th>Done</th><th>Status</th></tr>';
+  WEEKLY_ITEMS.forEach(item=>{
+    let done, goal, goalTxt;
+    if(item.type==='count'){ done=w.counts[item.id]||0; goal=item.goal; goalTxt=item.goal+(item.id==='lifts'?'–4':''); }
+    else if(item.type==='input'){ done=w.counts[item.id]??0; goal=item.goal; goalTxt=item.goal+'–'+item.goalMax; }
+    else { done=w.checks[item.id]?1:0; goal=1; goalTxt='✓'; }
+    html+='<tr><td class="l">'+esc(item.label)+'</td><td>'+goalTxt+'</td><td>'+done+'</td><td>'+(done>=goal?'<span class="ok">✓ Met</span>':'Open')+'</td></tr>';
+  });
+  html+='<tr><td class="l">Flossing (from daily checks)</td><td>3–5 days</td><td>'+fd+'</td><td>'+(fd>=FLOSS_GOAL?'<span class="ok">✓ Met</span>':'Open')+'</td></tr>';
+  let customWMet=0; const customW=store.get('customW',[]);
+  customW.forEach(item=>{
+    const t=item.type||'check';
+    let done, goalTxt, met;
+    if(t==='check'){ done=w.checks[item.id]?'✓':'—'; goalTxt='✓'; met=!!w.checks[item.id]; }
+    else { const v=(w.vals||{})[item.id]; done=v??'—'; goalTxt=goalDesc(item); met=itemSuccess(w,item); }
+    if(met) customWMet++;
+    html+='<tr><td class="l">'+esc(item.label)+'</td><td>'+goalTxt+'</td><td>'+done+'</td><td>'+(met?'<span class="ok">✓ Met</span>':'Open')+'</td></tr>';
+  });
+  html+='</table>';
+  // workout totals
+  let z2=0,z4=0,wo=0;
+  days.forEach(x=>{const dd=all[dkey(x)]; if(dd&&dd.health){z2+=dd.health.z2||0;z4+=dd.health.z4||0;wo+=dd.health.workout||0;}});
+  html+='<h3>Training Totals</h3><table><tr><th>Zone 2</th><th>Zone 4</th><th>Total workout</th></tr>'
+      +`<tr><td>${z2} min</td><td>${z4} min</td><td>${wo} min</td></tr></table>`;
+  const avg=pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0;
+  const met=WEEKLY_ITEMS.filter(i=>{ if(i.type==='count')return (w.counts[i.id]||0)>=i.goal; if(i.type==='input')return (w.counts[i.id]??0)>=i.goal; return w.checks[i.id]; }).length + (fd>=FLOSS_GOAL?1:0) + customWMet;
+  html+=`<div class="note"><b>Week summary:</b> ${avg}% average daily completion across ${pcts.length} day${pcts.length!==1?'s':''}. Avg Sleep Number score: ${scN?Math.round(scSum/scN):'—'}. Water goal hit ${wDays?wSucc+' of '+wDays+' logged days ('+Math.round(wSucc/wDays*100)+'%)':'— no days logged'}. Weekly tasks met: ${met}/${WEEKLY_ITEMS.length+1+customW.length}.</div>`;
+  return html;
+}
+
+function monthlyReportHTML(y,m){
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const all=store.get('days',{});
+  const items=dailyItems();
+  let html=`<h1>Monthly Report — ${MONTHS[m]} ${y}</h1><div class="rsub">Thrive³ · printed ${new Date().toLocaleDateString('en-US')}</div>`;
+  let tracked=0,sum=0,perItem={},scSum=0,scN=0,wSucc=0,wDays=0,stSum=0,stN=0,flossN=0;
+  items.forEach(i=>perItem[i.id]=0);
+  const dayRows=[];
+  for(let day=1;day<=daysInMonth;day++){
+    if(new Date(y,m,day)>TODAY) break;
+    const k=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    const dd=all[k]; if(!dd) continue;
+    const done=dayDone(dd,items);
+    const p=Math.round(done/items.length*100);
+    tracked++; sum+=p;
+    items.forEach(i=>{ if(itemSuccess(dd,i)) perItem[i.id]++; });
+    if(dd.checks.floss) flossN++;
+    const h=dd.health||{};
+    if(h.score!=null){scSum+=h.score;scN++;}
+    if(h.water!=null){wDays++; if(h.water>=75)wSucc++;}
+    if(h.steps!=null){stSum+=h.steps;stN++;}
+    dayRows.push([day,p,done,h]);
+  }
+  html+='<h3>Habit Consistency</h3><table><tr><th class="l">Daily item</th><th>Days done</th><th>Rate</th></tr>';
+  items.forEach(i=>{
+    const r=tracked?Math.round(perItem[i.id]/tracked*100):0;
+    html+='<tr><td class="l">'+esc(i.label)+' <small>('+CAT_META[i.cat][0]+')</small></td><td>'+perItem[i.id]+'/'+tracked+'</td><td>'+(r>=80?'<span class="ok">'+r+'%</span>':r+'%')+'</td></tr>';
+  });
+  html+='</table>';
+  html+='<h3>Day by Day</h3><table><tr><th>Day</th><th>Items</th><th>%</th><th>Sleep score</th><th>Water oz</th><th>Steps</th></tr>';
+  dayRows.forEach(([day,p,done,h])=>{
+    html+='<tr><td>'+MONTHS[m].slice(0,3)+' '+day+'</td><td>'+done+'/'+items.length+'</td><td>'+(p>=80?'<span class="ok">'+p+'%</span>':p+'%')+'</td>'
+        +'<td>'+(h.score??'')+'</td><td>'+(h.water!=null?h.water+' '+waterMark(h.water):'')+'</td><td>'+(h.steps!=null?h.steps.toLocaleString():'')+'</td></tr>';
+  });
+  html+='</table>';
+  const listM=store.get('customM',[]);
+  if(listM.length){
+    const mm=monthData(y+'-'+String(m+1).padStart(2,'0'));
+    html+='<h3>Monthly Tasks</h3><table><tr><th class="l">Task</th><th>Goal</th><th>Done</th><th>Status</th></tr>';
+    listM.forEach(item=>{
+      const t=item.type||'check';
+      let done, goalTxt, mmet;
+      if(t==='check'){ done=mm.checks[item.id]?'✓':'—'; goalTxt='✓'; mmet=!!mm.checks[item.id]; }
+      else { const v=(mm.vals||{})[item.id]; done=v??'—'; goalTxt=goalDesc(item); mmet=itemSuccess(mm,item); }
+      html+='<tr><td class="l">'+esc(item.label)+'</td><td>'+goalTxt+'</td><td>'+done+'</td><td>'+(mmet?'<span class="ok">✓ Met</span>':'Open')+'</td></tr>';
+    });
+    html+='</table>';
+  }
+  const dates=store.get('dates',[]).filter(d=>d.month===m+1).sort((a,b)=>a.day-b.day);
+  if(dates.length){
+    html+='<h3>Birthdays · Anniversaries · Dog Meds</h3><table><tr><th>Date</th><th class="l">Who / What</th><th>Type</th></tr>';
+    dates.forEach(d=>{ html+='<tr><td>'+MONTHS[m].slice(0,3)+' '+d.day+'</td><td class="l">'+esc(d.name)+'</td><td>'+esc(d.type)+'</td></tr>'; });
+    html+='</table>';
+  }
+  html+=`<div class="note"><b>Month summary:</b> ${tracked?Math.round(sum/tracked):0}% average daily completion across ${tracked} tracked day${tracked!==1?'s':''}. Avg Sleep Number score: ${scN?Math.round(scSum/scN):'—'} (${scN} days logged). Water goal hit ${wDays?wSucc+' of '+wDays+' logged days ('+Math.round(wSucc/wDays*100)+'%)':'— no days logged'}. Avg steps: ${stN?Math.round(stSum/stN).toLocaleString():'—'}. Flossed ${flossN} day${flossN!==1?'s':''}.</div>`;
+  return html;
+}
+
+function fireAndPrint(html){
+  document.getElementById('printArea').innerHTML=html;
+  setTimeout(()=>window.print(),50);
+}
+function printWeekReport(){ fireAndPrint(weeklyReportHTML(mondayOf(TODAY))); }
+function printMonthReport(){ fireAndPrint(monthlyReportHTML(TODAY.getFullYear(),TODAY.getMonth())); }
+
+/* ================= REPORTS TAB ================= */
+function isoWeekMonday(wk){
+  const [y,w]=wk.split('-W').map(Number);
+  const jan4=new Date(y,0,4);
+  const mon=new Date(jan4); mon.setDate(jan4.getDate()-((jan4.getDay()+6)%7)+(w-1)*7);
+  return mon;
+}
+function renderReports(){
+  const all=store.get('days',{});
+  const dayKeys=Object.keys(all).sort().reverse();
+  const el=document.getElementById('repDaily');
+  el.innerHTML=dayKeys.length?'':'<span class="muted">No days tracked yet.</span>';
+  const items=dailyItems(); const nItems=items.length;
+  dayKeys.slice(0,60).forEach(k=>{
+    const dd=all[k]; const p=Math.round(dayDone(dd,items)/nItems*100);
+    const b=document.createElement('button');
+    b.innerHTML='<b>'+new Date(k+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'})+'</b> — '+p+'% complete'+((dd.health&&dd.health.score!=null)?' · sleep '+dd.health.score:'');
+    b.onclick=()=>showViewer(dailyReportHTML(k));
+    el.appendChild(b);
+  });
+  // weekly
+  const wkSet=new Set(Object.keys(store.get('weeks',{})));
+  dayKeys.forEach(k=>wkSet.add(wkey(new Date(k+'T12:00:00'))));
+  const wEl=document.getElementById('repWeekly');
+  const wks=[...wkSet].sort().reverse();
+  wEl.innerHTML=wks.length?'':'<span class="muted">No weeks tracked yet.</span>';
+  wks.slice(0,26).forEach(wk=>{
+    const mon=isoWeekMonday(wk); const sun=new Date(mon); sun.setDate(sun.getDate()+6);
+    const b=document.createElement('button');
+    b.innerHTML='<b>'+wk+'</b> — '+mon.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' to '+sun.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    b.onclick=()=>showViewer(weeklyReportHTML(mon));
+    wEl.appendChild(b);
+  });
+  // monthly
+  const moSet=new Set(dayKeys.map(k=>k.slice(0,7)));
+  const mEl=document.getElementById('repMonthly');
+  const mos=[...moSet].sort().reverse();
+  mEl.innerHTML=mos.length?'':'<span class="muted">No months tracked yet.</span>';
+  mos.forEach(mo=>{
+    const [y,m]=mo.split('-').map(Number);
+    const b=document.createElement('button');
+    b.innerHTML='<b>'+MONTHS[m-1]+' '+y+'</b>';
+    b.onclick=()=>showViewer(monthlyReportHTML(y,m-1));
+    mEl.appendChild(b);
+  });
+}
+function showViewer(html){
+  document.getElementById('repViewer').innerHTML=html;
+  document.getElementById('repViewerCard').style.display='';
+  window.scrollTo(0,0);
+}
+function closeViewer(){ document.getElementById('repViewerCard').style.display='none'; }
+function printViewer(){ fireAndPrint(document.getElementById('repViewer').innerHTML); }
+
+/* ================= MONTH TAB ================= */
+let selectedDay=null;
+function renderMonthly(){
+  document.getElementById('monthTasksLabel').textContent=' '+MONTHS[TODAY.getMonth()];
+  const el=document.getElementById('monthlyList'); el.innerHTML='';
+  const list=store.get('customM',[]);
+  if(!list.length && !editModeM) el.innerHTML='<span class="muted">No monthly tasks yet — tap ✎ Edit list to add some (e.g., dog meds given, deep clean, review goals).</span>';
+  list.forEach(item=>{
+    el.appendChild(taskWidgetRow(item, ()=>monthData(MKEY), md=>{ saveMonth(MKEY,md); renderMonthly(); }));
+  });
+  if(editModeM) renderEditCustom('customM','editListM',renderMonthly);
+}
 function renderMonth(){
+  renderMonthly();
   const y=TODAY.getFullYear(), m=TODAY.getMonth();
   const first=new Date(y,m,1), days=new Date(y,m+1,0).getDate();
   const all=store.get('days',{});
+  const items=dailyItems(); const nItems=items.length;
   const grid=document.getElementById('monthGrid'); grid.innerHTML='';
   ['S','M','T','W','T','F','S'].forEach(h=>{const c=document.createElement('div');c.className='mg-hdr';c.textContent=h;grid.appendChild(c);});
   for(let i=0;i<first.getDay();i++) grid.appendChild(document.createElement('div'));
@@ -419,35 +976,90 @@ function renderMonth(){
   for(let day=1;day<=days;day++){
     const k=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
     const dd=all[k];
-    const pct=dd?Math.round(Object.values(dd.checks).filter(Boolean).length/DAILY_ITEMS.length*100):null;
+    const pct=dd?Math.round(dayDone(dd,items)/nItems*100):null;
     if(pct!==null && day<=TODAY.getDate()){sum+=pct;n++;}
-    const c=document.createElement('div'); c.className='mg-cell'+(day===TODAY.getDate()?' mg-today':'');
-    if(pct!==null){ c.style.background = pct>=80?'#d3ead9':pct>=50?'#f1ead0':'#f3ddda'; }
-    c.innerHTML=`<span class="d">${day}</span>${pct!==null?`<span class="pc">${pct}%</span>`:''}`;
+    const c=document.createElement('div'); c.className='mg-cell'+(day===TODAY.getDate()?' mg-today':'')+(selectedDay===k?' mg-sel':'');
+    if(pct!==null){ c.style.background = pct>=80?'#d2efe9':pct>=50?'#efe9d2':'#f3ddda'; }
+    const evs=(CAL_BY_DAY[k]||[]);
+    c.innerHTML=`<span class="d">${day}</span>${pct!==null?`<span class="pc">${pct}%</span>`:''}`+(evs.length?'<span class="dots">'+'<i></i>'.repeat(Math.min(evs.length,3))+'</span>':'');
+    c.onclick=()=>{ selectedDay=k; renderMonth(); showDayDetail(k, day); };
     grid.appendChild(c);
   }
   document.getElementById('monthNote').textContent = n?`Month-to-date average: ${Math.round(sum/n)}% across ${n} tracked day${n>1?'s':''}.`:'No days tracked yet this month — check items off on the Today tab.';
   renderDates();
+  if(selectedDay) showDayDetail(selectedDay, parseInt(selectedDay.slice(8)));
+}
+function showDayDetail(k, dayNum){
+  const card=document.getElementById('dayDetailCard'); card.style.display='';
+  const dt=new Date(k+'T12:00:00');
+  document.getElementById('dayDetailTitle').textContent=dt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const el=document.getElementById('dayDetail'); el.innerHTML='';
+  const evs=CAL_BY_DAY[k]||[];
+  if(evs.length){
+    const ul=document.createElement('ul'); ul.className='cal';
+    evs.forEach(e=>{const li=document.createElement('li');li.innerHTML=`<span class="t">${fmtTime(e)}</span><span></span>`;li.lastChild.textContent=e.title||'(no title)';ul.appendChild(li);});
+    el.appendChild(ul);
+  } else {
+    el.innerHTML='<span class="muted">No calendar events'+(CAL_EVENTS?'':' (calendar not connected)')+'.</span>';
+  }
+  const all=store.get('days',{}); const dd=all[k];
+  if(dd){
+    const items=dailyItems(); const nItems=items.length;
+    const done=dayDone(dd,items);
+    const h=dd.health||{};
+    const div=document.createElement('div'); div.className='summary-note';
+    div.textContent=`Daily to-dos: ${done}/${nItems} (${Math.round(done/nItems*100)}%)`+(h.score!=null?` · Sleep score ${h.score}`:'')+(h.water!=null?` · Water ${h.water} oz`:'')+(h.steps!=null?` · ${h.steps.toLocaleString()} steps`:'');
+    el.appendChild(div);
+  }
 }
 
+/* ================= DATES ================= */
+function calSpecialDates(){
+  // birthdays/anniversaries detected in Google Calendar events this month
+  if(!CAL_EVENTS) return [];
+  const m=TODAY.getMonth(), y=TODAY.getFullYear();
+  const out=[]; const seen=new Set();
+  CAL_EVENTS.forEach(e=>{
+    const d=evTime(e);
+    if(d.getMonth()!==m||d.getFullYear()!==y) return;
+    const t=(e.title||'');
+    if(!/b-?day|birthday|anniversar/i.test(t)) return;
+    const key=t.toLowerCase()+d.getDate();
+    if(seen.has(key)) return; seen.add(key);
+    out.push({name:t, day:d.getDate(), type:/anniversar/i.test(t)?'Anniversary':'Birthday', fromCal:true});
+  });
+  return out;
+}
 function renderDates(){
   const dates=store.get('dates',[]);
   const m=TODAY.getMonth()+1;
   const icon=t=>t==='Birthday'?'🎂':t==='Anniversary'?'💍':'💊';
-  const thisMonth=dates.filter(d=>d.month===m).sort((a,b)=>a.day-b.day);
+  const manual=dates.filter(d=>d.month===m).map(d=>({...d}));
+  const fromCal=calSpecialDates().filter(c=>!manual.some(x=>x.day===c.day&&x.name.toLowerCase().includes(c.name.toLowerCase().slice(0,5))));
+  const thisMonth=manual.concat(fromCal).sort((a,b)=>a.day-b.day);
   const mEl=document.getElementById('monthDates');
-  mEl.innerHTML = thisMonth.length? '' : '<span class="muted">Nothing added for '+MONTHS[m-1]+' yet. Add dates below.</span>';
+  mEl.innerHTML = thisMonth.length? '' : '<span class="muted">Nothing for '+MONTHS[m-1]+' yet. Add dates below — birthdays/anniversaries on your Google Calendar appear here automatically.</span>';
   thisMonth.forEach(d=>{
     const row=document.createElement('div'); row.className='daterow';
-    row.innerHTML=`<span class="emoji">${icon(d.type)}</span><b>${MONTHS[d.month-1].slice(0,3)} ${d.day}</b> — ${d.name} <span class="muted">(${d.type})</span>`;
+    const nm=document.createElement('span');
+    nm.innerHTML='<b>'+MONTHS[m-1].slice(0,3)+' '+d.day+'</b> — ';
+    const t=document.createElement('span'); t.textContent=d.name;
+    row.innerHTML='<span class="emoji">'+icon(d.type)+'</span>';
+    row.appendChild(nm); row.appendChild(t);
+    const tag=document.createElement('span'); tag.className='muted'; tag.textContent=' ('+d.type+(d.fromCal?' · from calendar':'')+')';
+    row.appendChild(tag);
     mEl.appendChild(row);
   });
   const aEl=document.getElementById('allDates');
   aEl.innerHTML = dates.length?'':'<span class="muted">No dates saved yet.</span>';
   dates.slice().sort((a,b)=>a.month-b.month||a.day-b.day).forEach(d=>{
     const row=document.createElement('div'); row.className='daterow';
-    row.innerHTML=`<span class="emoji">${icon(d.type)}</span>${MONTHS[d.month-1].slice(0,3)} ${d.day} — ${d.name} <span class="muted">(${d.type})</span><button class="del" title="Delete">✕</button>`;
-    row.querySelector('.del').onclick=()=>{ store.set('dates',store.get('dates',[]).filter(x=>x.id!==d.id)); renderDates(); };
+    row.innerHTML='<span class="emoji">'+icon(d.type)+'</span>'+MONTHS[d.month-1].slice(0,3)+' '+d.day+' — ';
+    const t=document.createElement('span'); t.textContent=d.name; row.appendChild(t);
+    const tag=document.createElement('span'); tag.className='muted'; tag.textContent=' ('+d.type+')'; row.appendChild(tag);
+    const del=document.createElement('button'); del.className='del'; del.title='Delete'; del.textContent='✕';
+    del.onclick=()=>{ store.set('dates',store.get('dates',[]).filter(x=>x.id!==d.id)); renderDates(); };
+    row.appendChild(del);
     aEl.appendChild(row);
   });
 }
@@ -464,47 +1076,57 @@ function addDate(){
 MONTHS.forEach((mo,i)=>{const o=document.createElement('option');o.value=i+1;o.textContent=mo;if(i===TODAY.getMonth())o.selected=true;document.getElementById('d_month').appendChild(o);});
 
 /* ================= CALENDAR (Apps Script) ================= */
+let CAL_EVENTS=null; let CAL_BY_DAY={};
 function evTime(e){ return new Date(e.start); }
 function fmtTime(e){ return e.allDay ? 'All day' : evTime(e).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
 async function loadCalendar(){
   const url = store.get('calurl','');
   if(!url) return;
+  const y=TODAY.getFullYear(), m=TODAY.getMonth();
+  const firstK=y+'-'+String(m+1).padStart(2,'0')+'-01';
+  const span=new Date(y,m+1,0).getDate()+14;
   try{
-    const resp = await fetch(url+(url.includes('?')?'&':'?')+'days=7');
-    const data = await resp.json();
-    const events = (data.events||[]);
-    const tEl=document.getElementById('calToday');
-    const todays=events.filter(e=>dkey(evTime(e))===TKEY);
-    tEl.innerHTML = todays.length?'':'<li class="muted">Nothing on the calendar today.</li>';
-    todays.forEach(e=>{const li=document.createElement('li');li.innerHTML=`<span class="t">${fmtTime(e)}</span><span></span>`;li.lastChild.textContent=e.title||'(no title)';tEl.appendChild(li);});
-    const wEl=document.getElementById('calWeek'); wEl.innerHTML='';
-    const byDay={};
-    events.forEach(e=>{const k=dkey(evTime(e));(byDay[k]=byDay[k]||[]).push(e);});
-    const d=new Date(TODAY); d.setHours(0,0,0,0); let any=false;
-    for(let i=0;i<7;i++){
-      const k=dkey(d); const list=byDay[k]||[];
-      if(list.length){
-        any=true;
-        const hdr=document.createElement('div');hdr.className='dayhdr';
-        hdr.textContent=(k===TKEY?'Today — ':'')+d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
-        wEl.appendChild(hdr);
-        const ul=document.createElement('ul');ul.className='cal';
-        list.forEach(e=>{const li=document.createElement('li');li.innerHTML=`<span class="t">${fmtTime(e)}</span><span></span>`;li.lastChild.textContent=e.title||'(no title)';ul.appendChild(li);});
-        wEl.appendChild(ul);
-      }
-      d.setDate(d.getDate()+1);
-    }
-    if(!any) wEl.innerHTML='<span class="muted">No events in the next 7 days.</span>';
+    let resp = await fetch(url+(url.includes('?')?'&':'?')+'start='+firstK+'&days='+span);
+    let data = await resp.json();
+    CAL_EVENTS = data.events||[];
+    CAL_BY_DAY = {};
+    CAL_EVENTS.forEach(e=>{const k=dkey(evTime(e));(CAL_BY_DAY[k]=CAL_BY_DAY[k]||[]).push(e);});
+    renderCalToday(); renderCalWeek();
+    if(document.getElementById('tab-month').style.display!=='none') renderMonth(); else renderDates();
   }catch(err){
     document.getElementById('calToday').innerHTML='<li class="err">Couldn\'t reach your calendar script. Check the URL in Settings.</li>';
     document.getElementById('calWeek').innerHTML='<span class="err">Couldn\'t reach your calendar script. Check the URL in Settings.</span>';
   }
 }
+function renderCalToday(){
+  const tEl=document.getElementById('calToday');
+  const todays=CAL_BY_DAY[TKEY]||[];
+  tEl.innerHTML = todays.length?'':'<li class="muted">Nothing on the calendar today.</li>';
+  todays.forEach(e=>{const li=document.createElement('li');li.innerHTML=`<span class="t">${fmtTime(e)}</span><span></span>`;li.lastChild.textContent=e.title||'(no title)';tEl.appendChild(li);});
+}
+function renderCalWeek(){
+  const wEl=document.getElementById('calWeek'); wEl.innerHTML='';
+  const d=new Date(TODAY); d.setHours(0,0,0,0); let any=false;
+  for(let i=0;i<7;i++){
+    const k=dkey(d); const list=CAL_BY_DAY[k]||[];
+    if(list.length){
+      any=true;
+      const hdr=document.createElement('div');hdr.className='dayhdr';
+      hdr.textContent=(k===TKEY?'Today — ':'')+d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+      wEl.appendChild(hdr);
+      const ul=document.createElement('ul');ul.className='cal';
+      list.forEach(e=>{const li=document.createElement('li');li.innerHTML=`<span class="t">${fmtTime(e)}</span><span></span>`;li.lastChild.textContent=e.title||'(no title)';ul.appendChild(li);});
+      wEl.appendChild(ul);
+    }
+    d.setDate(d.getDate()+1);
+  }
+  if(!any) wEl.innerHTML='<span class="muted">No events in the next 7 days.</span>';
+}
 async function saveCalUrl(){
   const url=document.getElementById('s_calurl').value.trim();
   store.set('calurl',url);
   const res=document.getElementById('calTestResult');
-  if(!url){res.textContent='Cleared. Calendar disconnected.';loadCalendar();return;}
+  if(!url){res.textContent='Cleared. Calendar disconnected.';return;}
   res.textContent='Testing…';
   try{
     const r=await fetch(url+(url.includes('?')?'&':'?')+'days=7');
@@ -514,104 +1136,19 @@ async function saveCalUrl(){
   }catch(e){ res.innerHTML='<span class="err">❌ Couldn\'t connect. Make sure the script is deployed as a web app with access set to "Anyone".</span>'; }
 }
 
-/* ================= PRINT REPORTS ================= */
-function esc(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
-function fireAndPrint(html){
-  document.getElementById('printArea').innerHTML=html;
-  setTimeout(()=>window.print(),50);
-}
-function printWeekReport(){
-  // Monday–Sunday of the current week
-  const d=new Date(TODAY); d.setDate(d.getDate()-((d.getDay()+6)%7));
-  const days=[]; for(let i=0;i<7;i++){ days.push(new Date(d)); d.setDate(d.getDate()+1); }
-  const all=store.get('days',{});
-  const range=days[0].toLocaleDateString('en-US',{month:'short',day:'numeric'})+' – '+days[6].toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  let html=`<h1>Weekly Report — ${WKEY}</h1><div class="rsub">${range} · printed ${new Date().toLocaleDateString('en-US')}</div>`;
-  // daily items grid
-  html+='<h3>Daily To-Do List</h3><table><tr><th class="l">Item</th>'+days.map(x=>'<th>'+x.toLocaleDateString('en-US',{weekday:'short'})+'<br>'+(x.getMonth()+1)+'/'+x.getDate()+'</th>').join('')+'</tr>';
-  DAILY_ITEMS.forEach(item=>{
-    html+='<tr><td class="l">'+esc(item.label)+' <small>('+CAT_META[item.cat][0]+')</small></td>';
-    days.forEach(x=>{ const dd=all[dkey(x)]; html+='<td>'+(dd&&dd.checks[item.id]?'<span class="ok">✓</span>':(x>TODAY?'':'·'))+'</td>'; });
-    html+='</tr>';
-  });
-  html+='<tr><th class="l">Daily %</th>';
-  let pcts=[];
-  days.forEach(x=>{ const dd=all[dkey(x)];
-    if(x>TODAY){html+='<th></th>';return;}
-    const p=dd?Math.round(Object.values(dd.checks).filter(Boolean).length/DAILY_ITEMS.length*100):0;
-    pcts.push(p); html+='<th>'+p+'%</th>'; });
-  html+='</tr></table>';
-  // weekly tasks
-  const w=weekData(WKEY);
-  html+='<h3>Weekly Tasks</h3><table><tr><th class="l">Task</th><th>Goal</th><th>Done</th><th>Status</th></tr>';
-  WEEKLY_ITEMS.forEach(item=>{
-    const done=item.type==='count'?(w.counts[item.id]||0):(w.checks[item.id]?1:0);
-    const goal=item.type==='count'?item.goal:1;
-    html+='<tr><td class="l">'+esc(item.label)+'</td><td>'+goal+(item.type==='count'?' '+item.unit:'')+'</td><td>'+done+'</td><td>'+(done>=goal?'<span class="ok">✓ Met</span>':'Open')+'</td></tr>';
-  });
-  html+='</table>';
-  // health + top3
-  let z2=0,z4=0,wo=0,slN=0,slSum=0;
-  days.forEach(x=>{const dd=all[dkey(x)]; if(dd&&dd.health){z2+=dd.health.z2||0;z4+=dd.health.z4||0;wo+=dd.health.workout||0;if(dd.health.sleep){slSum+=dd.health.sleep;slN++;}}});
-  html+='<h3>Health (Samsung Health · Sleep Number)</h3><table><tr><th>Zone 2</th><th>Zone 4</th><th>Total workout</th><th>Avg hrs in bed</th></tr>'
-      +`<tr><td>${z2} min</td><td>${z4} min</td><td>${wo} min</td><td>${slN?(slSum/slN).toFixed(1):'—'}</td></tr></table>`;
-  const avg=pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0;
-  const met=WEEKLY_ITEMS.filter(i=>i.type==='count'?(w.counts[i.id]||0)>=i.goal:w.checks[i.id]).length;
-  html+=`<div class="note"><b>Week summary:</b> ${avg}% average daily completion across ${pcts.length} day${pcts.length!==1?'s':''}. Weekly tasks met: ${met}/${WEEKLY_ITEMS.length}.</div>`;
-  fireAndPrint(html);
-}
-function printMonthReport(){
-  const y=TODAY.getFullYear(), m=TODAY.getMonth();
-  const daysInMonth=new Date(y,m+1,0).getDate();
-  const all=store.get('days',{});
-  let html=`<h1>Monthly Report — ${MONTHS[m]} ${y}</h1><div class="rsub">printed ${new Date().toLocaleDateString('en-US')}</div>`;
-  // item-by-item completion
-  let tracked=0,sum=0,perItem={};
-  DAILY_ITEMS.forEach(i=>perItem[i.id]=0);
-  const dayRows=[];
-  for(let day=1;day<=daysInMonth;day++){
-    if(new Date(y,m,day)>TODAY) break;
-    const k=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
-    const dd=all[k]; if(!dd) continue;
-    const done=Object.values(dd.checks).filter(Boolean).length;
-    const p=Math.round(done/DAILY_ITEMS.length*100);
-    tracked++; sum+=p;
-    DAILY_ITEMS.forEach(i=>{ if(dd.checks[i.id]) perItem[i.id]++; });
-    dayRows.push([day,p,done]);
-  }
-  html+='<h3>Habit Consistency</h3><table><tr><th class="l">Daily item</th><th>Days done</th><th>Rate</th></tr>';
-  DAILY_ITEMS.forEach(i=>{
-    const r=tracked?Math.round(perItem[i.id]/tracked*100):0;
-    html+='<tr><td class="l">'+esc(i.label)+' <small>('+CAT_META[i.cat][0]+')</small></td><td>'+perItem[i.id]+'/'+tracked+'</td><td>'+(r>=80?'<span class="ok">'+r+'%</span>':r+'%')+'</td></tr>';
-  });
-  html+='</table>';
-  html+='<h3>Day by Day</h3><table><tr><th>Day</th><th>Items done</th><th>%</th></tr>';
-  dayRows.forEach(([day,p,done])=>{ html+='<tr><td>'+MONTHS[m].slice(0,3)+' '+day+'</td><td>'+done+'/'+DAILY_ITEMS.length+'</td><td>'+(p>=80?'<span class="ok">'+p+'%</span>':p+'%')+'</td></tr>'; });
-  html+='</table>';
-  const dates=store.get('dates',[]).filter(d=>d.month===m+1).sort((a,b)=>a.day-b.day);
-  if(dates.length){
-    html+='<h3>Birthdays · Anniversaries · Dog Meds</h3><table><tr><th>Date</th><th class="l">Who / What</th><th>Type</th></tr>';
-    dates.forEach(d=>{ html+='<tr><td>'+MONTHS[m].slice(0,3)+' '+d.day+'</td><td class="l">'+esc(d.name)+'</td><td>'+esc(d.type)+'</td></tr>'; });
-    html+='</table>';
-  }
-  html+=`<div class="note"><b>Month summary:</b> ${tracked?Math.round(sum/tracked):0}% average daily completion across ${tracked} tracked day${tracked!==1?'s':''} in ${MONTHS[m]}.</div>`;
-  fireAndPrint(html);
-}
-
 /* ================= BACKUP ================= */
 function exportData(){
-  const data={days:store.get('days',{}),weeks:store.get('weeks',{}),dates:store.get('dates',[]),calurl:store.get('calurl','')};
+  const data={days:store.get('days',{}),weeks:store.get('weeks',{}),months:store.get('months',{}),dates:store.get('dates',[]),custom:store.get('custom',[]),customW:store.get('customW',[]),customM:store.get('customM',[]),catov:store.get('catov',{}),calurl:store.get('calurl','')};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='life-dashboard-backup-'+TKEY+'.json';a.click();
+  a.download='thrive3-backup-'+TKEY+'.json';a.click();
 }
 document.getElementById('importFile').onchange=function(){
   const f=this.files[0]; if(!f) return;
   const r=new FileReader();
   r.onload=()=>{try{
     const d=JSON.parse(r.result);
-    if(d.days)store.set('days',d.days); if(d.weeks)store.set('weeks',d.weeks);
-    if(d.dates)store.set('dates',d.dates); if(d.calurl)store.set('calurl',d.calurl);
+    ['days','weeks','months','dates','custom','customW','customM','catov','calurl'].forEach(k=>{ if(d[k]!==undefined) store.set(k,d[k]); });
     alert('Backup restored.'); location.reload();
   }catch(e){alert('Invalid backup file.');}};
   r.readAsText(f);
