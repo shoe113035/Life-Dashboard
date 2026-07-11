@@ -3,33 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#341a63">
+<meta name="theme-color" content="#f4eefc">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Thrive³</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
 <style>
-:root { color-scheme: dark;
-  --ink:#ffffff; --muted:rgba(255,255,255,.68); --line:rgba(255,255,255,.20);
-  --teal:#2fd4c1; --teal-dk:#0f8f81; --teal-bright:#3ee6d0; --purple:#4b1f7e; --purple-md:#5e35a8; --indigo:#4553b8;
-  --spirit:#cbaaff; --spirit-bg:rgba(160,110,255,.22);
-  --mental:#a9bbff; --mental-bg:rgba(110,140,255,.20);
-  --phys:#3ee6d0; --phys-bg:rgba(45,212,190,.17);
-  --home:#cfdce6; --home-bg:rgba(200,220,235,.16);
-  --good:#3ee6d0; --warn:#ffd479; --bad:#ff9d8f;
-  --grad:linear-gradient(90deg,#3ee6d0,#c9a6ff);
-  --bg:rgba(255,255,255,.10);
+:root { color-scheme: light;
+  --ink:#2a2440; --muted:#7d7894; --line:#e6e1f0;
+  --teal:#14a795; --teal-dk:#0f8f81; --teal-bright:#0f9486; --purple:#6b3fc0; --purple-md:#7c4dd4; --indigo:#4a63c8;
+  --spirit:#7c5cc9; --spirit-bg:#f0e9fb;
+  --mental:#4a63c8; --mental-bg:#eaeefb;
+  --phys:#149f8e; --phys-bg:#e4f5f1;
+  --home:#66788c; --home-bg:#eef2f6;
+  --good:#149f8e; --warn:#d8a938; --bad:#d1685a;
+  --grad:linear-gradient(90deg,#149f8e,#7c4dd4);
+  --bg:#f5f2fa;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(160deg,#3a1d6e 0%,#2a1157 45%,#0d6055 100%) fixed;color:var(--ink);padding:16px 14px calc(80px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;min-height:100vh}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(160deg,#f4eefc 0%,#fbf6ee 45%,#eaf6f2 100%) fixed;color:var(--ink);padding:16px 14px calc(96px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;min-height:100vh}
 .hdr{display:flex;align-items:center;gap:10px}
-.hdr img{width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.35);background:#fff}
-h1{font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.01em}
+.hdr img{width:44px;height:44px;border-radius:13px;border:1px solid #eee;background:#fff;box-shadow:0 2px 8px rgba(80,50,140,.12)}
+h1{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:.01em}
 .sub{color:var(--muted);font-size:12.5px;margin-top:1px}
-.card{background:linear-gradient(145deg,#4a2485,#371a5f);border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px;box-shadow:0 2px 8px rgba(10,5,30,.25)}
-#tab-today .card:nth-of-type(even),#tab-week .card:nth-of-type(2),#tab-month .card:nth-of-type(odd),#tab-reports .card:nth-of-type(even),#tab-settings .card:nth-of-type(even){background:linear-gradient(145deg,#0f8274,#0a5a50)}
-.card h2{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:#7deede;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-input::placeholder,textarea::placeholder{color:rgba(255,255,255,.45)}
+.card{background:#fff;border:1px solid rgba(255,255,255,.6);border-radius:20px;padding:16px;margin-top:14px;box-shadow:0 4px 16px rgba(90,60,150,.08)}
+#tab-today .card:nth-of-type(3),#tab-week .card:nth-of-type(1),#tab-month .card:nth-of-type(3),#tab-reports .card:nth-of-type(odd),#tab-settings .card:nth-of-type(2){background:#f2ecfb}
+#tab-today .card:nth-of-type(4),#tab-today .card:nth-of-type(6),#tab-week .card:nth-of-type(3),#tab-month .card:nth-of-type(4),#tab-settings .card:nth-of-type(3){background:#e9f6f2}
+#tab-today .card:nth-of-type(1),#tab-week .card:nth-of-type(2),#tab-month .card:nth-of-type(2){background:linear-gradient(135deg,#7c4dd4,#4f2a9e);color:#fff;border:none}
+#tab-today .card:nth-of-type(1) h2,#tab-week .card:nth-of-type(2) h2,#tab-month .card:nth-of-type(2) h2{color:rgba(255,255,255,.85)}
+#tab-today .card:nth-of-type(1) .muted,#tab-week .card:nth-of-type(2) .muted,#tab-month .card:nth-of-type(2) .muted{color:rgba(255,255,255,.7)}
+#tab-today .card:nth-of-type(1) .summary-note,#tab-week .card:nth-of-type(2) .summary-note,#tab-month .card:nth-of-type(2) .summary-note{background:rgba(255,255,255,.16)}
+#tab-today .card:nth-of-type(1) .big{color:#8ff0e2}
+#tab-today .card:nth-of-type(1) .bar{background:rgba(255,255,255,.25)}
+#tab-week .card:nth-of-type(2) .printbtn,#tab-month .card:nth-of-type(2) .printbtn{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.35)}
+#tab-month .card:nth-of-type(2) .mg-cell{background:rgba(255,255,255,.14);color:rgba(255,255,255,.7)}
+#tab-month .card:nth-of-type(2) .mg-cell .d{color:#fff}
+#tab-month .card:nth-of-type(2) .mg-hdr{color:rgba(255,255,255,.7)}
+#tab-month .card:nth-of-type(2) .mg-today{outline-color:#8ff0e2}
+#tab-month .card:nth-of-type(2) .mg-sel{background:rgba(255,255,255,.95);color:#4f2a9e}
+.card h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-weight:800}
+input::placeholder,textarea::placeholder{color:#b3aec6}
 .item{display:flex;align-items:center;gap:10px;padding:9px 6px;border-radius:10px;font-size:15px}
 .item input[type=checkbox]{width:21px;height:21px;accent-color:var(--teal);flex-shrink:0}
 .item.done label{text-decoration:line-through;color:var(--muted)}
@@ -39,14 +52,14 @@ input::placeholder,textarea::placeholder{color:rgba(255,255,255,.45)}
 .p-mental{background:var(--mental-bg);color:var(--mental)}
 .p-phys{background:var(--phys-bg);color:var(--phys)}
 .p-home{background:var(--home-bg);color:var(--home)}
-.bar{height:9px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden;margin-top:8px}
-.bar>div{height:100%;background:var(--grad);border-radius:99px;transition:width .3s}
+.bar{height:9px;background:rgba(0,0,0,.10);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar>div{height:100%;background:linear-gradient(90deg,#37d6c2,#b08cff);border-radius:99px;transition:width .3s}
 .big{font-size:24px;font-weight:800;color:var(--teal-bright)}
 .statrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-.stat{background:rgba(255,255,255,.12);border-radius:10px;padding:9px 11px;flex:1;min-width:88px}
-.stat .v{font-size:18px;font-weight:800;color:#fff}
+.stat{background:rgba(255,255,255,.65);border-radius:12px;padding:9px 11px;flex:1;min-width:88px}
+.stat .v{font-size:18px;font-weight:800;color:var(--ink)}
 .stat .l{font-size:10.5px;color:var(--muted);margin-top:2px}
-input[type=text],input[type=number],input[type=url],select,textarea{border:1px solid rgba(255,255,255,.30);border-radius:9px;padding:10px;font-size:15px;background:rgba(255,255,255,.12);color:#fff;font-family:inherit}
+input[type=text],input[type=number],input[type=url],select,textarea{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px;background:#fff;color:var(--ink);font-family:inherit}
 input[type=text],input[type=url],textarea{width:100%}
 input[type=number]{width:84px}
 select{padding:8px}
@@ -60,51 +73,57 @@ textarea{min-height:74px;resize:vertical}
 .hrow .unit{color:var(--muted);font-size:12px}
 .goalhint{font-size:11px;color:var(--muted);white-space:nowrap}
 .counter{display:flex;align-items:center;gap:8px}
-.counter button{width:34px;height:34px;border-radius:9px;border:1px solid rgba(255,255,255,.30);background:rgba(255,255,255,.14);font-size:18px;cursor:pointer;font-weight:700;color:#fff}
+.counter button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:18px;cursor:pointer;font-weight:700;color:var(--ink)}
 .counter .cv{min-width:52px;text-align:center;font-weight:700;font-size:13.5px}
 .met{color:var(--teal-bright)}
 ul.cal{list-style:none}
 ul.cal li{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px;display:flex;gap:8px}
 ul.cal li:last-child{border-bottom:none}
 ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:tabular-nums}
-.dayhdr{font-weight:700;font-size:13px;margin:12px 0 4px;color:var(--spirit)}
+.dayhdr{font-weight:700;font-size:13px;margin:12px 0 4px;color:var(--purple)}
 .dayhdr:first-child{margin-top:0}
 .monthgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:6px}
-.mg-cell{aspect-ratio:1;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;background:rgba(255,255,255,.09);color:var(--muted);cursor:pointer;border:1px solid transparent;position:relative}
-.mg-cell .d{font-weight:700;font-size:12px;color:#fff}
+.mg-cell{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;background:rgba(0,0,0,.05);color:var(--muted);cursor:pointer;border:1px solid transparent;position:relative}
+.mg-cell .d{font-weight:700;font-size:12px;color:inherit}
 .mg-cell .pc{font-size:8.5px}
 .mg-hdr{text-align:center;font-size:10px;color:var(--muted);font-weight:700;padding-bottom:2px}
-.mg-today{outline:2px solid var(--teal-bright)}
-.mg-sel{border-color:var(--teal-bright);background:rgba(255,255,255,.18)}
+.mg-today{outline:2px solid var(--teal)}
+.mg-sel{border-color:var(--teal);background:rgba(255,255,255,.9)}
 .dots{display:flex;gap:2px;position:absolute;bottom:4px}
-.dots i{width:4px;height:4px;border-radius:50%;background:var(--mental)}
-.btn{border:none;background:#6a3fc0;color:#fff;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer}
-.btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid var(--line)}
-.btn.teal{background:var(--teal-dk)}
+.dots i{width:4px;height:4px;border-radius:50%;background:#37d6c2}
+.btn{border:none;background:var(--purple-md);color:#fff;border-radius:12px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(124,77,212,.3)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn.teal{background:var(--teal-dk);box-shadow:0 3px 10px rgba(15,143,129,.3)}
 .daterow{display:flex;align-items:center;gap:8px;padding:8px 2px;border-bottom:1px dashed var(--line);font-size:14px;flex-wrap:wrap}
 .daterow .del{margin-left:auto;background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:4px}
 .emoji{width:22px;text-align:center}
 .muted{color:var(--muted);font-size:13px}
-.summary-note{font-size:13.5px;line-height:1.5;margin-top:10px;padding:10px 12px;background:rgba(255,255,255,.12);border-radius:10px}
+.summary-note{font-size:13.5px;line-height:1.5;margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.045);border-radius:12px}
 .err{color:var(--bad);font-size:13px}
 .chartbox{position:relative;height:170px;margin-top:8px}
 .pillarhead{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:700;margin-bottom:6px}
 .dot{width:10px;height:10px;border-radius:50%}
 .addform{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;align-items:center}
-.navbar{position:fixed;bottom:0;left:0;right:0;background:rgba(30,11,62,.97);border-top:1px solid rgba(255,255,255,.18);display:flex;justify-content:space-around;padding:7px 2px calc(7px + env(safe-area-inset-bottom));z-index:10}
-.navbtn{background:none;border:none;font-size:10.5px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 8px;border-radius:10px;font-weight:600}
+.navbar{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom));left:14px;right:14px;max-width:532px;margin:0 auto;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.7);border-radius:999px;display:flex;justify-content:space-around;align-items:center;padding:8px 10px;z-index:10;box-shadow:0 8px 24px rgba(70,40,130,.18)}
+.navbtn{background:none;border:none;font-size:13px;color:#9a94ae;display:flex;flex-direction:row;align-items:center;gap:6px;cursor:pointer;padding:9px 12px;border-radius:999px;font-weight:700}
 .navbtn .ico{font-size:19px}
-.navbtn.active{color:var(--teal-bright);background:rgba(62,230,208,.14)}
-.pillarcard{border-radius:12px;padding:12px;margin-top:10px}
-.printbtn{border:1px solid rgba(255,255,255,.30);background:rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;text-transform:none;letter-spacing:0}
+.navbtn .lbl{display:none}
+.navbtn.active{color:#fff;background:var(--purple-md);box-shadow:0 3px 10px rgba(124,77,212,.35)}
+.navbtn.active .lbl{display:inline}
+.pillarcard{border-radius:14px;padding:12px;margin-top:10px}
+.printbtn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;text-transform:none;letter-spacing:0}
 .editrow{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px dashed var(--line);font-size:14px}
 .editrow .nm{flex:1}
 .editrow select{font-size:13px;padding:6px}
 .editrow .del{background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:2px 6px}
-.replist button{display:block;width:100%;text-align:left;background:rgba(255,255,255,.10);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:7px;cursor:pointer;color:#fff}
-.replist button b{color:#7deede}
-.coach{margin-top:10px;padding:11px 12px;background:rgba(45,212,190,.16);border-radius:10px;font-size:13.5px;line-height:1.55}
+.replist button{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:7px;cursor:pointer;color:var(--ink)}
+.replist button b{color:var(--purple)}
+.coach{margin-top:10px;padding:11px 12px;background:#e4f5f1;border-radius:12px;font-size:13.5px;line-height:1.55}
 .coach b{color:var(--teal-bright)}
+.hstatus{font-size:14px;font-weight:800;min-width:20px;text-align:center}
+.hstatus.ok{color:var(--good)}
+.hstatus.no{color:var(--bad)}
+.hstatus.na{color:#c4bfd6}
 .coach ul{margin:6px 0 0 16px}
 .coach li{margin-bottom:5px}
 .disc{font-size:11px;color:var(--muted);margin-top:6px}
@@ -160,14 +179,13 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     </div>
   </div>
   <div class="card">
-    <h2>Health Log <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">Sleep Number · Samsung Health</span></h2>
-    <div class="hrow"><span class="lbl">😴 Sleep Number score <span class="unit">(0–100)</span></span><input type="number" step="1" min="0" max="100" id="h_score"></div>
-    <div class="hrow"><span class="lbl">💧 Water <span class="unit">oz · goal 75–100</span></span><input type="number" step="5" min="0" max="300" id="h_water"></div>
-    <div class="hrow"><span class="lbl">👟 Steps <span class="unit">ideal 7k–10k</span></span><input type="number" step="100" min="0" max="60000" id="h_steps"></div>
-    <div class="hrow"><span class="lbl">🏋️ Total workout <span class="unit">min</span></span><input type="number" step="5" min="0" max="600" id="h_workout"></div>
-    <div class="hrow"><span class="lbl">🫀 Zone 2 <span class="unit">min</span></span><input type="number" step="5" min="0" max="600" id="h_z2"></div>
-    <div class="hrow"><span class="lbl">🔥 Zone 4 <span class="unit">min</span></span><input type="number" step="5" min="0" max="600" id="h_z4"></div>
-    <div class="muted" style="margin-top:8px">Water ≥ 75 oz auto-completes the water item; under 75 doesn't count.</div>
+    <h2>Health Log <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">manual entry</span> <button class="printbtn" id="editHBtn" onclick="toggleEditH()">✎ Goals</button></h2>
+    <div id="healthRows"></div>
+    <div id="editPanelH" style="display:none">
+      <div class="muted" style="margin:8px 0 4px">Set how each metric is rated — hit it and it gets a ✓ for the day:</div>
+      <div id="editListH"></div>
+    </div>
+    <div class="muted" style="margin-top:8px">Hitting the water goal auto-completes the daily water item; missing it doesn't count.</div>
     <h2 style="margin-top:16px">Food Diary & Coach <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">goal: 200 → 190 lbs</span></h2>
     <textarea id="h_food" placeholder="What did you eat today? e.g. eggs & oatmeal, chicken salad, salmon + rice, protein shake…"></textarea>
     <div class="coach" id="coachBox"></div>
@@ -304,11 +322,11 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 <div id="printArea" class="rpt"></div>
 
 <nav class="navbar">
-  <button class="navbtn active" data-tab="today"><span class="ico">☀️</span>Today</button>
-  <button class="navbtn" data-tab="week"><span class="ico">📊</span>Week</button>
-  <button class="navbtn" data-tab="month"><span class="ico">🗓️</span>Month</button>
-  <button class="navbtn" data-tab="reports"><span class="ico">🗂️</span>Reports</button>
-  <button class="navbtn" data-tab="settings"><span class="ico">⚙️</span>Settings</button>
+  <button class="navbtn active" data-tab="today"><span class="ico">☀️</span><span class="lbl">Today</span></button>
+  <button class="navbtn" data-tab="week"><span class="ico">📊</span><span class="lbl">Week</span></button>
+  <button class="navbtn" data-tab="month"><span class="ico">🗓️</span><span class="lbl">Month</span></button>
+  <button class="navbtn" data-tab="reports"><span class="ico">🗂️</span><span class="lbl">Reports</span></button>
+  <button class="navbtn" data-tab="settings"><span class="ico">⚙️</span><span class="lbl">Settings</span></button>
 </nav>
 
 <script>
@@ -562,20 +580,95 @@ function renderTop3(){
   });
 }
 
+const HEALTH_METRICS = [
+  {k:'score',  label:'😴 Sleep Number score', rlabel:'Sleep Number score', step:1},
+  {k:'water',  label:'💧 Water (oz)',         rlabel:'Water (oz)',         step:5},
+  {k:'steps',  label:'👟 Steps',              rlabel:'Steps',              step:100},
+  {k:'workout',label:'🏋️ Total workout (min)',rlabel:'Workout (min)',     step:5},
+  {k:'z2',     label:'🫀 Zone 2 (min)',       rlabel:'Zone 2 (min)',       step:5},
+  {k:'z4',     label:'🔥 Zone 4 (min)',       rlabel:'Zone 4 (min)',       step:5},
+];
+const HGOAL_DEFAULTS = {
+  score:{type:'gte',a:75}, water:{type:'gte',a:75}, steps:{type:'range',a:7000,b:10000},
+  workout:{type:'none'}, z2:{type:'none'}, z4:{type:'none'}
+};
+function hGoals(){ return Object.assign({}, HGOAL_DEFAULTS, store.get('hgoals',{})); }
+function hGoalText(cfg){
+  if(!cfg||cfg.type==='none') return 'track only';
+  if(cfg.type==='gte') return '≥ '+cfg.a;
+  if(cfg.type==='lte') return '≤ '+cfg.a;
+  return cfg.a+'–'+cfg.b;
+}
+function healthSuccess(h,k){
+  const cfg=hGoals()[k];
+  if(!h||!cfg||cfg.type==='none') return null;
+  const v=h[k];
+  if(v==null) return null;
+  if(cfg.type==='gte') return v>=cfg.a;
+  if(cfg.type==='lte') return v<=cfg.a;
+  return v>=cfg.a && v<=(cfg.b??Infinity);
+}
+function healthMark(h,k){
+  const s=healthSuccess(h,k);
+  return s==null?'':(s?' <span class="ok">✓</span>':' <span class="no">✗</span>');
+}
+let editModeH=false;
+function toggleEditH(){ editModeH=!editModeH;
+  document.getElementById('editPanelH').style.display=editModeH?'':'none';
+  document.getElementById('editHBtn').textContent=editModeH?'✓ Done':'✎ Goals';
+  renderHealth(); }
+function renderEditH(){
+  const el=document.getElementById('editListH'); el.innerHTML='';
+  const goals=hGoals();
+  HEALTH_METRICS.forEach(m=>{
+    const cfg=goals[m.k]||{type:'none'};
+    const row=document.createElement('div'); row.className='editrow';
+    const nm=document.createElement('span'); nm.className='nm'; nm.textContent=m.label;
+    row.appendChild(nm);
+    const sel=document.createElement('select');
+    [['none','No target'],['gte','At least ≥'],['lte','At most ≤'],['range','Between']].forEach(([v,t])=>{
+      const o=document.createElement('option'); o.value=v; o.textContent=t; if(v===cfg.type)o.selected=true; sel.appendChild(o);
+    });
+    const a=document.createElement('input'); a.type='number'; a.value=cfg.a??''; a.placeholder='Goal'; a.style.width='72px';
+    const b=document.createElement('input'); b.type='number'; b.value=cfg.b??''; b.placeholder='to'; b.style.width='72px';
+    function vis(){ a.style.display=sel.value==='none'?'none':''; b.style.display=sel.value==='range'?'':'none'; }
+    vis();
+    function saveCfg(){
+      const g=store.get('hgoals',{});
+      const c={type:sel.value};
+      if(sel.value!=='none'){ c.a=parseFloat(a.value); if(isNaN(c.a)) return; }
+      if(sel.value==='range'){ c.b=parseFloat(b.value); if(isNaN(c.b)) return; }
+      g[m.k]=c; store.set('hgoals',g); renderHealth(); renderDaily();
+    }
+    sel.onchange=()=>{vis();saveCfg();}; a.onchange=saveCfg; b.onchange=saveCfg;
+    row.appendChild(sel); row.appendChild(a); row.appendChild(b);
+    el.appendChild(row);
+  });
+}
 function renderHealth(){
   const d = dayData(TKEY); const h=d.health||{};
-  const map={h_score:'score',h_water:'water',h_steps:'steps',h_workout:'workout',h_z2:'z2',h_z4:'z4'};
-  Object.entries(map).forEach(([id,k])=>{
-    const inp=document.getElementById(id); inp.value = h[k]??'';
+  const rowsEl=document.getElementById('healthRows'); rowsEl.innerHTML='';
+  const goals=hGoals();
+  HEALTH_METRICS.forEach(m=>{
+    const cfg=goals[m.k];
+    const row=document.createElement('div'); row.className='hrow';
+    const s=healthSuccess(h,m.k);
+    row.innerHTML=`<span class="lbl">${m.label} <span class="goalhint">${hGoalText(cfg)}</span></span><span class="hstatus ${s==null?'na':(s?'ok':'no')}">${s==null?'—':(s?'✓':'✗')}</span>`;
+    const inp=document.createElement('input'); inp.type='number'; inp.step=m.step; inp.value=h[m.k]??'';
+    if(s) inp.style.color='var(--teal-bright)';
     inp.onchange=()=>{
       const dd=dayData(TKEY); dd.health=dd.health||{};
-      dd.health[k]=inp.value===''?null:parseFloat(inp.value);
-      if(k==='water'){
-        if(dd.health[k]!=null) dd.checks.water = dd.health[k]>=75;
+      dd.health[m.k]=inp.value===''?null:parseFloat(inp.value);
+      if(m.k==='water'){
+        const ws=healthSuccess(dd.health,'water');
+        if(dd.health.water!=null && ws!=null) dd.checks.water=ws;
       }
-      saveDay(TKEY,dd); renderDaily(); renderPillars(); coach();
+      saveDay(TKEY,dd); renderHealth(); renderDaily(); renderPillars(); coach();
     };
+    row.appendChild(inp);
+    rowsEl.appendChild(row);
   });
+  if(editModeH) renderEditH();
   const food=document.getElementById('h_food');
   food.value=h.food||'';
   let foodTimer=null;
@@ -733,8 +826,6 @@ function renderWeek(){
 }
 
 /* ================= REPORT BUILDERS ================= */
-function waterMark(v){ if(v==null) return ''; return v>=75?'<span class="ok">✓</span>':'<span class="no">✗</span>'; }
-function stepsMark(v){ if(v==null) return ''; return (v>=7000&&v<=10000)?' <span class="ok">✓</span>':''; }
 
 function dailyReportHTML(k){
   const all=store.get('days',{}); const dd=all[k];
@@ -760,7 +851,7 @@ function dailyReportHTML(k){
   }
   const h=dd.health||{};
   html+='<h3>Health</h3><table><tr><th>Sleep Number score</th><th>Water (oz)</th><th>Steps</th><th>Workout</th><th>Zone 2</th><th>Zone 4</th></tr>';
-  html+=`<tr><td>${h.score??'—'}</td><td>${h.water??'—'} ${waterMark(h.water)}</td><td>${h.steps!=null?h.steps.toLocaleString():'—'}${stepsMark(h.steps)}</td><td>${h.workout??'—'} min</td><td>${h.z2??'—'} min</td><td>${h.z4??'—'} min</td></tr></table>`;
+  html+=`<tr><td>${h.score??'—'}${healthMark(h,'score')}</td><td>${h.water??'—'}${healthMark(h,'water')}</td><td>${h.steps!=null?h.steps.toLocaleString():'—'}${healthMark(h,'steps')}</td><td>${h.workout??'—'} min${healthMark(h,'workout')}</td><td>${h.z2??'—'} min${healthMark(h,'z2')}</td><td>${h.z4??'—'} min${healthMark(h,'z4')}</td></tr></table>`;
   if(h.food) html+='<h3>Food Diary</h3><div class="note">'+esc(h.food)+'</div>';
   return html;
 }
@@ -792,18 +883,24 @@ function weeklyReportHTML(monday){
     const p=dd?Math.round(dayDone(dd,items)/items.length*100):0;
     pcts.push(p); html+='<th>'+p+'%</th>'; });
   html+='</tr></table>';
-  // health rows: sleep score, water, steps
-  let scSum=0,scN=0,wSucc=0,wDays=0,stSum=0,stN=0;
+  // health rows: every metric, marked against its goal
+  let scSum=0,scN=0,wSucc=0,wDays=0;
+  const goals=hGoals();
   html+='<h3>Health — Daily Numbers</h3><table><tr><th class="l">Metric</th>'+days.map(x=>'<th>'+x.toLocaleDateString('en-US',{weekday:'short'})+'</th>').join('')+'<th>Avg / Rate</th></tr>';
-  html+='<tr><td class="l">Sleep Number score</td>';
-  days.forEach(x=>{ const h=(all[dkey(x)]||{}).health||{}; if(h.score!=null){scSum+=h.score;scN++;} html+='<td>'+(h.score??'')+'</td>'; });
-  html+='<th>'+(scN?Math.round(scSum/scN):'—')+'</th></tr>';
-  html+='<tr><td class="l">Water oz (75–100 goal)</td>';
-  days.forEach(x=>{ const h=(all[dkey(x)]||{}).health||{}; if(h.water!=null){wDays++; if(h.water>=75)wSucc++;} html+='<td>'+(h.water!=null?h.water+' '+waterMark(h.water):'')+'</td>'; });
-  html+='<th>'+(wDays?wSucc+'/'+wDays+' ('+Math.round(wSucc/wDays*100)+'%)':'—')+'</th></tr>';
-  html+='<tr><td class="l">Steps (7k–10k ideal)</td>';
-  days.forEach(x=>{ const h=(all[dkey(x)]||{}).health||{}; if(h.steps!=null){stSum+=h.steps;stN++;} html+='<td>'+(h.steps!=null?h.steps.toLocaleString():'')+'</td>'; });
-  html+='<th>'+(stN?Math.round(stSum/stN).toLocaleString():'—')+'</th></tr></table>';
+  HEALTH_METRICS.forEach(m=>{
+    let sum=0,n=0,succ=0,logged=0;
+    html+='<tr><td class="l">'+m.rlabel+' <small>('+hGoalText(goals[m.k])+')</small></td>';
+    days.forEach(x=>{ const h=(all[dkey(x)]||{}).health||{};
+      const v=h[m.k];
+      if(v!=null){ sum+=v; n++; const s=healthSuccess(h,m.k); if(s!=null){logged++; if(s)succ++;} }
+      html+='<td>'+(v!=null?(m.k==='steps'?v.toLocaleString():v)+healthMark(h,m.k):'')+'</td>'; });
+    if(m.k==='score'){scSum=sum;scN=n;}
+    if(m.k==='water'){wSucc=succ;wDays=logged;}
+    const avg=n?(m.k==='steps'?Math.round(sum/n).toLocaleString():Math.round(sum/n)):'—';
+    const rate=(goals[m.k]&&goals[m.k].type!=='none'&&logged)?' · '+succ+'/'+logged+' hit':'';
+    html+='<th>'+avg+rate+'</th></tr>';
+  });
+  html+='</table>';
   // weekly tasks
   const w=weekData(wk);
   const fd=flossDays(monday);
@@ -856,7 +953,7 @@ function monthlyReportHTML(y,m){
     if(dd.checks.floss) flossN++;
     const h=dd.health||{};
     if(h.score!=null){scSum+=h.score;scN++;}
-    if(h.water!=null){wDays++; if(h.water>=75)wSucc++;}
+    { const ws=healthSuccess(h,'water'); if(ws!=null){wDays++; if(ws)wSucc++;} }
     if(h.steps!=null){stSum+=h.steps;stN++;}
     dayRows.push([day,p,done,h]);
   }
@@ -869,7 +966,7 @@ function monthlyReportHTML(y,m){
   html+='<h3>Day by Day</h3><table><tr><th>Day</th><th>Items</th><th>%</th><th>Sleep score</th><th>Water oz</th><th>Steps</th></tr>';
   dayRows.forEach(([day,p,done,h])=>{
     html+='<tr><td>'+MONTHS[m].slice(0,3)+' '+day+'</td><td>'+done+'/'+items.length+'</td><td>'+(p>=80?'<span class="ok">'+p+'%</span>':p+'%')+'</td>'
-        +'<td>'+(h.score??'')+'</td><td>'+(h.water!=null?h.water+' '+waterMark(h.water):'')+'</td><td>'+(h.steps!=null?h.steps.toLocaleString():'')+'</td></tr>';
+        +'<td>'+(h.score!=null?h.score+healthMark(h,'score'):'')+'</td><td>'+(h.water!=null?h.water+healthMark(h,'water'):'')+'</td><td>'+(h.steps!=null?h.steps.toLocaleString()+healthMark(h,'steps'):'')+'</td></tr>';
   });
   html+='</table>';
   const listM=store.get('customM',[]);
