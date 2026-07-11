@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#f4eefc">
+<meta name="theme-color" content="#f2ebfd">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Thrive³</title>
@@ -11,36 +11,46 @@
 <style>
 :root { color-scheme: light;
   --ink:#2a2440; --muted:#7d7894; --line:#e6e1f0;
-  --teal:#14a795; --teal-dk:#0f8f81; --teal-bright:#0f9486; --purple:#6b3fc0; --purple-md:#7c4dd4; --indigo:#4a63c8;
-  --spirit:#7c5cc9; --spirit-bg:#f0e9fb;
-  --mental:#4a63c8; --mental-bg:#eaeefb;
-  --phys:#149f8e; --phys-bg:#e4f5f1;
-  --home:#66788c; --home-bg:#eef2f6;
-  --good:#149f8e; --warn:#d8a938; --bad:#d1685a;
-  --grad:linear-gradient(90deg,#149f8e,#7c4dd4);
-  --bg:#f5f2fa;
+  --teal:#14b3a0; --teal-dk:#0f8f81; --teal-bright:#0e9d8d; --purple:#6d33d1; --purple-md:#7c4dd4; --indigo:#4a63c8;
+  --spirit:#7c4dd4; --spirit-bg:#ece0fc;
+  --mental:#4a63c8; --mental-bg:#e3eafd;
+  --phys:#0f9d8c; --phys-bg:#d8f4ec;
+  --home:#66788c; --home-bg:#eaf0f6;
+  --good:#0f9d8c; --warn:#d8a938; --bad:#d1685a;
+  --bg:#f4f0fb;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(160deg,#f4eefc 0%,#fbf6ee 45%,#eaf6f2 100%) fixed;color:var(--ink);padding:16px 14px calc(96px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;min-height:100vh}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(160deg,#f0e6fd 0%,#fdf6ec 45%,#ddf4ec 100%) fixed;color:var(--ink);padding:16px 14px calc(96px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;min-height:100vh}
 .hdr{display:flex;align-items:center;gap:10px}
 .hdr img{width:44px;height:44px;border-radius:13px;border:1px solid #eee;background:#fff;box-shadow:0 2px 8px rgba(80,50,140,.12)}
 h1{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:.01em}
 .sub{color:var(--muted);font-size:12.5px;margin-top:1px}
-.card{background:#fff;border:1px solid rgba(255,255,255,.6);border-radius:20px;padding:16px;margin-top:14px;box-shadow:0 4px 16px rgba(90,60,150,.08)}
-#tab-today .card:nth-of-type(3),#tab-week .card:nth-of-type(1),#tab-month .card:nth-of-type(3),#tab-reports .card:nth-of-type(odd),#tab-settings .card:nth-of-type(2){background:#f2ecfb}
-#tab-today .card:nth-of-type(4),#tab-today .card:nth-of-type(6),#tab-week .card:nth-of-type(3),#tab-month .card:nth-of-type(4),#tab-settings .card:nth-of-type(3){background:#e9f6f2}
-#tab-today .card:nth-of-type(1),#tab-week .card:nth-of-type(2),#tab-month .card:nth-of-type(2){background:linear-gradient(135deg,#7c4dd4,#4f2a9e);color:#fff;border:none}
-#tab-today .card:nth-of-type(1) h2,#tab-week .card:nth-of-type(2) h2,#tab-month .card:nth-of-type(2) h2{color:rgba(255,255,255,.85)}
-#tab-today .card:nth-of-type(1) .muted,#tab-week .card:nth-of-type(2) .muted,#tab-month .card:nth-of-type(2) .muted{color:rgba(255,255,255,.7)}
-#tab-today .card:nth-of-type(1) .summary-note,#tab-week .card:nth-of-type(2) .summary-note,#tab-month .card:nth-of-type(2) .summary-note{background:rgba(255,255,255,.16)}
-#tab-today .card:nth-of-type(1) .big{color:#8ff0e2}
-#tab-today .card:nth-of-type(1) .bar{background:rgba(255,255,255,.25)}
-#tab-week .card:nth-of-type(2) .printbtn,#tab-month .card:nth-of-type(2) .printbtn{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.35)}
-#tab-month .card:nth-of-type(2) .mg-cell{background:rgba(255,255,255,.14);color:rgba(255,255,255,.7)}
-#tab-month .card:nth-of-type(2) .mg-cell .d{color:#fff}
-#tab-month .card:nth-of-type(2) .mg-hdr{color:rgba(255,255,255,.7)}
-#tab-month .card:nth-of-type(2) .mg-today{outline-color:#8ff0e2}
-#tab-month .card:nth-of-type(2) .mg-sel{background:rgba(255,255,255,.95);color:#4f2a9e}
+/* ===== home grid ===== */
+.home{margin-top:14px}
+.sumstrip{background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 4px 16px rgba(90,60,150,.10);cursor:pointer;margin-bottom:12px}
+.sumstrip .bstat{margin-top:6px}
+.heroes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hero{border-radius:20px;padding:14px;color:#fff;min-height:136px;cursor:pointer;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 18px rgba(70,40,130,.22)}
+.hero.p{background:linear-gradient(150deg,#8b5cf6,#5b21b6)}
+.hero.t{background:linear-gradient(150deg,#16bca8,#0b7568)}
+.hero .htitle{font-weight:800;font-size:15px}
+.hero .hline{font-size:12.5px;color:rgba(255,255,255,.9);line-height:1.45}
+.hero .hbig{font-size:22px;font-weight:800}
+.hero .hmut{color:rgba(255,255,255,.7);font-size:11.5px}
+.blocks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.block{border-radius:20px;padding:14px;cursor:pointer;min-height:118px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 14px rgba(90,60,150,.10);border:1px solid rgba(255,255,255,.7)}
+.block.bw{background:#fff}
+.block.bp{background:var(--spirit-bg)}
+.block.bt{background:var(--phys-bg)}
+.block .bic{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(90,60,150,.14)}
+.block .btitle{font-weight:800;font-size:14.5px}
+.block .bstat{font-size:12px;color:var(--muted)}
+.bstat{font-size:12px;color:var(--muted)}
+/* ===== section cards (drill-in) ===== */
+.section{display:none}
+.section.open{display:block}
+.backbtn{border:none;background:#fff;color:var(--purple);border-radius:999px;padding:8px 16px;font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(90,60,150,.14);margin-bottom:2px}
+.card{background:#fff;border:1px solid rgba(255,255,255,.6);border-radius:20px;padding:16px;margin-top:12px;box-shadow:0 4px 16px rgba(90,60,150,.09)}
 .card h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--purple);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-weight:800}
 input::placeholder,textarea::placeholder{color:#b3aec6}
 .item{display:flex;align-items:center;gap:10px;padding:9px 6px;border-radius:10px;font-size:15px}
@@ -52,11 +62,11 @@ input::placeholder,textarea::placeholder{color:#b3aec6}
 .p-mental{background:var(--mental-bg);color:var(--mental)}
 .p-phys{background:var(--phys-bg);color:var(--phys)}
 .p-home{background:var(--home-bg);color:var(--home)}
-.bar{height:9px;background:rgba(0,0,0,.10);border-radius:99px;overflow:hidden;margin-top:8px}
-.bar>div{height:100%;background:linear-gradient(90deg,#37d6c2,#b08cff);border-radius:99px;transition:width .3s}
+.bar{height:9px;background:rgba(0,0,0,.08);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar>div{height:100%;background:linear-gradient(90deg,#16bca8,#8b5cf6);border-radius:99px;transition:width .3s}
 .big{font-size:24px;font-weight:800;color:var(--teal-bright)}
 .statrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-.stat{background:rgba(255,255,255,.65);border-radius:12px;padding:9px 11px;flex:1;min-width:88px}
+.stat{background:rgba(255,255,255,.75);border-radius:12px;padding:9px 11px;flex:1;min-width:88px}
 .stat .v{font-size:18px;font-weight:800;color:var(--ink)}
 .stat .l{font-size:10.5px;color:var(--muted);margin-top:2px}
 input[type=text],input[type=number],input[type=url],select,textarea{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px;background:#fff;color:var(--ink);font-family:inherit}
@@ -84,13 +94,13 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 .dayhdr:first-child{margin-top:0}
 .monthgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:6px}
 .mg-cell{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;background:rgba(0,0,0,.05);color:var(--muted);cursor:pointer;border:1px solid transparent;position:relative}
-.mg-cell .d{font-weight:700;font-size:12px;color:inherit}
+.mg-cell .d{font-weight:700;font-size:12px;color:var(--ink)}
 .mg-cell .pc{font-size:8.5px}
 .mg-hdr{text-align:center;font-size:10px;color:var(--muted);font-weight:700;padding-bottom:2px}
 .mg-today{outline:2px solid var(--teal)}
-.mg-sel{border-color:var(--teal);background:rgba(255,255,255,.9)}
+.mg-sel{border-color:var(--teal);background:#fff}
 .dots{display:flex;gap:2px;position:absolute;bottom:4px}
-.dots i{width:4px;height:4px;border-radius:50%;background:#37d6c2}
+.dots i{width:4px;height:4px;border-radius:50%;background:var(--purple-md)}
 .btn{border:none;background:var(--purple-md);color:#fff;border-radius:12px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 3px 10px rgba(124,77,212,.3)}
 .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
 .btn.teal{background:var(--teal-dk);box-shadow:0 3px 10px rgba(15,143,129,.3)}
@@ -112,24 +122,22 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 .navbtn.active .lbl{display:inline}
 .pillarcard{border-radius:14px;padding:12px;margin-top:10px}
 .printbtn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;text-transform:none;letter-spacing:0}
-.editrow{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px dashed var(--line);font-size:14px}
-.editrow .nm{flex:1}
+.editrow{display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px dashed var(--line);font-size:14px;flex-wrap:wrap}
+.editrow .nm{flex:1;min-width:120px}
 .editrow select{font-size:13px;padding:6px}
 .editrow .del{background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:2px 6px}
 .replist button{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:7px;cursor:pointer;color:var(--ink)}
 .replist button b{color:var(--purple)}
-.coach{margin-top:10px;padding:11px 12px;background:#e4f5f1;border-radius:12px;font-size:13.5px;line-height:1.55}
+.coach{margin-top:10px;padding:11px 12px;background:var(--phys-bg);border-radius:12px;font-size:13.5px;line-height:1.55}
 .coach b{color:var(--teal-bright)}
 .hstatus{font-size:14px;font-weight:800;min-width:20px;text-align:center}
 .hstatus.ok{color:var(--good)}
 .hstatus.no{color:var(--bad)}
 .hstatus.na{color:#c4bfd6}
-.coach ul{margin:6px 0 0 16px}
-.coach li{margin-bottom:5px}
 .disc{font-size:11px;color:var(--muted);margin-top:6px}
 #printArea{display:none}
 #repViewer{background:#fff;border-radius:12px;padding:12px;color:#232336}
-.rpt h1{font-size:20px;margin-bottom:2px;background:none;color:#232336;-webkit-background-clip:border-box}
+.rpt h1{font-size:20px;margin-bottom:2px;color:#232336}
 .rpt .rsub{color:#666;font-size:12px;margin-bottom:12px}
 .rpt h3{font-size:14px;margin:16px 0 6px;color:#4b1f7e}
 .rpt table{width:100%;border-collapse:collapse;font-size:11.5px}
@@ -151,20 +159,22 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 
 <!-- ============ TODAY ============ -->
 <div id="tab-today">
-  <div class="card">
-    <h2>Daily Summary <span id="dailyPct" class="big" style="text-transform:none"></span></h2>
-    <div class="bar"><div id="dailyBar" style="width:0%"></div></div>
-    <div class="summary-note" id="dailyNote"></div>
-  </div>
-  <div class="card">
-    <h2>Top 3 Today</h2>
+  <div class="home" id="home-today"></div>
+
+  <div class="card section" id="sec-top3">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Top 3 Today</h2>
     <div id="top3main"></div>
     <h2 style="margin-top:14px">Top 3 — If I Have Time</h2>
     <div id="top3extra"></div>
   </div>
-  <div class="card">
-    <h2>Daily To-Do List <button class="printbtn" id="editBtn" onclick="toggleEdit()">✎ Edit list</button></h2>
-    <div id="dailyList"></div>
+
+  <div class="card section" id="sec-daily">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Daily To-Do List <span id="dailyPct" class="big" style="text-transform:none"></span> <button class="printbtn" id="editBtn" onclick="toggleEdit()">✎ Edit list</button></h2>
+    <div class="bar"><div id="dailyBar" style="width:0%"></div></div>
+    <div class="summary-note" id="dailyNote"></div>
+    <div id="dailyList" style="margin-top:8px"></div>
     <div id="editPanel" style="display:none">
       <div class="muted" style="margin:8px 0 4px">Change any item's category, remove custom items, or add your own:</div>
       <div id="editList"></div>
@@ -178,33 +188,46 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
       </div>
     </div>
   </div>
-  <div class="card">
-    <h2>Health Log <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">manual entry</span> <button class="printbtn" id="editHBtn" onclick="toggleEditH()">✎ Goals</button></h2>
+
+  <div class="card section" id="sec-health">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Health Log <button class="printbtn" id="editHBtn" onclick="toggleEditH()">⚙ Metrics</button></h2>
     <div id="healthRows"></div>
     <div id="editPanelH" style="display:none">
       <div class="muted" style="margin:8px 0 4px">Set how each metric is rated — hit it and it gets a ✓ for the day:</div>
       <div id="editListH"></div>
     </div>
     <div class="muted" style="margin-top:8px">Hitting the water goal auto-completes the daily water item; missing it doesn't count.</div>
-    <h2 style="margin-top:16px">Food Diary & Coach <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">goal: 200 → 190 lbs</span></h2>
+  </div>
+
+  <div class="card section" id="sec-food">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Food Diary & Coach <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">goal: 200 → 190 lbs</span></h2>
     <textarea id="h_food" placeholder="What did you eat today? e.g. eggs & oatmeal, chicken salad, salmon + rice, protein shake…"></textarea>
     <div class="coach" id="coachBox"></div>
     <div class="disc">General guidance to support your cut — not medical or dietetic advice.</div>
   </div>
-  <div class="card">
-    <h2>Today's Calendar</h2>
+
+  <div class="card section" id="sec-cal">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Today's Calendar</h2>
     <ul class="cal" id="calToday"><li class="muted">Connect your calendar in Settings.</li></ul>
   </div>
-  <div class="card">
-    <h2>Three Pillars</h2>
+
+  <div class="card section" id="sec-pillars">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Three Pillars</h2>
     <div id="pillars"></div>
   </div>
 </div>
 
 <!-- ============ WEEK ============ -->
 <div id="tab-week" style="display:none">
-  <div class="card">
-    <h2>Weekly Tasks <span class="muted" id="weekLabel" style="font-weight:400;text-transform:none;letter-spacing:0"></span> <button class="printbtn" id="editWBtn" onclick="toggleEditW()">✎ Edit list</button></h2>
+  <div class="home" id="home-week"></div>
+
+  <div class="card section" id="sec-wtasks">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Weekly Tasks <span class="muted" id="weekLabel" style="font-weight:400;text-transform:none;letter-spacing:0"></span> <button class="printbtn" id="editWBtn" onclick="toggleEditW()">✎ Edit list</button></h2>
     <div id="weeklyList"></div>
     <div id="editPanelW" style="display:none">
       <div class="muted" style="margin:8px 0 4px">Add your own weekly tasks — pick how success is measured:</div>
@@ -218,21 +241,28 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
       </div>
     </div>
   </div>
-  <div class="card">
-    <h2>Weekly Snapshot <button class="printbtn" onclick="printWeekReport()">🖨 Print report</button></h2>
+
+  <div class="card section" id="sec-wsnap">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Weekly Snapshot <button class="printbtn" onclick="printWeekReport()">🖨 Print report</button></h2>
     <div class="chartbox"><canvas id="weekChart"></canvas></div>
     <div class="summary-note" id="weekNote"></div>
   </div>
-  <div class="card">
-    <h2>Week Look-Ahead</h2>
+
+  <div class="card section" id="sec-wcal">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Week Look-Ahead</h2>
     <div id="calWeek"><span class="muted">Connect your calendar in Settings.</span></div>
   </div>
 </div>
 
 <!-- ============ MONTH ============ -->
 <div id="tab-month" style="display:none">
-  <div class="card">
-    <h2>Monthly Tasks <span class="muted" id="monthTasksLabel" style="font-weight:400;text-transform:none;letter-spacing:0"></span> <button class="printbtn" id="editMBtn" onclick="toggleEditM()">✎ Edit list</button></h2>
+  <div class="home" id="home-month"></div>
+
+  <div class="card section" id="sec-mtasks">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Monthly Tasks <span class="muted" id="monthTasksLabel" style="font-weight:400;text-transform:none;letter-spacing:0"></span> <button class="printbtn" id="editMBtn" onclick="toggleEditM()">✎ Edit list</button></h2>
     <div id="monthlyList"></div>
     <div id="editPanelM" style="display:none">
       <div class="muted" style="margin:8px 0 4px">Add monthly tasks — pick how success is measured:</div>
@@ -246,22 +276,28 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
       </div>
     </div>
   </div>
-  <div class="card">
-    <h2>Month Calendar <button class="printbtn" onclick="printMonthReport()">🖨 Print report</button></h2>
+
+  <div class="card section" id="sec-mcal">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Month Calendar <button class="printbtn" onclick="printMonthReport()">🖨 Print report</button></h2>
     <div class="muted" style="margin-bottom:4px">Color = daily to-do score · dots = calendar events · tap a day for details</div>
     <div class="monthgrid" id="monthGrid"></div>
     <div class="summary-note" id="monthNote"></div>
+    <div id="dayDetailWrap" style="display:none">
+      <h2 id="dayDetailTitle" style="margin-top:14px">Day</h2>
+      <div id="dayDetail"></div>
+    </div>
   </div>
-  <div class="card" id="dayDetailCard" style="display:none">
-    <h2 id="dayDetailTitle">Day</h2>
-    <div id="dayDetail"></div>
-  </div>
-  <div class="card">
-    <h2>This Month — Birthdays · Anniversaries · Dog Meds</h2>
+
+  <div class="card section" id="sec-mdates">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">This Month — Birthdays · Anniversaries · Dog Meds</h2>
     <div id="monthDates"></div>
   </div>
-  <div class="card">
-    <h2>Manage Important Dates</h2>
+
+  <div class="card section" id="sec-managedates">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Manage Important Dates</h2>
     <div id="allDates"></div>
     <div class="addform">
       <input type="text" id="d_name" placeholder="Name (e.g., Mom, Rex heartworm)" style="grid-column:1/-1">
@@ -370,19 +406,18 @@ const store = {
 function dkey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function wkey(d){ const t=new Date(d); t.setHours(0,0,0,0); t.setDate(t.getDate()+3-((t.getDay()+6)%7)); const w1=new Date(t.getFullYear(),0,4); return t.getFullYear()+'-W'+String(1+Math.round(((t-w1)/864e5-3+((w1.getDay()+6)%7))/7)).padStart(2,'0'); }
 function mondayOf(d){ const t=new Date(d); t.setHours(0,0,0,0); t.setDate(t.getDate()-((t.getDay()+6)%7)); return t; }
-const TODAY = new Date(); const TKEY = dkey(TODAY); const WKEY = wkey(TODAY);
+const TODAY = new Date(); const TKEY = dkey(TODAY); const WKEY = wkey(TODAY); const MKEY = TKEY.slice(0,7);
 function dayData(k){ const all = store.get('days',{}); return all[k] || {checks:{},top3:[{},{},{}],top3x:[{},{},{}],health:{}}; }
 function saveDay(k, data){ const all = store.get('days',{}); all[k]=data; store.set('days',all); }
 function weekData(k){ const all = store.get('weeks',{}); return all[k] || {counts:{},checks:{}}; }
 function saveWeek(k, data){ const all = store.get('weeks',{}); all[k]=data; store.set('weeks',all); }
+function monthData(k){ const all = store.get('months',{}); return all[k] || {checks:{},vals:{}}; }
+function saveMonth(k, data){ const all = store.get('months',{}); all[k]=data; store.set('months',all); }
 function dailyItems(){
   const ov = store.get('catov',{});
   return DAILY_BASE.map(i=>({...i, cat: ov[i.id]||i.cat})).concat(store.get('custom',[]));
 }
 function esc(s){ const d=document.createElement('div'); d.textContent=s??''; return d.innerHTML; }
-const MKEY = TKEY.slice(0,7);
-function monthData(k){ const all = store.get('months',{}); return all[k] || {checks:{},vals:{}}; }
-function saveMonth(k, data){ const all = store.get('months',{}); all[k]=data; store.set('months',all); }
 
 /* ===== custom-task engine: check | gte (≥) | lte (≤) | count ===== */
 function itemSuccess(dd, item){
@@ -450,18 +485,182 @@ function readNewTask(p){
   return item;
 }
 
-/* ================= NAV ================= */
-document.querySelectorAll('.navbtn').forEach(t=>t.onclick=()=>{
-  document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
-  ['today','week','month','reports','settings'].forEach(n=>document.getElementById('tab-'+n).style.display = n===t.dataset.tab?'':'none');
-  if(t.dataset.tab==='week') renderWeek();
-  if(t.dataset.tab==='month') renderMonth();
-  if(t.dataset.tab==='reports') renderReports();
-  window.scrollTo(0,0);
-});
+/* ================= HEALTH GOALS ================= */
+const HEALTH_METRICS = [
+  {k:'score',  label:'😴 Sleep Number score', rlabel:'Sleep Number score', step:1},
+  {k:'water',  label:'💧 Water (oz)',         rlabel:'Water (oz)',         step:5},
+  {k:'steps',  label:'👟 Steps',              rlabel:'Steps',              step:100},
+  {k:'workout',label:'🏋️ Total workout (min)',rlabel:'Workout (min)',     step:5},
+  {k:'z2',     label:'🫀 Zone 2 (min)',       rlabel:'Zone 2 (min)',       step:5},
+  {k:'z4',     label:'🔥 Zone 4 (min)',       rlabel:'Zone 4 (min)',       step:5},
+];
+const HGOAL_DEFAULTS = {
+  score:{type:'gte',a:75}, water:{type:'gte',a:75}, steps:{type:'range',a:7000,b:10000},
+  workout:{type:'none'}, z2:{type:'none'}, z4:{type:'none'}
+};
+function hGoals(){ return Object.assign({}, HGOAL_DEFAULTS, store.get('hgoals',{})); }
+function hGoalText(cfg){
+  if(!cfg||cfg.type==='none') return 'track only';
+  if(cfg.type==='gte') return '≥ '+cfg.a;
+  if(cfg.type==='lte') return '≤ '+cfg.a;
+  return cfg.a+'–'+cfg.b;
+}
+function healthSuccess(h,k){
+  const cfg=hGoals()[k];
+  if(!h||!cfg||cfg.type==='none') return null;
+  const v=h[k];
+  if(v==null) return null;
+  if(cfg.type==='gte') return v>=cfg.a;
+  if(cfg.type==='lte') return v<=cfg.a;
+  return v>=cfg.a && v<=(cfg.b??Infinity);
+}
+function healthMark(h,k){
+  const s=healthSuccess(h,k);
+  return s==null?'':(s?' <span class="ok">✓</span>':' <span class="no">✗</span>');
+}
+let editModeH=false;
+function toggleEditH(){ editModeH=!editModeH;
+  document.getElementById('editPanelH').style.display=editModeH?'':'none';
+  document.getElementById('editHBtn').textContent=editModeH?'✓ Done':'⚙ Metrics';
+  renderHealth(); }
+function renderEditH(){
+  const el=document.getElementById('editListH'); el.innerHTML='';
+  const goals=hGoals();
+  HEALTH_METRICS.forEach(m=>{
+    const cfg=goals[m.k]||{type:'none'};
+    const row=document.createElement('div'); row.className='editrow';
+    const nm=document.createElement('span'); nm.className='nm'; nm.textContent=m.label;
+    row.appendChild(nm);
+    const sel=document.createElement('select');
+    [['none','No target'],['gte','At least ≥'],['lte','At most ≤'],['range','Between']].forEach(([v,t])=>{
+      const o=document.createElement('option'); o.value=v; o.textContent=t; if(v===cfg.type)o.selected=true; sel.appendChild(o);
+    });
+    const a=document.createElement('input'); a.type='number'; a.value=cfg.a??''; a.placeholder='Goal'; a.style.width='72px';
+    const b=document.createElement('input'); b.type='number'; b.value=cfg.b??''; b.placeholder='to'; b.style.width='72px';
+    function vis(){ a.style.display=sel.value==='none'?'none':''; b.style.display=sel.value==='range'?'':'none'; }
+    vis();
+    function saveCfg(){
+      const g=store.get('hgoals',{});
+      const c={type:sel.value};
+      if(sel.value!=='none'){ c.a=parseFloat(a.value); if(isNaN(c.a)) return; }
+      if(sel.value==='range'){ c.b=parseFloat(b.value); if(isNaN(c.b)) return; }
+      g[m.k]=c; store.set('hgoals',g); renderHealth(); renderDaily();
+    }
+    sel.onchange=()=>{vis();saveCfg();}; a.onchange=saveCfg; b.onchange=saveCfg;
+    row.appendChild(sel); row.appendChild(a); row.appendChild(b);
+    el.appendChild(row);
+  });
+}
+function renderHealth(){
+  const d = dayData(TKEY); const h=d.health||{};
+  const rowsEl=document.getElementById('healthRows'); rowsEl.innerHTML='';
+  HEALTH_METRICS.forEach(m=>{
+    const row=document.createElement('div'); row.className='hrow';
+    const s=healthSuccess(h,m.k);
+    row.innerHTML=`<span class="lbl">${m.label}</span><span class="hstatus ${s==null?'na':(s?'ok':'no')}">${s==null?'—':(s?'✓':'✗')}</span>`;
+    const inp=document.createElement('input'); inp.type='number'; inp.step=m.step; inp.value=h[m.k]??'';
+    if(s) inp.style.color='var(--teal-bright)';
+    inp.onchange=()=>{
+      const dd=dayData(TKEY); dd.health=dd.health||{};
+      dd.health[m.k]=inp.value===''?null:parseFloat(inp.value);
+      if(m.k==='water'){
+        const ws=healthSuccess(dd.health,'water');
+        if(dd.health.water!=null && ws!=null) dd.checks.water=ws;
+      }
+      saveDay(TKEY,dd); renderHealth(); renderDaily(); renderPillars(); coach(); renderHomes();
+    };
+    row.appendChild(inp);
+    rowsEl.appendChild(row);
+  });
+  if(editModeH) renderEditH();
+  const food=document.getElementById('h_food');
+  food.value=h.food||'';
+  let foodTimer=null;
+  food.oninput=()=>{
+    clearTimeout(foodTimer);
+    foodTimer=setTimeout(()=>{
+      const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.food=food.value; saveDay(TKEY,dd); coach(); renderHomes();
+    },400);
+  };
+  coach();
+}
 
-/* ================= TODAY ================= */
+/* ================= FOOD COACH ================= */
+function coach(){
+  const d=dayData(TKEY); const h=d.health||{};
+  const txt=(h.food||'').toLowerCase();
+  const has=re=>re.test(txt);
+  const PROTEIN=/chicken|beef|steak|turkey|fish|salmon|tuna|egg|protein|greek yogurt|cottage|shrimp|pork|whey/;
+  const VEG=/salad|broccoli|spinach|greens|veggie|vegetable|asparagus|pepper|carrot|kale|brussels|zucchini|cucumber/;
+  const FRUIT=/fruit|berr|apple|banana|orange|grape|melon/;
+  const JUNK=/pizza|fries|chips|soda|candy|cookie|dessert|ice cream|donut|doughnut|cake|pastr|fast food|mcdonald|wendy|taco bell/;
+  const ALC=/beer|wine|whiskey|bourbon|vodka|cocktail|alcohol|seltzer|margarita/;
+  const hour=new Date().getHours();
+  const tips=[];
+  if(!txt){
+    tips.push('<b>Protein anchor:</b> build each meal around 40g+ protein (eggs, chicken, fish, Greek yogurt) — aim ~180–200g/day to hold muscle while cutting.');
+    tips.push('<b>Deficit math:</b> a 300–500 cal/day deficit (~2,300–2,500 cal for your size/activity) loses ~1 lb/week — 10 lbs in about 8–10 weeks without wrecking training.');
+    tips.push('<b>Time your carbs:</b> put most carbs before/after lifts and runs; keep rest-day meals protein + veggies + fats.');
+    tips.push('<b>Cut-off:</b> finish eating 2–3 hrs before bed — helps the stomach-fat goal and your Sleep Number score.');
+  } else {
+    if(!has(PROTEIN)) tips.push('<b>Missing protein so far:</b> your next meal should lead with 40g+ protein — chicken, salmon, lean beef, eggs, or a shake. Protein protects muscle in a deficit and kills late-night cravings.');
+    else tips.push('<b>Protein logged ✓</b> — keep stacking it: ~180–200g/day total is the target for a 200-lb athletic cut.');
+    if(!has(VEG)) tips.push('<b>Add volume:</b> no veggies logged yet. A big salad or 2 cups of greens/broccoli at your next meal adds fullness for almost no calories.');
+    if(has(JUNK)) tips.push('<b>Damage control:</b> processed/fried items spotted. Don\'t "make up for it" by skipping meals — just make the next meal protein + veggies, and take a 10–15 min walk.');
+    if(has(ALC)) tips.push('<b>Alcohol:</b> it pauses fat-burning and hits sleep quality. Cap it at 1–2, drink water between, and skip the late snacks that come with it.');
+    if(!has(FRUIT) && !has(JUNK)) tips.push('<b>Sweet tooth insurance:</b> keep fruit or Greek yogurt + berries handy for dessert cravings.');
+    if(hour>=19) tips.push('<b>Evening:</b> kitchen closes 2–3 hrs before bed. If you truly need something: casein/cottage cheese, not carbs.');
+  }
+  if(h.water!=null && h.water<75) tips.push(`<b>Hydration:</b> you're at ${h.water} oz — get to 75+ before evening. Water first when you feel snacky; thirst masquerades as hunger.`);
+  if(h.steps!=null && h.steps<7000) tips.push(`<b>Steps:</b> ${h.steps.toLocaleString()} so far — a 15-min walk after dinner is the cheapest fat-loss tool you have. Target 7k–10k.`);
+  if(h.workout>0) tips.push('<b>Training day:</b> put carbs + protein within a couple hours after the workout; that\'s where they do the most good.');
+  document.getElementById('coachBox').innerHTML='<b>Coach:</b><ul>'+tips.slice(0,5).map(t=>'<li>'+t+'</li>').join('')+'</ul>';
+}
+
+/* ================= PILLARS ================= */
+function streak(itemId){
+  let s=0; const all=store.get('days',{}); const d=new Date(TODAY);
+  if(all[dkey(d)]&&all[dkey(d)].checks[itemId]) s++;
+  d.setDate(d.getDate()-1);
+  while(all[dkey(d)]&&all[dkey(d)].checks[itemId]){ s++; d.setDate(d.getDate()-1); }
+  return s;
+}
+function weekHealthTotals(){
+  const all=store.get('days',{}); let z2=0,z4=0,wo=0,scN=0,scSum=0,stN=0,stSum=0;
+  const d=new Date(TODAY);
+  for(let i=0;i<7;i++){ const dd=all[dkey(d)];
+    if(dd&&dd.health){ z2+=dd.health.z2||0; z4+=dd.health.z4||0; wo+=dd.health.workout||0;
+      if(dd.health.score!=null){scSum+=dd.health.score;scN++;}
+      if(dd.health.steps!=null){stSum+=dd.health.steps;stN++;} }
+    d.setDate(d.getDate()-1); }
+  return {z2,z4,wo,avgScore: scN?Math.round(scSum/scN):'—', avgSteps: stN?Math.round(stSum/stN).toLocaleString():'—'};
+}
+function renderPillars(){
+  const w=weekData(WKEY); const h=weekHealthTotals();
+  document.getElementById('pillars').innerHTML=`
+    <div class="pillarcard" style="background:var(--spirit-bg)">
+      <div class="pillarhead"><span class="dot" style="background:var(--spirit)"></span>Spiritual</div>
+      <div class="statrow"><div class="stat"><div class="v">${streak('bible')}🔥</div><div class="l">Bible streak (days)</div></div>
+      <div class="stat"><div class="v">${streak('prayer')}🔥</div><div class="l">Prayer streak (days)</div></div>
+      <div class="stat"><div class="v">${w.counts.sermons||0}/3–5</div><div class="l">Sermons this week</div></div></div>
+    </div>
+    <div class="pillarcard" style="background:var(--mental-bg)">
+      <div class="pillarhead"><span class="dot" style="background:var(--mental)"></span>Mental</div>
+      <div class="statrow"><div class="stat"><div class="v">${w.counts.blinkist||0}/3</div><div class="l">Blinkist books this week</div></div>
+      <div class="stat"><div class="v">${streak('madison')}🔥</div><div class="l">Madison therapy streak</div></div></div>
+    </div>
+    <div class="pillarcard" style="background:var(--phys-bg)">
+      <div class="pillarhead"><span class="dot" style="background:var(--phys)"></span>Physical</div>
+      <div class="statrow">
+        <div class="stat"><div class="v">${h.avgScore}</div><div class="l">Avg Sleep Number score</div></div>
+        <div class="stat"><div class="v">${h.avgSteps}</div><div class="l">Avg steps (7 days)</div></div>
+        <div class="stat"><div class="v">${h.z2}m</div><div class="l">Zone 2 (7 days)</div></div>
+        <div class="stat"><div class="v">${h.z4}m</div><div class="l">Zone 4 (7 days)</div></div>
+      </div>
+    </div>`;
+}
+
+/* ================= DAILY ================= */
 document.getElementById('todayLabel').textContent = TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 let editMode=false;
 function toggleEdit(){ editMode=!editMode;
@@ -477,7 +676,7 @@ function renderDaily(){
   ['spirit','mental','phys','home'].forEach(cat=>{
     items.filter(i=>i.cat===cat).forEach(item=>{
       const pill = `<span class="pill ${CAT_META[item.cat][1]}">${CAT_META[item.cat][0]}</span>`;
-      el.appendChild(taskWidgetRow(item, ()=>dayData(TKEY), dd=>{ saveDay(TKEY,dd); renderDaily(); renderPillars(); }, pill));
+      el.appendChild(taskWidgetRow(item, ()=>dayData(TKEY), dd=>{ saveDay(TKEY,dd); renderDaily(); renderPillars(); renderHomes(); }, pill));
     });
   });
   if(editMode) renderEditList();
@@ -573,187 +772,11 @@ function renderTop3(){
       row.innerHTML=`<input type="checkbox" ${t.done?'checked':''}><input type="text" placeholder="${i+1}.">`;
       const [cb,txt]=row.querySelectorAll('input');
       txt.value=t.text||'';
-      cb.onchange=()=>{const dd=dayData(TKEY);dd[key][i].done=cb.checked;saveDay(TKEY,dd);renderTop3();renderDaily();};
-      txt.onchange=()=>{const dd=dayData(TKEY);dd[key][i].text=txt.value;saveDay(TKEY,dd);};
+      cb.onchange=()=>{const dd=dayData(TKEY);dd[key][i].done=cb.checked;saveDay(TKEY,dd);renderTop3();renderDaily();renderHomes();};
+      txt.onchange=()=>{const dd=dayData(TKEY);dd[key][i].text=txt.value;saveDay(TKEY,dd);renderHomes();};
       el.appendChild(row);
     });
   });
-}
-
-const HEALTH_METRICS = [
-  {k:'score',  label:'😴 Sleep Number score', rlabel:'Sleep Number score', step:1},
-  {k:'water',  label:'💧 Water (oz)',         rlabel:'Water (oz)',         step:5},
-  {k:'steps',  label:'👟 Steps',              rlabel:'Steps',              step:100},
-  {k:'workout',label:'🏋️ Total workout (min)',rlabel:'Workout (min)',     step:5},
-  {k:'z2',     label:'🫀 Zone 2 (min)',       rlabel:'Zone 2 (min)',       step:5},
-  {k:'z4',     label:'🔥 Zone 4 (min)',       rlabel:'Zone 4 (min)',       step:5},
-];
-const HGOAL_DEFAULTS = {
-  score:{type:'gte',a:75}, water:{type:'gte',a:75}, steps:{type:'range',a:7000,b:10000},
-  workout:{type:'none'}, z2:{type:'none'}, z4:{type:'none'}
-};
-function hGoals(){ return Object.assign({}, HGOAL_DEFAULTS, store.get('hgoals',{})); }
-function hGoalText(cfg){
-  if(!cfg||cfg.type==='none') return 'track only';
-  if(cfg.type==='gte') return '≥ '+cfg.a;
-  if(cfg.type==='lte') return '≤ '+cfg.a;
-  return cfg.a+'–'+cfg.b;
-}
-function healthSuccess(h,k){
-  const cfg=hGoals()[k];
-  if(!h||!cfg||cfg.type==='none') return null;
-  const v=h[k];
-  if(v==null) return null;
-  if(cfg.type==='gte') return v>=cfg.a;
-  if(cfg.type==='lte') return v<=cfg.a;
-  return v>=cfg.a && v<=(cfg.b??Infinity);
-}
-function healthMark(h,k){
-  const s=healthSuccess(h,k);
-  return s==null?'':(s?' <span class="ok">✓</span>':' <span class="no">✗</span>');
-}
-let editModeH=false;
-function toggleEditH(){ editModeH=!editModeH;
-  document.getElementById('editPanelH').style.display=editModeH?'':'none';
-  document.getElementById('editHBtn').textContent=editModeH?'✓ Done':'✎ Goals';
-  renderHealth(); }
-function renderEditH(){
-  const el=document.getElementById('editListH'); el.innerHTML='';
-  const goals=hGoals();
-  HEALTH_METRICS.forEach(m=>{
-    const cfg=goals[m.k]||{type:'none'};
-    const row=document.createElement('div'); row.className='editrow';
-    const nm=document.createElement('span'); nm.className='nm'; nm.textContent=m.label;
-    row.appendChild(nm);
-    const sel=document.createElement('select');
-    [['none','No target'],['gte','At least ≥'],['lte','At most ≤'],['range','Between']].forEach(([v,t])=>{
-      const o=document.createElement('option'); o.value=v; o.textContent=t; if(v===cfg.type)o.selected=true; sel.appendChild(o);
-    });
-    const a=document.createElement('input'); a.type='number'; a.value=cfg.a??''; a.placeholder='Goal'; a.style.width='72px';
-    const b=document.createElement('input'); b.type='number'; b.value=cfg.b??''; b.placeholder='to'; b.style.width='72px';
-    function vis(){ a.style.display=sel.value==='none'?'none':''; b.style.display=sel.value==='range'?'':'none'; }
-    vis();
-    function saveCfg(){
-      const g=store.get('hgoals',{});
-      const c={type:sel.value};
-      if(sel.value!=='none'){ c.a=parseFloat(a.value); if(isNaN(c.a)) return; }
-      if(sel.value==='range'){ c.b=parseFloat(b.value); if(isNaN(c.b)) return; }
-      g[m.k]=c; store.set('hgoals',g); renderHealth(); renderDaily();
-    }
-    sel.onchange=()=>{vis();saveCfg();}; a.onchange=saveCfg; b.onchange=saveCfg;
-    row.appendChild(sel); row.appendChild(a); row.appendChild(b);
-    el.appendChild(row);
-  });
-}
-function renderHealth(){
-  const d = dayData(TKEY); const h=d.health||{};
-  const rowsEl=document.getElementById('healthRows'); rowsEl.innerHTML='';
-  const goals=hGoals();
-  HEALTH_METRICS.forEach(m=>{
-    const cfg=goals[m.k];
-    const row=document.createElement('div'); row.className='hrow';
-    const s=healthSuccess(h,m.k);
-    row.innerHTML=`<span class="lbl">${m.label} <span class="goalhint">${hGoalText(cfg)}</span></span><span class="hstatus ${s==null?'na':(s?'ok':'no')}">${s==null?'—':(s?'✓':'✗')}</span>`;
-    const inp=document.createElement('input'); inp.type='number'; inp.step=m.step; inp.value=h[m.k]??'';
-    if(s) inp.style.color='var(--teal-bright)';
-    inp.onchange=()=>{
-      const dd=dayData(TKEY); dd.health=dd.health||{};
-      dd.health[m.k]=inp.value===''?null:parseFloat(inp.value);
-      if(m.k==='water'){
-        const ws=healthSuccess(dd.health,'water');
-        if(dd.health.water!=null && ws!=null) dd.checks.water=ws;
-      }
-      saveDay(TKEY,dd); renderHealth(); renderDaily(); renderPillars(); coach();
-    };
-    row.appendChild(inp);
-    rowsEl.appendChild(row);
-  });
-  if(editModeH) renderEditH();
-  const food=document.getElementById('h_food');
-  food.value=h.food||'';
-  let foodTimer=null;
-  food.oninput=()=>{
-    clearTimeout(foodTimer);
-    foodTimer=setTimeout(()=>{
-      const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.food=food.value; saveDay(TKEY,dd); coach();
-    },400);
-  };
-  coach();
-}
-
-/* ================= FOOD COACH ================= */
-function coach(){
-  const d=dayData(TKEY); const h=d.health||{};
-  const txt=(h.food||'').toLowerCase();
-  const has=re=>re.test(txt);
-  const PROTEIN=/chicken|beef|steak|turkey|fish|salmon|tuna|egg|protein|greek yogurt|cottage|shrimp|pork|whey/;
-  const VEG=/salad|broccoli|spinach|greens|veggie|vegetable|asparagus|pepper|carrot|kale|brussels|zucchini|cucumber/;
-  const FRUIT=/fruit|berr|apple|banana|orange|grape|melon/;
-  const JUNK=/pizza|fries|chips|soda|candy|cookie|dessert|ice cream|donut|doughnut|cake|pastr|fast food|mcdonald|wendy|taco bell/;
-  const ALC=/beer|wine|whiskey|bourbon|vodka|cocktail|alcohol|seltzer|margarita/;
-  const hour=new Date().getHours();
-  const tips=[];
-  if(!txt){
-    tips.push('<b>Protein anchor:</b> build each meal around 40g+ protein (eggs, chicken, fish, Greek yogurt) — aim ~180–200g/day to hold muscle while cutting.');
-    tips.push('<b>Deficit math:</b> a 300–500 cal/day deficit (~2,300–2,500 cal for your size/activity) loses ~1 lb/week — 10 lbs in about 8–10 weeks without wrecking training.');
-    tips.push('<b>Time your carbs:</b> put most carbs before/after lifts and runs; keep rest-day meals protein + veggies + fats.');
-    tips.push('<b>Cut-off:</b> finish eating 2–3 hrs before bed — helps the stomach-fat goal and your Sleep Number score.');
-  } else {
-    if(!has(PROTEIN)) tips.push('<b>Missing protein so far:</b> your next meal should lead with 40g+ protein — chicken, salmon, lean beef, eggs, or a shake. Protein protects muscle in a deficit and kills late-night cravings.');
-    else tips.push('<b>Protein logged ✓</b> — keep stacking it: ~180–200g/day total is the target for a 200-lb athletic cut.');
-    if(!has(VEG)) tips.push('<b>Add volume:</b> no veggies logged yet. A big salad or 2 cups of greens/broccoli at your next meal adds fullness for almost no calories.');
-    if(has(JUNK)) tips.push('<b>Damage control:</b> processed/fried items spotted. Don\'t "make up for it" by skipping meals — just make the next meal protein + veggies, and take a 10–15 min walk.');
-    if(has(ALC)) tips.push('<b>Alcohol:</b> it pauses fat-burning and hits sleep quality. Cap it at 1–2, drink water between, and skip the late snacks that come with it.');
-    if(!has(FRUIT) && !has(JUNK)) tips.push('<b>Sweet tooth insurance:</b> keep fruit or Greek yogurt + berries handy for dessert cravings.');
-    if(hour>=19) tips.push('<b>Evening:</b> kitchen closes 2–3 hrs before bed. If you truly need something: casein/cottage cheese, not carbs.');
-  }
-  if(h.water!=null && h.water<75) tips.push(`<b>Hydration:</b> you're at ${h.water} oz — get to 75+ before evening. Water first when you feel snacky; thirst masquerades as hunger.`);
-  if(h.steps!=null && h.steps<7000) tips.push(`<b>Steps:</b> ${h.steps.toLocaleString()} so far — a 15-min walk after dinner is the cheapest fat-loss tool you have. Target 7k–10k.`);
-  if(h.workout>0) tips.push('<b>Training day:</b> put carbs + protein within a couple hours after the workout; that\'s where they do the most good.');
-  document.getElementById('coachBox').innerHTML='<b>Coach:</b><ul>'+tips.slice(0,5).map(t=>'<li>'+t+'</li>').join('')+'</ul>';
-}
-
-/* ================= PILLARS ================= */
-function streak(itemId){
-  let s=0; const all=store.get('days',{}); const d=new Date(TODAY);
-  if(all[dkey(d)]&&all[dkey(d)].checks[itemId]) s++;
-  d.setDate(d.getDate()-1);
-  while(all[dkey(d)]&&all[dkey(d)].checks[itemId]){ s++; d.setDate(d.getDate()-1); }
-  return s;
-}
-function weekHealthTotals(){
-  const all=store.get('days',{}); let z2=0,z4=0,wo=0,scN=0,scSum=0,stN=0,stSum=0;
-  const d=new Date(TODAY);
-  for(let i=0;i<7;i++){ const dd=all[dkey(d)];
-    if(dd&&dd.health){ z2+=dd.health.z2||0; z4+=dd.health.z4||0; wo+=dd.health.workout||0;
-      if(dd.health.score!=null){scSum+=dd.health.score;scN++;}
-      if(dd.health.steps!=null){stSum+=dd.health.steps;stN++;} }
-    d.setDate(d.getDate()-1); }
-  return {z2,z4,wo,avgScore: scN?Math.round(scSum/scN):'—', avgSteps: stN?Math.round(stSum/stN).toLocaleString():'—'};
-}
-function renderPillars(){
-  const w=weekData(WKEY); const h=weekHealthTotals();
-  document.getElementById('pillars').innerHTML=`
-    <div class="pillarcard" style="background:var(--spirit-bg)">
-      <div class="pillarhead"><span class="dot" style="background:var(--spirit)"></span>Spiritual</div>
-      <div class="statrow"><div class="stat"><div class="v">${streak('bible')}🔥</div><div class="l">Bible streak (days)</div></div>
-      <div class="stat"><div class="v">${streak('prayer')}🔥</div><div class="l">Prayer streak (days)</div></div>
-      <div class="stat"><div class="v">${w.counts.sermons||0}/3–5</div><div class="l">Sermons this week</div></div></div>
-    </div>
-    <div class="pillarcard" style="background:var(--mental-bg)">
-      <div class="pillarhead"><span class="dot" style="background:var(--mental)"></span>Mental</div>
-      <div class="statrow"><div class="stat"><div class="v">${w.counts.blinkist||0}/3</div><div class="l">Blinkist books this week</div></div>
-      <div class="stat"><div class="v">${streak('madison')}🔥</div><div class="l">Madison therapy streak</div></div></div>
-    </div>
-    <div class="pillarcard" style="background:var(--phys-bg)">
-      <div class="pillarhead"><span class="dot" style="background:var(--phys)"></span>Physical</div>
-      <div class="statrow">
-        <div class="stat"><div class="v">${h.avgScore}</div><div class="l">Avg Sleep Number score</div></div>
-        <div class="stat"><div class="v">${h.avgSteps}</div><div class="l">Avg steps (7 days)</div></div>
-        <div class="stat"><div class="v">${h.z2}m</div><div class="l">Zone 2 (7 days)</div></div>
-        <div class="stat"><div class="v">${h.z4}m</div><div class="l">Zone 4 (7 days)</div></div>
-      </div>
-    </div>`;
 }
 
 /* ================= WEEK ================= */
@@ -762,6 +785,15 @@ function flossDays(monday){
   const all=store.get('days',{}); let n=0; const d=new Date(monday);
   for(let i=0;i<7;i++){ const dd=all[dkey(d)]; if(dd&&dd.checks.floss)n++; d.setDate(d.getDate()+1); }
   return n;
+}
+function weeklyMet(){
+  const w=weekData(WKEY);
+  const fd=flossDays(mondayOf(TODAY));
+  let met=WEEKLY_ITEMS.filter(i=>{ if(i.type==='count')return (w.counts[i.id]||0)>=i.goal; if(i.type==='input')return (w.counts[i.id]??0)>=i.goal; return w.checks[i.id]; }).length;
+  if(fd>=FLOSS_GOAL) met++;
+  const customW=store.get('customW',[]);
+  customW.forEach(item=>{ if(item.type==='check'?w.checks[item.id]:itemSuccess(w,item)) met++; });
+  return {met, total: WEEKLY_ITEMS.length+1+customW.length};
 }
 function renderWeek(){
   document.getElementById('weekLabel').textContent = ' '+WKEY;
@@ -774,16 +806,15 @@ function renderWeek(){
       row.innerHTML=`<span class="lbl">${esc(item.label)}</span>
         <div class="counter"><button>−</button><span class="cv ${v>=item.goal?'met':''}">${v} / ${item.goal}${item.id==='lifts'?'–4':''}</span><button>+</button></div>`;
       const [minus,plus]=row.querySelectorAll('button');
-      minus.onclick=()=>{const ww=weekData(WKEY);ww.counts[item.id]=Math.max(0,(ww.counts[item.id]||0)-1);saveWeek(WKEY,ww);renderWeek();renderPillars();};
-      plus.onclick=()=>{const ww=weekData(WKEY);ww.counts[item.id]=Math.min(item.max,(ww.counts[item.id]||0)+1);saveWeek(WKEY,ww);renderWeek();renderPillars();};
+      minus.onclick=()=>{const ww=weekData(WKEY);ww.counts[item.id]=Math.max(0,(ww.counts[item.id]||0)-1);saveWeek(WKEY,ww);renderWeek();renderPillars();renderHomes();};
+      plus.onclick=()=>{const ww=weekData(WKEY);ww.counts[item.id]=Math.min(item.max,(ww.counts[item.id]||0)+1);saveWeek(WKEY,ww);renderWeek();renderPillars();renderHomes();};
       el.appendChild(row);
     } else if(item.type==='input'){
       const v = w.counts[item.id];
       const row=document.createElement('div'); row.className='hrow';
       row.innerHTML=`<span class="lbl">${esc(item.label)} <span class="goalhint">goal ${item.goal}–${item.goalMax}</span></span>`;
       const inp=document.createElement('input'); inp.type='number'; inp.min=0; inp.max=20; inp.value=v??'';
-      if(v>=item.goal) inp.style.color='var(--teal-dk)';
-      inp.onchange=()=>{const ww=weekData(WKEY);ww.counts[item.id]=inp.value===''?null:parseInt(inp.value);saveWeek(WKEY,ww);renderWeek();renderPillars();};
+      inp.onchange=()=>{const ww=weekData(WKEY);ww.counts[item.id]=inp.value===''?null:parseInt(inp.value);saveWeek(WKEY,ww);renderWeek();renderPillars();renderHomes();};
       if(v>=item.goal) inp.style.color='var(--teal-bright)';
       row.appendChild(inp);
       el.appendChild(row);
@@ -791,7 +822,7 @@ function renderWeek(){
       const checked=!!w.checks[item.id];
       const row=document.createElement('div'); row.className='item'+(checked?' done':'');
       row.innerHTML=`<input type="checkbox" ${checked?'checked':''} id="w_${item.id}"><label for="w_${item.id}">${esc(item.label)}</label>`+(item.cat?`<span class="pill ${CAT_META[item.cat][1]}">${CAT_META[item.cat][0]}</span>`:'');
-      row.querySelector('input').onchange=e=>{const ww=weekData(WKEY);ww.checks[item.id]=e.target.checked;saveWeek(WKEY,ww);renderWeek();};
+      row.querySelector('input').onchange=e=>{const ww=weekData(WKEY);ww.checks[item.id]=e.target.checked;saveWeek(WKEY,ww);renderWeek();renderHomes();};
       el.appendChild(row);
     }
   });
@@ -802,7 +833,7 @@ function renderWeek(){
   el.appendChild(frow);
   // custom weekly tasks
   store.get('customW',[]).forEach(item=>{
-    el.appendChild(taskWidgetRow(item, ()=>weekData(WKEY), ww=>{ saveWeek(WKEY,ww); renderWeek(); renderPillars(); }));
+    el.appendChild(taskWidgetRow(item, ()=>weekData(WKEY), ww=>{ saveWeek(WKEY,ww); renderWeek(); renderPillars(); renderHomes(); }));
   });
   if(editModeW) renderEditCustom('customW','editListW',renderWeek);
 
@@ -818,15 +849,14 @@ function renderWeek(){
   if(typeof Chart!=='undefined'){
     if(weekChart) weekChart.destroy();
     weekChart = new Chart(document.getElementById('weekChart'),{type:'bar',
-      data:{labels,datasets:[{data:vals,backgroundColor:'#3ee6d0',borderRadius:6}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%',color:'rgba(255,255,255,.75)'},grid:{color:'rgba(255,255,255,.12)'}},x:{ticks:{color:'rgba(255,255,255,.75)'},grid:{display:false}}}}});
+      data:{labels,datasets:[{data:vals,backgroundColor:'#14b3a0',borderRadius:6}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%',color:'#7d7894'},grid:{color:'rgba(0,0,0,.07)'}},x:{ticks:{color:'#7d7894'},grid:{display:false}}}}});
   }
   const avg = Math.round(vals.reduce((a,b)=>a+b,0)/7);
   document.getElementById('weekNote').textContent = `7-day average: ${avg}% of daily items completed. Flossing: ${fd} day${fd!==1?'s':''} (goal 3–5).`;
 }
 
 /* ================= REPORT BUILDERS ================= */
-
 function dailyReportHTML(k){
   const all=store.get('days',{}); const dd=all[k];
   const dt=new Date(k+'T12:00:00');
@@ -988,7 +1018,7 @@ function monthlyReportHTML(y,m){
     dates.forEach(d=>{ html+='<tr><td>'+MONTHS[m].slice(0,3)+' '+d.day+'</td><td class="l">'+esc(d.name)+'</td><td>'+esc(d.type)+'</td></tr>'; });
     html+='</table>';
   }
-  html+=`<div class="note"><b>Month summary:</b> ${tracked?Math.round(sum/tracked):0}% average daily completion across ${tracked} tracked day${tracked!==1?'s':''}. Avg Sleep Number score: ${scN?Math.round(scSum/scN):'—'} (${scN} days logged). Water goal hit ${wDays?wSucc+' of '+wDays+' logged days ('+Math.round(wSucc/wDays*100)+'%)':'— no days logged'}. Avg steps: ${stN?Math.round(stSum/stN).toLocaleString():'—'}. Flossed ${flossN} day${flossN!==1?'s':''}.</div>`;
+  html+=`<div class="note"><b>Month summary:</b> ${tracked?Math.round(sum/tracked):0}% average daily completion across ${tracked} tracked day${tracked!==1?'s':''} in ${MONTHS[m]}. Avg Sleep Number score: ${scN?Math.round(scSum/scN):'—'} (${scN} days logged). Water goal hit ${wDays?wSucc+' of '+wDays+' logged days ('+Math.round(wSucc/wDays*100)+'%)':'— no days logged'}. Avg steps: ${stN?Math.round(stSum/stN).toLocaleString():'—'}. Flossed ${flossN} day${flossN!==1?'s':''}.</div>`;
   return html;
 }
 
@@ -1019,7 +1049,6 @@ function renderReports(){
     b.onclick=()=>showViewer(dailyReportHTML(k));
     el.appendChild(b);
   });
-  // weekly
   const wkSet=new Set(Object.keys(store.get('weeks',{})));
   dayKeys.forEach(k=>wkSet.add(wkey(new Date(k+'T12:00:00'))));
   const wEl=document.getElementById('repWeekly');
@@ -1032,7 +1061,6 @@ function renderReports(){
     b.onclick=()=>showViewer(weeklyReportHTML(mon));
     wEl.appendChild(b);
   });
-  // monthly
   const moSet=new Set(dayKeys.map(k=>k.slice(0,7)));
   const mEl=document.getElementById('repMonthly');
   const mos=[...moSet].sort().reverse();
@@ -1061,12 +1089,11 @@ function renderMonthly(){
   const list=store.get('customM',[]);
   if(!list.length && !editModeM) el.innerHTML='<span class="muted">No monthly tasks yet — tap ✎ Edit list to add some (e.g., dog meds given, deep clean, review goals).</span>';
   list.forEach(item=>{
-    el.appendChild(taskWidgetRow(item, ()=>monthData(MKEY), md=>{ saveMonth(MKEY,md); renderMonthly(); }));
+    el.appendChild(taskWidgetRow(item, ()=>monthData(MKEY), md=>{ saveMonth(MKEY,md); renderMonthly(); renderHomes(); }));
   });
   if(editModeM) renderEditCustom('customM','editListM',renderMonthly);
 }
 function renderMonth(){
-  renderMonthly();
   const y=TODAY.getFullYear(), m=TODAY.getMonth();
   const first=new Date(y,m,1), days=new Date(y,m+1,0).getDate();
   const all=store.get('days',{});
@@ -1081,18 +1108,17 @@ function renderMonth(){
     const pct=dd?Math.round(dayDone(dd,items)/nItems*100):null;
     if(pct!==null && day<=TODAY.getDate()){sum+=pct;n++;}
     const c=document.createElement('div'); c.className='mg-cell'+(day===TODAY.getDate()?' mg-today':'')+(selectedDay===k?' mg-sel':'');
-    if(pct!==null){ c.style.background = pct>=80?'rgba(62,230,208,.32)':pct>=50?'rgba(255,212,121,.28)':'rgba(255,157,143,.26)'; }
+    if(pct!==null){ c.style.background = pct>=80?'rgba(20,179,160,.22)':pct>=50?'rgba(216,169,56,.20)':'rgba(209,104,90,.18)'; }
     const evs=(CAL_BY_DAY[k]||[]);
     c.innerHTML=`<span class="d">${day}</span>${pct!==null?`<span class="pc">${pct}%</span>`:''}`+(evs.length?'<span class="dots">'+'<i></i>'.repeat(Math.min(evs.length,3))+'</span>':'');
     c.onclick=()=>{ selectedDay=k; renderMonth(); showDayDetail(k, day); };
     grid.appendChild(c);
   }
   document.getElementById('monthNote').textContent = n?`Month-to-date average: ${Math.round(sum/n)}% across ${n} tracked day${n>1?'s':''}.`:'No days tracked yet this month — check items off on the Today tab.';
-  renderDates();
   if(selectedDay) showDayDetail(selectedDay, parseInt(selectedDay.slice(8)));
 }
 function showDayDetail(k, dayNum){
-  const card=document.getElementById('dayDetailCard'); card.style.display='';
+  document.getElementById('dayDetailWrap').style.display='';
   const dt=new Date(k+'T12:00:00');
   document.getElementById('dayDetailTitle').textContent=dt.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   const el=document.getElementById('dayDetail'); el.innerHTML='';
@@ -1117,7 +1143,6 @@ function showDayDetail(k, dayNum){
 
 /* ================= DATES ================= */
 function calSpecialDates(){
-  // birthdays/anniversaries detected in Google Calendar events this month
   if(!CAL_EVENTS) return [];
   const m=TODAY.getMonth(), y=TODAY.getFullYear();
   const out=[]; const seen=new Set();
@@ -1132,15 +1157,20 @@ function calSpecialDates(){
   });
   return out;
 }
+function monthDatesList(){
+  const dates=store.get('dates',[]);
+  const m=TODAY.getMonth()+1;
+  const manual=dates.filter(d=>d.month===m).map(d=>({...d}));
+  const fromCal=calSpecialDates().filter(c=>!manual.some(x=>x.day===c.day&&x.name.toLowerCase().includes(c.name.toLowerCase().slice(0,5))));
+  return manual.concat(fromCal).sort((a,b)=>a.day-b.day);
+}
 function renderDates(){
   const dates=store.get('dates',[]);
   const m=TODAY.getMonth()+1;
   const icon=t=>t==='Birthday'?'🎂':t==='Anniversary'?'💍':'💊';
-  const manual=dates.filter(d=>d.month===m).map(d=>({...d}));
-  const fromCal=calSpecialDates().filter(c=>!manual.some(x=>x.day===c.day&&x.name.toLowerCase().includes(c.name.toLowerCase().slice(0,5))));
-  const thisMonth=manual.concat(fromCal).sort((a,b)=>a.day-b.day);
+  const thisMonth=monthDatesList();
   const mEl=document.getElementById('monthDates');
-  mEl.innerHTML = thisMonth.length? '' : '<span class="muted">Nothing for '+MONTHS[m-1]+' yet. Add dates below — birthdays/anniversaries on your Google Calendar appear here automatically.</span>';
+  mEl.innerHTML = thisMonth.length? '' : '<span class="muted">Nothing for '+MONTHS[m-1]+' yet. Add dates in Manage Important Dates — birthdays/anniversaries on your Google Calendar appear here automatically.</span>';
   thisMonth.forEach(d=>{
     const row=document.createElement('div'); row.className='daterow';
     const nm=document.createElement('span');
@@ -1160,7 +1190,7 @@ function renderDates(){
     const t=document.createElement('span'); t.textContent=d.name; row.appendChild(t);
     const tag=document.createElement('span'); tag.className='muted'; tag.textContent=' ('+d.type+')'; row.appendChild(tag);
     const del=document.createElement('button'); del.className='del'; del.title='Delete'; del.textContent='✕';
-    del.onclick=()=>{ store.set('dates',store.get('dates',[]).filter(x=>x.id!==d.id)); renderDates(); };
+    del.onclick=()=>{ store.set('dates',store.get('dates',[]).filter(x=>x.id!==d.id)); renderDates(); renderHomes(); };
     row.appendChild(del);
     aEl.appendChild(row);
   });
@@ -1173,7 +1203,7 @@ function addDate(){
   dates.push({id:Date.now(),name,type:document.getElementById('d_type').value,month:parseInt(document.getElementById('d_month').value),day});
   store.set('dates',dates);
   document.getElementById('d_name').value='';document.getElementById('d_day').value='';
-  renderDates();
+  renderDates(); renderHomes();
 }
 MONTHS.forEach((mo,i)=>{const o=document.createElement('option');o.value=i+1;o.textContent=mo;if(i===TODAY.getMonth())o.selected=true;document.getElementById('d_month').appendChild(o);});
 
@@ -1193,8 +1223,9 @@ async function loadCalendar(){
     CAL_EVENTS = data.events||[];
     CAL_BY_DAY = {};
     CAL_EVENTS.forEach(e=>{const k=dkey(evTime(e));(CAL_BY_DAY[k]=CAL_BY_DAY[k]||[]).push(e);});
-    renderCalToday(); renderCalWeek();
-    if(document.getElementById('tab-month').style.display!=='none') renderMonth(); else renderDates();
+    renderCalToday(); renderCalWeek(); renderHomes();
+    if(openSec==='sec-mcal') renderMonth();
+    if(openSec==='sec-mdates') renderDates();
   }catch(err){
     document.getElementById('calToday').innerHTML='<li class="err">Couldn\'t reach your calendar script. Check the URL in Settings.</li>';
     document.getElementById('calWeek').innerHTML='<span class="err">Couldn\'t reach your calendar script. Check the URL in Settings.</span>';
@@ -1203,10 +1234,12 @@ async function loadCalendar(){
 function renderCalToday(){
   const tEl=document.getElementById('calToday');
   const todays=CAL_BY_DAY[TKEY]||[];
+  if(!CAL_EVENTS){ return; }
   tEl.innerHTML = todays.length?'':'<li class="muted">Nothing on the calendar today.</li>';
   todays.forEach(e=>{const li=document.createElement('li');li.innerHTML=`<span class="t">${fmtTime(e)}</span><span></span>`;li.lastChild.textContent=e.title||'(no title)';tEl.appendChild(li);});
 }
 function renderCalWeek(){
+  if(!CAL_EVENTS) return;
   const wEl=document.getElementById('calWeek'); wEl.innerHTML='';
   const d=new Date(TODAY); d.setHours(0,0,0,0); let any=false;
   for(let i=0;i<7;i++){
@@ -1240,7 +1273,7 @@ async function saveCalUrl(){
 
 /* ================= BACKUP ================= */
 function exportData(){
-  const data={days:store.get('days',{}),weeks:store.get('weeks',{}),months:store.get('months',{}),dates:store.get('dates',[]),custom:store.get('custom',[]),customW:store.get('customW',[]),customM:store.get('customM',[]),catov:store.get('catov',{}),calurl:store.get('calurl','')};
+  const data={days:store.get('days',{}),weeks:store.get('weeks',{}),months:store.get('months',{}),dates:store.get('dates',[]),custom:store.get('custom',[]),customW:store.get('customW',[]),customM:store.get('customM',[]),catov:store.get('catov',{}),hgoals:store.get('hgoals',{}),calurl:store.get('calurl','')};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='thrive3-backup-'+TKEY+'.json';a.click();
@@ -1250,15 +1283,161 @@ document.getElementById('importFile').onchange=function(){
   const r=new FileReader();
   r.onload=()=>{try{
     const d=JSON.parse(r.result);
-    ['days','weeks','months','dates','custom','customW','customM','catov','calurl'].forEach(k=>{ if(d[k]!==undefined) store.set(k,d[k]); });
+    ['days','weeks','months','dates','custom','customW','customM','catov','hgoals','calurl'].forEach(k=>{ if(d[k]!==undefined) store.set(k,d[k]); });
     alert('Backup restored.'); location.reload();
   }catch(e){alert('Invalid backup file.');}};
   r.readAsText(f);
 };
 
+/* ================= HOME GRIDS + NAVIGATION ================= */
+let openSec=null;
+const SECTION_RENDER={
+  'sec-daily':renderDaily,'sec-top3':renderTop3,'sec-health':renderHealth,'sec-food':renderHealth,
+  'sec-cal':renderCalToday,'sec-pillars':renderPillars,
+  'sec-wtasks':renderWeek,'sec-wsnap':renderWeek,'sec-wcal':renderCalWeek,
+  'sec-mtasks':renderMonthly,'sec-mcal':renderMonth,'sec-mdates':renderDates,'sec-managedates':renderDates
+};
+function openSection(id){
+  const sec=document.getElementById(id); if(!sec) return;
+  const tab=sec.closest('div[id^="tab-"]');
+  tab.querySelector('.home').style.display='none';
+  tab.querySelectorAll('.section').forEach(s=>s.classList.remove('open'));
+  sec.classList.add('open');
+  openSec=id;
+  (SECTION_RENDER[id]||function(){})();
+  window.scrollTo(0,0);
+}
+function closeSection(){
+  if(!openSec) return;
+  const sec=document.getElementById(openSec);
+  const tab=sec.closest('div[id^="tab-"]');
+  sec.classList.remove('open');
+  tab.querySelector('.home').style.display='';
+  openSec=null;
+  renderHomes();
+  window.scrollTo(0,0);
+}
+function blockHtml(sec,ico,title,stat,cls){
+  return `<div class="block ${cls}" onclick="openSection('${sec}')"><span class="bic">${ico}</span><span class="btitle">${title}</span><span class="bstat">${stat}</span></div>`;
+}
+function renderHomes(){
+  const items=dailyItems(); const d=dayData(TKEY);
+  const done=dayDone(d,items); const pct=items.length?Math.round(done/items.length*100):0;
+  const t3all=[...d.top3,...d.top3x].filter(t=>t.text); const t3done=t3all.filter(t=>t.done).length;
+  const h=d.health||{}; const goals=hGoals();
+  let gTot=0,gHit=0,gLog=0;
+  HEALTH_METRICS.forEach(m=>{ const cfg=goals[m.k];
+    if(cfg&&cfg.type!=='none'){gTot++; const s=healthSuccess(h,m.k); if(s!=null){gLog++; if(s)gHit++;}}});
+  const evsToday=CAL_BY_DAY[TKEY]||[];
+  const hw=weekHealthTotals();
+  const firstEv=evsToday[0];
+  document.getElementById('home-today').innerHTML=`
+    <div class="sumstrip" onclick="openSection('sec-daily')">
+      <div style="display:flex;justify-content:space-between;align-items:center"><b>Daily Progress</b><span class="big" style="font-size:20px">${pct}%</span></div>
+      <div class="bar"><div style="width:${pct}%"></div></div>
+      <div class="bstat">${done}/${items.length} daily items complete · tap to open</div>
+    </div>
+    <div class="heroes">
+      <div class="hero p" onclick="openSection('sec-pillars')">
+        <div class="htitle">Three Pillars</div>
+        <div class="hline">📖 Bible ${streak('bible')}🔥<br>🙏 Prayer ${streak('prayer')}🔥<br>🧠 Madison ${streak('madison')}🔥</div>
+        <div class="hmut">Sleep avg ${hw.avgScore} · Z2 ${hw.z2}m · tap for more</div>
+      </div>
+      <div class="hero t" onclick="openSection('sec-cal')">
+        <div class="htitle">Today's Calendar</div>
+        ${CAL_EVENTS===null?'<div class="hline">Connect in Settings</div>':
+          (evsToday.length?`<div class="hbig">${evsToday.length}</div><div class="hline"></div><div class="hmut">next: ${firstEv?esc(fmtTime(firstEv)+' '+(firstEv.title||'')).slice(0,60):''}</div>`:'<div class="hbig">0</div><div class="hline">events today</div><div class="hmut">enjoy the open day</div>')}
+      </div>
+    </div>
+    <div class="blocks">
+      ${blockHtml('sec-top3','🎯','Top 3 Today', t3all.length?`${t3done}/${t3all.length} done`:'Tap to set priorities','bw')}
+      ${blockHtml('sec-daily','✅','Daily To-Do', `${done}/${items.length} done`,'bp')}
+      ${blockHtml('sec-health','❤️','Health Log', gTot?`${gHit}/${gTot} goals hit${gLog<gTot?' · '+(gTot-gLog)+' unlogged':''}`:'Log today\'s numbers','bt')}
+      ${blockHtml('sec-food','🍎','Food & Coach', h.food?'Logged today ✓':'Tap to log meals','bw')}
+    </div>`;
+  // WEEK
+  const all=store.get('days',{}); let sumw=0;
+  { const dd=new Date(TODAY); dd.setDate(dd.getDate()-6);
+    for(let i=0;i<7;i++){ const x=all[dkey(dd)]; sumw+= x?Math.round(dayDone(x,items)/items.length*100):0; dd.setDate(dd.getDate()+1);} }
+  const avgW=Math.round(sumw/7);
+  const wm=weeklyMet();
+  let evWeek=0;
+  { const dd=new Date(TODAY); dd.setHours(0,0,0,0);
+    for(let i=0;i<7;i++){ evWeek+=(CAL_BY_DAY[dkey(dd)]||[]).length; dd.setDate(dd.getDate()+1);} }
+  document.getElementById('home-week').innerHTML=`
+    <div class="heroes">
+      <div class="hero p" onclick="openSection('sec-wsnap')">
+        <div class="htitle">Weekly Snapshot</div>
+        <div class="hbig">${avgW}%</div>
+        <div class="hline">7-day daily average</div>
+        <div class="hmut">tap for chart & report</div>
+      </div>
+      <div class="hero t" onclick="openSection('sec-wcal')">
+        <div class="htitle">Week Look-Ahead</div>
+        <div class="hbig">${CAL_EVENTS===null?'—':evWeek}</div>
+        <div class="hline">events in the next 7 days</div>
+        <div class="hmut">${CAL_EVENTS===null?'connect in Settings':'tap to see the week'}</div>
+      </div>
+    </div>
+    <div class="blocks">
+      ${blockHtml('sec-wtasks','🏋️','Weekly Tasks', `${wm.met}/${wm.total} goals met`,'bp')}
+      ${blockHtml('sec-wsnap','📊','Snapshot & Report', 'Chart + printable report','bw')}
+      ${blockHtml('sec-wcal','📆','Look-Ahead', CAL_EVENTS===null?'Connect calendar':`${evWeek} events this week`,'bt')}
+    </div>`;
+  // MONTH
+  const y=TODAY.getFullYear(), m=TODAY.getMonth();
+  let mSum=0,mN=0,evMonth=0;
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  for(let day=1;day<=daysInMonth;day++){
+    const k=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    const dd=all[k];
+    if(dd&&day<=TODAY.getDate()){ mSum+=Math.round(dayDone(dd,items)/items.length*100); mN++; }
+    evMonth+=(CAL_BY_DAY[k]||[]).length;
+  }
+  const mAvg=mN?Math.round(mSum/mN):0;
+  const mdl=monthDatesList();
+  const nextDate=mdl.find(x=>x.day>=TODAY.getDate());
+  const listM=store.get('customM',[]); const mm=monthData(MKEY);
+  let mMet=0; listM.forEach(item=>{ if(item.type==='check'?mm.checks[item.id]:itemSuccess(mm,item)) mMet++; });
+  document.getElementById('home-month').innerHTML=`
+    <div class="heroes">
+      <div class="hero p" onclick="openSection('sec-mcal')">
+        <div class="htitle">${MONTHS[m]}</div>
+        <div class="hbig">${mAvg}%</div>
+        <div class="hline">month-to-date average${CAL_EVENTS!==null?' · '+evMonth+' events':''}</div>
+        <div class="hmut">tap for the full calendar</div>
+      </div>
+      <div class="hero t" onclick="openSection('sec-mdates')">
+        <div class="htitle">Special Dates</div>
+        <div class="hbig">${mdl.length}</div>
+        <div class="hline">${nextDate?('next: '+esc(nextDate.name).slice(0,40)+' ('+MONTHS[m].slice(0,3)+' '+nextDate.day+')'):'this month'}</div>
+        <div class="hmut">birthdays · anniversaries · dog meds</div>
+      </div>
+    </div>
+    <div class="blocks">
+      ${blockHtml('sec-mtasks','📌','Monthly Tasks', listM.length?`${mMet}/${listM.length} met`:'Tap to add tasks','bp')}
+      ${blockHtml('sec-mcal','🗓️','Month Calendar', 'Scores + events by day','bw')}
+      ${blockHtml('sec-managedates','🎂','Manage Dates', (store.get('dates',[]).length||0)+' saved dates','bt')}
+    </div>`;
+}
+
+/* ================= NAV ================= */
+document.querySelectorAll('.navbtn').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  ['today','week','month','reports','settings'].forEach(n=>document.getElementById('tab-'+n).style.display = n===t.dataset.tab?'':'none');
+  // reset any open section and show that tab's home
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.home').forEach(hm=>hm.style.display='');
+  openSec=null;
+  if(t.dataset.tab==='reports') renderReports();
+  else renderHomes();
+  window.scrollTo(0,0);
+});
+
 /* ================= INIT ================= */
 document.getElementById('s_calurl').value = store.get('calurl','');
-renderDaily(); renderTop3(); renderHealth(); renderPillars(); loadCalendar();
+renderHomes(); renderHealth(); loadCalendar();
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
