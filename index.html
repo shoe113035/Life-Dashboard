@@ -20,7 +20,7 @@
   --bg:#f4effc;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(165deg,#e6d7fb 0%,#ffffff 48%,#c9f1e8 100%) fixed;color:var(--ink);padding:16px 14px calc(96px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;min-height:100vh}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(165deg,#a97ae8 0%,#c9a6f2 30%,#ecdffb 58%,#b5ecdf 100%) fixed;color:var(--ink);padding:16px 14px calc(96px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;min-height:100vh}
 .hdr{display:flex;align-items:center;gap:10px}
 .hdr img{width:44px;height:44px;border-radius:13px;border:1px solid #eee;background:#fff;box-shadow:0 2px 8px rgba(80,50,140,.15)}
 h1{font-size:24px;font-weight:800;background:linear-gradient(90deg,#0d9284,#5b2d8f);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:.01em}
@@ -28,9 +28,9 @@ h1{font-size:24px;font-weight:800;background:linear-gradient(90deg,#0d9284,#5b2d
 /* ===== home grid ===== */
 .home{margin-top:14px}
 .sumstrip{background:linear-gradient(120deg,#fff 55%,#ecdffb);border-radius:20px;padding:14px 16px;box-shadow:0 4px 16px rgba(90,60,150,.12);cursor:pointer;margin-bottom:12px;border-left:5px solid #12bfa9}
-.footer{margin:28px auto 6px;text-align:center}
-.footer img{width:62%;max-width:280px;opacity:.96;filter:drop-shadow(0 4px 10px rgba(72,24,120,.18))}
-.footer .slogan{font-size:15px;font-weight:800;font-style:italic;letter-spacing:.10em;text-transform:lowercase;background:linear-gradient(90deg,#0d9284,#5b2d8f);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:2px}
+.footer{margin:24px auto 6px;text-align:center;background:#fff;border-radius:22px;padding:20px 16px 16px;box-shadow:0 6px 20px rgba(72,24,120,.16);border:1px solid rgba(255,255,255,.8)}
+.footer img{width:62%;max-width:280px}
+.footer .slogan{font-size:15px;font-weight:800;font-style:italic;letter-spacing:.10em;text-transform:lowercase;background:linear-gradient(90deg,#0d9284,#5b2d8f);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:4px}
 .sumstrip .bstat{margin-top:6px}
 .heroes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .hero{border-radius:20px;padding:14px;color:#fff;min-height:136px;cursor:pointer;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 18px rgba(70,40,130,.22)}
@@ -205,10 +205,36 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 
   <div class="card section" id="sec-food">
     <button class="backbtn" onclick="closeSection()">‹ Back</button>
-    <h2 style="margin-top:10px">Food Diary & Coach <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">goal: 200 → 190 lbs</span></h2>
+    <h2 style="margin-top:10px">Calorie Tracker <button class="printbtn" onclick="editBudget()">🎯 Budget</button></h2>
+    <div class="sumstrip" style="cursor:default;border-left-color:#5b2d8f;margin-bottom:8px" id="calSummary"></div>
+    <div id="calEntries"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <input type="text" id="cal_name" placeholder="Food item" style="flex:1;min-width:110px">
+      <input type="number" id="cal_amt" placeholder="cal" style="width:80px">
+      <button class="btn teal" onclick="addCalEntry()">Add</button>
+      <button class="btn" onclick="scanBarcode()">📷 Scan</button>
+    </div>
+    <div id="scanResult" style="display:none" class="summary-note">
+      <b id="sr_name"></b>
+      <div id="sr_facts" class="bstat" style="margin-top:2px"></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap">
+        <input type="number" id="sr_qty" value="1" step="0.5" min="0" style="width:70px" onchange="updateScanCalc()" oninput="updateScanCalc()">
+        <select id="sr_unit" onchange="updateScanCalc()"></select>
+        <span id="sr_cal" style="font-weight:800;color:var(--teal-bright)"></span>
+        <button class="btn teal" onclick="addScanned()">Add to tracker</button>
+        <button class="printbtn" onclick="document.getElementById('scanResult').style.display='none'">✕</button>
+      </div>
+      <div id="sr_insight" class="bstat" style="margin-top:8px"></div>
+    </div>
+    <h2 style="margin-top:16px">Food Diary & Coach <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">goal: 200 → 190 lbs</span></h2>
     <textarea id="h_food" placeholder="What did you eat today? e.g. eggs & oatmeal, chicken salad, salmon + rice, protein shake…"></textarea>
     <div class="coach" id="coachBox"></div>
     <div class="disc">General guidance to support your cut — not medical or dietetic advice.</div>
+    <div id="scanOverlay" style="display:none;position:fixed;inset:0;background:rgba(30,10,60,.94);z-index:50;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+      <video id="scanVideo" playsinline style="width:92%;max-width:420px;border-radius:16px"></video>
+      <div id="scanMsg" style="color:#fff;font-size:14px;text-align:center;padding:0 20px">Point your camera at a barcode…</div>
+      <button class="btn" onclick="stopScan()">Cancel</button>
+    </div>
   </div>
 
   <div class="card section" id="sec-cal">
@@ -221,6 +247,17 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     <button class="backbtn" onclick="closeSection()">‹ Back</button>
     <h2 style="margin-top:10px">Three Pillars</h2>
     <div id="pillars"></div>
+  </div>
+
+  <div class="card section" id="sec-prayer">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">🙏 Prayer Requests <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">fresh start every Monday</span></h2>
+    <div id="prayerList"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <input type="text" id="prayerInput" placeholder="Add a prayer request…" style="flex:1">
+      <button class="btn teal" onclick="addPrayer()">Add</button>
+    </div>
+    <div class="muted" style="margin-top:8px">Requests appear on every daily report this week, then the list resets Monday. Check one off when it's answered.</div>
   </div>
 </div>
 
@@ -256,6 +293,32 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     <button class="backbtn" onclick="closeSection()">‹ Back</button>
     <h2 style="margin-top:10px">Week Look-Ahead</h2>
     <div id="calWeek"><span class="muted">Connect your calendar in Settings.</span></div>
+  </div>
+
+  <div class="card section" id="sec-finance">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">💰 Finances <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">Rocket Money CSV</span></h2>
+    <div id="finSummary"><span class="muted">No data yet.</span></div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn teal" onclick="document.getElementById('finFile').click()">⬆ Upload CSV</button>
+      <button class="btn ghost" onclick="clearFinance()">Clear data</button>
+      <input type="file" id="finFile" accept=".csv,text/csv" style="display:none">
+    </div>
+    <div class="muted" style="margin-top:8px">Export from Rocket Money (Settings → Export data → CSV) and upload here Saturday night — Sunday's weekly report and the monthly report include the overview. Duplicates are skipped automatically; transfers and credit-card payments are excluded from spending.</div>
+    <h2 style="margin-top:18px">Accounts & Net Worth <button class="printbtn" id="editABtn" onclick="toggleEditA()">✎ Accounts</button></h2>
+    <div id="acctSummary"></div>
+    <div id="acctRows"></div>
+    <button class="btn teal" id="snapBtn" onclick="saveSnapshot()" style="margin-top:10px;display:none">💾 Save today's snapshot</button>
+    <div id="editPanelA" style="display:none">
+      <div class="muted" style="margin:8px 0 4px">Add your accounts once — then just update balances each Saturday:</div>
+      <div id="editListA"></div>
+      <div class="addform">
+        <input type="text" id="newa_name" placeholder="Account name (e.g., Chase Checking)" style="grid-column:1/-1">
+        <select id="newa_type"><option value="cash">Cash / Bank</option><option value="invest">Investment / Retirement</option><option value="debt">Credit / Loan (owed)</option></select>
+        <button class="btn teal" onclick="addAcct()">Add account</button>
+      </div>
+    </div>
+    <div class="muted" style="margin-top:8px">Type current balances from Rocket Money, tap save — the app tracks your available cash and net worth over time and adds the trend to weekly and monthly reports.</div>
   </div>
 </div>
 
@@ -590,6 +653,384 @@ function renderHealth(){
   coach();
 }
 
+/* ================= PRAYER REQUESTS ================= */
+function prayersFor(wk){ const all=store.get('prayers',{}); return all[wk]||[]; }
+function savePrayers(wk,list){ const all=store.get('prayers',{}); all[wk]=list; store.set('prayers',all); }
+function renderPrayers(){
+  const el=document.getElementById('prayerList'); el.innerHTML='';
+  const list=prayersFor(WKEY);
+  if(!list.length){ el.innerHTML='<span class="muted">No requests yet this week — add one below.</span>'; return; }
+  list.forEach(p=>{
+    const row=document.createElement('div'); row.className='item'+(p.answered?' done':'');
+    row.innerHTML=`<input type="checkbox" ${p.answered?'checked':''} title="Answered"><label>• </label><button class="del" style="background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:4px">✕</button>`;
+    row.querySelector('label').append(p.text);
+    row.querySelector('input').onchange=e=>{ const l=prayersFor(WKEY); const it=l.find(x=>x.id===p.id); if(it)it.answered=e.target.checked; savePrayers(WKEY,l); renderPrayers(); };
+    row.querySelector('.del').onclick=()=>{ savePrayers(WKEY,prayersFor(WKEY).filter(x=>x.id!==p.id)); renderPrayers(); renderHomes(); };
+    el.appendChild(row);
+  });
+}
+function addPrayer(){
+  const inp=document.getElementById('prayerInput');
+  const text=inp.value.trim(); if(!text){alert('Type a prayer request.');return;}
+  const list=prayersFor(WKEY); list.push({id:'p'+Date.now(),text,answered:false});
+  savePrayers(WKEY,list); inp.value='';
+  renderPrayers(); renderHomes();
+}
+function prayerReportHTML(wk){
+  const list=prayersFor(wk);
+  if(!list.length) return '';
+  return '<h3>🙏 Prayer Requests (this week)</h3><div class="note">'+list.map(p=>'• '+esc(p.text)+(p.answered?' <span class="ok">✓ answered</span>':'')).join('<br>')+'</div>';
+}
+
+/* ================= CALORIE TRACKER ================= */
+function calBudget(){ return store.get('calbudget',2425); }
+function editBudget(){
+  const v=prompt('Daily calorie budget. Your plan: ~2,400–2,450 (500 under your ~2,900–3,000 TDEE, tuned to keep strength). Add 100–200 on heavy conditioning days. Aggressive option: 2,200–2,250.',calBudget());
+  if(v&&!isNaN(parseInt(v))){ store.set('calbudget',parseInt(v)); renderCalories(); coach(); renderHomes(); }
+}
+function calsFor(d){ return (d.health&&d.health.cals)||[]; }
+function calsUsed(d){ return calsFor(d).reduce((a,e)=>a+(e.cal||0),0); }
+function renderCalories(){
+  const d=dayData(TKEY); const list=calsFor(d);
+  const used=calsUsed(d); const budget=calBudget(); const left=budget-used;
+  const pctUsed=budget?Math.min(100,Math.round(used/budget*100)):0;
+  document.getElementById('calSummary').innerHTML=
+    `<div style="display:flex;justify-content:space-between;align-items:center"><b>${used.toLocaleString()} cal eaten</b><b style="color:${left>=0?'var(--teal-bright)':'var(--purple)'}">${left>=0?left.toLocaleString()+' left':Math.abs(left).toLocaleString()+' over'}</b></div>
+     <div class="bar"><div style="width:${pctUsed}%"></div></div>
+     <div class="bstat">budget ${budget.toLocaleString()} cal · macros ≈ 215g protein / 75–80g fat / 215–225g carbs</div>`;
+  const el=document.getElementById('calEntries'); el.innerHTML='';
+  list.forEach(e=>{
+    const row=document.createElement('div'); row.className='hrow';
+    row.innerHTML=`<span class="lbl"></span><b>${(e.cal||0).toLocaleString()}</b><button class="del" style="background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:4px">✕</button>`;
+    row.querySelector('.lbl').textContent=e.name||'Item';
+    row.querySelector('.del').onclick=()=>{
+      const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.cals=calsFor(dd).filter(x=>x.id!==e.id);
+      saveDay(TKEY,dd); renderCalories(); coach(); renderHomes();
+    };
+    el.appendChild(row);
+  });
+}
+function addCalEntry(prefName,prefCal){
+  const nameEl=document.getElementById('cal_name'), amtEl=document.getElementById('cal_amt');
+  const name=(prefName??nameEl.value).trim(); const cal=parseInt(prefCal??amtEl.value);
+  if(!name||isNaN(cal)){alert('Enter the item and its calories.');return;}
+  const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.cals=calsFor(dd);
+  dd.health.cals.push({id:'c'+Date.now(),name,cal});
+  saveDay(TKEY,dd); nameEl.value=''; amtEl.value='';
+  renderCalories(); coach(); renderHomes();
+}
+let scanStream=null, scanTimer=null;
+async function scanBarcode(){
+  if(!('BarcodeDetector' in window)){ alert("Barcode scanning isn't supported in this browser — type the item and calories instead."); return; }
+  const overlay=document.getElementById('scanOverlay');
+  const video=document.getElementById('scanVideo');
+  document.getElementById('scanMsg').textContent='Point your camera at a barcode…';
+  try{
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+  }catch(e){ alert('Camera access was blocked. Allow camera permission and try again.'); return; }
+  overlay.style.display='flex';
+  video.srcObject=scanStream; await video.play();
+  const detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});
+  scanTimer=setInterval(async()=>{
+    try{
+      const codes=await detector.detect(video);
+      if(codes.length){ const code=codes[0].rawValue; stopScan(); lookupBarcode(code); }
+    }catch(e){}
+  },350);
+}
+function stopScan(){
+  if(scanTimer){clearInterval(scanTimer);scanTimer=null;}
+  if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null;}
+  document.getElementById('scanOverlay').style.display='none';
+}
+let LAST_SCAN=null;
+async function lookupBarcode(code){
+  try{
+    const r=await fetch('https://world.openfoodfacts.org/api/v2/product/'+encodeURIComponent(code)+'.json');
+    const data=await r.json();
+    const p=data.product;
+    if(!p){ alert('Product not found — type it in manually.'); return; }
+    const n=p.nutriments||{};
+    LAST_SCAN={
+      name:(p.product_name||('Item '+code)).slice(0,60),
+      servingSize:p.serving_size||null,
+      servKcal:n['energy-kcal_serving']??null,
+      servProt:n['proteins_serving']??null,
+      servSugar:n['sugars_serving']??null,
+      kcal100:n['energy-kcal_100g']??null,
+      prot100:n['proteins_100g']??null,
+      sugar100:n['sugars_100g']??null,
+      fat100:n['fat_100g']??null,
+      carbs100:n['carbohydrates_100g']??null
+    };
+    if(LAST_SCAN.servKcal==null&&LAST_SCAN.kcal100==null){ alert('No calorie data for this product — enter it manually.'); return; }
+    document.getElementById('sr_name').textContent=LAST_SCAN.name;
+    const facts=[];
+    if(LAST_SCAN.servKcal!=null) facts.push(Math.round(LAST_SCAN.servKcal)+' cal per serving'+(LAST_SCAN.servingSize?' ('+LAST_SCAN.servingSize+')':''));
+    if(LAST_SCAN.kcal100!=null) facts.push(Math.round(LAST_SCAN.kcal100)+' cal per 100g');
+    if(LAST_SCAN.prot100!=null) facts.push(Math.round(LAST_SCAN.prot100)+'g protein /100g');
+    document.getElementById('sr_facts').textContent=facts.join(' · ');
+    const unit=document.getElementById('sr_unit'); unit.innerHTML='';
+    if(LAST_SCAN.servKcal!=null){ const o=document.createElement('option'); o.value='serv'; o.textContent='serving(s)'; unit.appendChild(o); }
+    if(LAST_SCAN.kcal100!=null){ const o=document.createElement('option'); o.value='100g'; o.textContent='× 100g'; unit.appendChild(o); }
+    document.getElementById('sr_qty').value=1;
+    // insight
+    const ins=[];
+    const protServ=LAST_SCAN.servProt??(LAST_SCAN.prot100!=null?LAST_SCAN.prot100:null);
+    const sugServ=LAST_SCAN.servSugar??(LAST_SCAN.sugar100!=null?LAST_SCAN.sugar100:null);
+    if(protServ!=null&&protServ>=20) ins.push('💪 Solid protein — helps your 210–220g target.');
+    else if(protServ!=null&&protServ<5) ins.push('Low protein — pair it with a protein source.');
+    if(sugServ!=null&&sugServ>=15) ins.push('⚠️ High sugar — budget it deliberately, ideally around training.');
+    if(LAST_SCAN.kcal100!=null&&LAST_SCAN.kcal100>=400) ins.push('Calorie-dense — easy to overeat; measure the portion.');
+    if(!ins.length) ins.push('Reasonable pick — log the right portion and move on.');
+    document.getElementById('sr_insight').textContent=ins.join(' ');
+    document.getElementById('scanResult').style.display='';
+    updateScanCalc();
+  }catch(e){ alert("Couldn't look that up — type it in manually."); }
+}
+function scanCalcCal(){
+  if(!LAST_SCAN) return 0;
+  const qty=parseFloat(document.getElementById('sr_qty').value)||0;
+  const unit=document.getElementById('sr_unit').value;
+  const per=unit==='serv'?LAST_SCAN.servKcal:LAST_SCAN.kcal100;
+  return Math.round(qty*(per||0));
+}
+function updateScanCalc(){
+  document.getElementById('sr_cal').textContent='= '+scanCalcCal().toLocaleString()+' cal';
+}
+function addScanned(){
+  if(!LAST_SCAN) return;
+  const cal=scanCalcCal();
+  if(!cal){ alert('Set the amount first.'); return; }
+  const qty=parseFloat(document.getElementById('sr_qty').value)||0;
+  const unit=document.getElementById('sr_unit').value==='serv'?'serving'+(qty!==1?'s':''):'× 100g';
+  const label=LAST_SCAN.name+' ('+qty+' '+unit+')';
+  const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.cals=calsFor(dd);
+  dd.health.cals.push({id:'c'+Date.now(),name:label,cal});
+  dd.health.food=((dd.health.food||'')+'\n'+label).trim();
+  saveDay(TKEY,dd);
+  document.getElementById('scanResult').style.display='none';
+  LAST_SCAN=null;
+  renderCalories(); renderHealth(); renderHomes();
+}
+
+/* ================= FINANCES (Rocket Money CSV) ================= */
+function finTx(){ return store.get('fintx',[]); }
+function parseCSV(text){
+  const rows=[]; let row=[],field='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(inQ){ if(c==='"'){ if(text[i+1]==='"'){field+='"';i++;} else inQ=false; } else field+=c; }
+    else if(c==='"') inQ=true;
+    else if(c===','){ row.push(field); field=''; }
+    else if(c==='\n'||c==='\r'){ if(field!==''||row.length){ row.push(field); rows.push(row); row=[]; field=''; } if(c==='\r'&&text[i+1]==='\n')i++; }
+    else field+=c;
+  }
+  if(field!==''||row.length){row.push(field);rows.push(row);}
+  return rows;
+}
+function importFinCSV(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const rows=parseCSV(r.result);
+      if(rows.length<2){alert('That CSV looks empty.');return;}
+      const hdr=rows[0].map(h=>h.trim().toLowerCase());
+      const di=hdr.findIndex(h=>h==='date')>=0?hdr.findIndex(h=>h==='date'):hdr.findIndex(h=>h.includes('date'));
+      const ni=hdr.findIndex(h=>h==='name'||h==='description'||h.includes('name'));
+      const ai=hdr.findIndex(h=>h==='amount');
+      const ci=hdr.findIndex(h=>h==='category');
+      if(di<0||ai<0){alert("Couldn't find Date/Amount columns — is this the Rocket Money export?");return;}
+      const list=finTx();
+      const existing=new Set(list.map(t=>t.k));
+      let added=0;
+      rows.slice(1).forEach(row=>{
+        const date=(row[di]||'').trim();
+        const amt=parseFloat((row[ai]||'').replace(/[$,]/g,''));
+        if(!date||isNaN(amt))return;
+        const name=((ni>=0?row[ni]:'')||'Transaction').trim();
+        const cat=((ci>=0?row[ci]:'')||'Other').trim();
+        const k=date+'|'+name+'|'+amt;
+        if(existing.has(k))return;
+        existing.add(k); list.push({k,date,name,cat,amt}); added++;
+      });
+      store.set('fintx',list);
+      renderFinance(); renderHomes();
+      alert('Imported '+added+' new transaction'+(added!==1?'s':'')+' — '+list.length+' total on file.');
+    }catch(e){ alert("Couldn't read that CSV."); }
+  };
+  r.readAsText(file);
+}
+function clearFinance(){ if(confirm('Delete all imported finance data?')){ store.set('fintx',[]); renderFinance(); renderHomes(); } }
+const FIN_SKIP=/transfer|credit card payment/i;
+const FIN_INCOME=/income|paycheck|payroll|interest|dividend|refund|deposit/i;
+function finSummary(txs){
+  let spend=0,income=0; const byCat={},byMerchant={};
+  txs.forEach(t=>{
+    if(FIN_SKIP.test(t.cat))return;
+    const a=Math.abs(t.amt);
+    if(t.amt<0||FIN_INCOME.test(t.cat)){ income+=a; return; }
+    spend+=a; byCat[t.cat]=(byCat[t.cat]||0)+a; byMerchant[t.name]=(byMerchant[t.name]||0)+a;
+  });
+  return {spend,income,
+    cats:Object.entries(byCat).sort((a,b)=>b[1]-a[1]),
+    merch:Object.entries(byMerchant).sort((a,b)=>b[1]-a[1]),
+    count:txs.length};
+}
+function finForRange(start,end){
+  return finTx().filter(t=>{ const d=new Date(t.date); return !isNaN(d)&&d>=start&&d<end; });
+}
+function money(v){ return '$'+Math.round(v).toLocaleString(); }
+function renderFinance(){
+  renderFinAccounts();
+  const el=document.getElementById('finSummary');
+  if(!finTx().length){ el.innerHTML='<span class="muted">No data yet — upload your Rocket Money CSV export below.</span>'; return; }
+  const mon=mondayOf(TODAY); const sun=new Date(mon); sun.setDate(sun.getDate()+7);
+  const wk=finSummary(finForRange(mon,sun));
+  const mo=finSummary(finForRange(new Date(TODAY.getFullYear(),TODAY.getMonth(),1),new Date(TODAY.getFullYear(),TODAY.getMonth()+1,1)));
+  let html='<div class="statrow">'
+    +'<div class="stat"><div class="v">'+money(wk.spend)+'</div><div class="l">spent this week</div></div>'
+    +'<div class="stat"><div class="v">'+money(mo.spend)+'</div><div class="l">spent in '+MONTHS[TODAY.getMonth()]+'</div></div>'
+    +'<div class="stat"><div class="v">'+money(mo.income)+'</div><div class="l">income this month</div></div></div>';
+  if(mo.cats.length){
+    html+='<div class="dayhdr" style="margin-top:12px">Top categories this month</div>';
+    mo.cats.slice(0,6).forEach(([c,v])=>{ html+='<div class="hrow"><span class="lbl">'+esc(c)+'</span><b>'+money(v)+'</b></div>'; });
+  }
+  el.innerHTML=html;
+}
+function finReportHTML(start,end,title){
+  const txs=finForRange(start,end);
+  if(!txs.length) return '';
+  const s=finSummary(txs);
+  let html='<h3>💰 Finances — '+esc(title)+'</h3><table><tr><th class="l">Category</th><th>Spent</th></tr>';
+  s.cats.slice(0,10).forEach(([c,v])=>{ html+='<tr><td class="l">'+esc(c)+'</td><td>'+money(v)+'</td></tr>'; });
+  html+='<tr><th class="l">Total spending</th><th>'+money(s.spend)+'</th></tr>';
+  html+='<tr><th class="l">Income</th><th>'+money(s.income)+'</th></tr></table>';
+  if(s.merch.length) html+='<div class="note"><b>Top merchants:</b> '+s.merch.slice(0,5).map(([n,v])=>esc(n)+' '+money(v)).join(' · ')+'</div>';
+  return html;
+}
+
+/* ================= ACCOUNTS & NET WORTH ================= */
+function finAccts(){ return store.get('finaccts',[]); }
+function finSnaps(){ return store.get('finsnaps',{}); }
+function latestSnapOnOrBefore(dateKey){
+  const snaps=finSnaps();
+  const keys=Object.keys(snaps).filter(k=>k<=dateKey).sort();
+  if(!keys.length) return null;
+  const k=keys[keys.length-1];
+  return [k,snaps[k]];
+}
+function snapTotals(bal){
+  let cash=0,invest=0,debt=0;
+  finAccts().forEach(a=>{
+    const v=Math.abs(parseFloat(bal[a.id])||0);
+    if(a.type==='cash')cash+=v; else if(a.type==='invest')invest+=v; else debt+=v;
+  });
+  return {cash,invest,debt,net:cash+invest-debt};
+}
+const ACCT_TYPE_LABEL={cash:'Cash / Bank',invest:'Investment',debt:'Credit / Loan'};
+let editModeA=false;
+function toggleEditA(){ editModeA=!editModeA;
+  document.getElementById('editPanelA').style.display=editModeA?'':'none';
+  document.getElementById('editABtn').textContent=editModeA?'✓ Done':'✎ Accounts';
+  renderFinAccounts(); }
+function renderEditA(){
+  const el=document.getElementById('editListA'); el.innerHTML='';
+  const list=finAccts();
+  if(!list.length){ el.innerHTML='<span class="muted">No accounts yet.</span>'; return; }
+  list.forEach(a=>{
+    const row=document.createElement('div'); row.className='editrow';
+    const nm=document.createElement('span'); nm.className='nm'; nm.textContent=a.name;
+    const g=document.createElement('span'); g.className='muted'; g.textContent=' ('+ACCT_TYPE_LABEL[a.type]+')'; nm.appendChild(g);
+    row.appendChild(nm);
+    const del=document.createElement('button'); del.className='del'; del.textContent='✕';
+    del.onclick=()=>{ store.set('finaccts',finAccts().filter(x=>x.id!==a.id)); renderFinAccounts(); };
+    row.appendChild(del);
+    el.appendChild(row);
+  });
+}
+function addAcct(){
+  const name=document.getElementById('newa_name').value.trim();
+  if(!name){alert('Type an account name.');return;}
+  const list=finAccts();
+  list.push({id:'a'+Date.now(),name,type:document.getElementById('newa_type').value});
+  store.set('finaccts',list);
+  document.getElementById('newa_name').value='';
+  renderFinAccounts();
+}
+function renderFinAccounts(){
+  const accts=finAccts();
+  const rowsEl=document.getElementById('acctRows'); rowsEl.innerHTML='';
+  const sumEl=document.getElementById('acctSummary');
+  document.getElementById('snapBtn').style.display=accts.length?'':'none';
+  if(!accts.length){ sumEl.innerHTML='<span class="muted">Add your accounts (✎ Accounts) to start tracking net worth.</span>'; if(editModeA) renderEditA(); return; }
+  const latest=latestSnapOnOrBefore('9999-12-31');
+  const bal=latest?latest[1]:{};
+  accts.forEach(a=>{
+    const row=document.createElement('div'); row.className='hrow';
+    row.innerHTML=`<span class="lbl"></span><span class="pill ${a.type==='debt'?'p-spirit':'p-phys'}">${ACCT_TYPE_LABEL[a.type]}</span>`;
+    row.querySelector('.lbl').textContent=a.name;
+    const inp=document.createElement('input'); inp.type='number'; inp.step='0.01'; inp.id='bal_'+a.id;
+    inp.value=bal[a.id]??'';
+    inp.placeholder='$';
+    row.appendChild(inp);
+    rowsEl.appendChild(row);
+  });
+  if(latest){
+    const t=snapTotals(latest[1]);
+    // previous snapshot for trend
+    const keys=Object.keys(finSnaps()).sort();
+    const prevKey=keys.filter(k=>k<latest[0]).pop();
+    let trend='';
+    if(prevKey){
+      const pt=snapTotals(finSnaps()[prevKey]);
+      const d=t.net-pt.net;
+      trend=` · ${d>=0?'▲':'▼'} ${money(Math.abs(d))} since ${new Date(prevKey+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;
+    }
+    sumEl.innerHTML='<div class="statrow">'
+      +'<div class="stat"><div class="v">'+money(t.cash)+'</div><div class="l">available cash</div></div>'
+      +'<div class="stat"><div class="v">'+money(t.invest)+'</div><div class="l">investments</div></div>'
+      +'<div class="stat"><div class="v">'+money(t.debt)+'</div><div class="l">debt</div></div>'
+      +'<div class="stat"><div class="v">'+money(t.net)+'</div><div class="l">net worth'+esc('')+'</div></div></div>'
+      +'<div class="bstat" style="margin-top:6px">last snapshot '+new Date(latest[0]+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})+trend+'</div>';
+  } else {
+    sumEl.innerHTML='<span class="muted">Enter balances below and save your first snapshot.</span>';
+  }
+  if(editModeA) renderEditA();
+}
+function saveSnapshot(){
+  const accts=finAccts();
+  const bal={}; let any=false;
+  accts.forEach(a=>{
+    const v=document.getElementById('bal_'+a.id).value;
+    if(v!==''){ bal[a.id]=parseFloat(v); any=true; }
+  });
+  if(!any){alert('Enter at least one balance.');return;}
+  const snaps=finSnaps(); snaps[TKEY]=bal; store.set('finsnaps',snaps);
+  renderFinAccounts();
+}
+function assetsReportHTML(endDate, prevDate, title){
+  const latest=latestSnapOnOrBefore(dkey(endDate));
+  if(!latest) return '';
+  const accts=finAccts(); if(!accts.length) return '';
+  const t=snapTotals(latest[1]);
+  let html='<h3>🏦 Assets & Net Worth — '+esc(title)+'</h3><table><tr><th class="l">Account</th><th>Type</th><th>Balance</th></tr>';
+  accts.forEach(a=>{
+    const v=latest[1][a.id];
+    if(v==null) return;
+    html+='<tr><td class="l">'+esc(a.name)+'</td><td>'+ACCT_TYPE_LABEL[a.type]+'</td><td>'+money(Math.abs(v))+'</td></tr>';
+  });
+  html+='<tr><th class="l">Available cash</th><th></th><th>'+money(t.cash)+'</th></tr>';
+  html+='<tr><th class="l">Net worth</th><th></th><th>'+money(t.net)+'</th></tr></table>';
+  const prev=latestSnapOnOrBefore(dkey(prevDate));
+  if(prev&&prev[0]<latest[0]){
+    const pt=snapTotals(prev[1]);
+    const d=t.net-pt.net;
+    html+='<div class="note"><b>Trend:</b> net worth '+(d>=0?'up ':'down ')+money(Math.abs(d))+' since '+new Date(prev[0]+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})+' (snapshot dated '+new Date(latest[0]+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})+').</div>';
+  }
+  return html;
+}
+
 /* ================= FOOD COACH ================= */
 function coach(){
   const d=dayData(TKEY); const h=d.health||{};
@@ -603,22 +1044,27 @@ function coach(){
   const hour=new Date().getHours();
   const tips=[];
   if(!txt){
-    tips.push('<b>Protein anchor:</b> build each meal around 40g+ protein (eggs, chicken, fish, Greek yogurt) — aim ~180–200g/day to hold muscle while cutting.');
-    tips.push('<b>Deficit math:</b> a 300–500 cal/day deficit (~2,300–2,500 cal for your size/activity) loses ~1 lb/week — 10 lbs in about 8–10 weeks without wrecking training.');
-    tips.push('<b>Time your carbs:</b> put most carbs before/after lifts and runs; keep rest-day meals protein + veggies + fats.');
-    tips.push('<b>Cut-off:</b> finish eating 2–3 hrs before bed — helps the stomach-fat goal and your Sleep Number score.');
+    tips.push('<b>Protein is your #1 lever:</b> ~210–220g/day (1.1 g/lb). Build every meal around 50g+ — it\'s what keeps your lifts intact in a deficit.');
+    tips.push('<b>The plan:</b> ~2,425 cal (500 under your ~2,950 TDEE) ≈ 1 lb/week of fat while holding strength. Macros: 215g protein / 75–80g fat / 215–225g carbs.');
+    tips.push('<b>Don\'t cut carbs hard:</b> running, lifting, and conditioning all run on glycogen — gut your carbs and gym performance dies before stomach fat does. Put most carbs around training.');
+    tips.push('<b>Lift heavy, not just pump work:</b> keep 3–6 rep range on main lifts 1–2×/week to retain strength while cutting.');
+    tips.push('<b>Watch the waist, not just the scale:</b> waist trending down while lifts hold steady is the real win condition.');
   } else {
-    if(!has(PROTEIN)) tips.push('<b>Missing protein so far:</b> your next meal should lead with 40g+ protein — chicken, salmon, lean beef, eggs, or a shake. Protein protects muscle in a deficit and kills late-night cravings.');
-    else tips.push('<b>Protein logged ✓</b> — keep stacking it: ~180–200g/day total is the target for a 200-lb athletic cut.');
+    if(!has(PROTEIN)) tips.push('<b>Missing protein so far:</b> next meal leads with 50g+ — chicken, salmon, lean beef, eggs, or a shake. You need ~210–220g/day to keep strength while cutting.');
+    else tips.push('<b>Protein logged ✓</b> — keep stacking toward ~210–220g/day (1.1 g/lb). It\'s the single biggest lever for keeping your lifts in a deficit.');
     if(!has(VEG)) tips.push('<b>Add volume:</b> no veggies logged yet. A big salad or 2 cups of greens/broccoli at your next meal adds fullness for almost no calories.');
     if(has(JUNK)) tips.push('<b>Damage control:</b> processed/fried items spotted. Don\'t "make up for it" by skipping meals — just make the next meal protein + veggies, and take a 10–15 min walk.');
     if(has(ALC)) tips.push('<b>Alcohol:</b> it pauses fat-burning and hits sleep quality. Cap it at 1–2, drink water between, and skip the late snacks that come with it.');
     if(!has(FRUIT) && !has(JUNK)) tips.push('<b>Sweet tooth insurance:</b> keep fruit or Greek yogurt + berries handy for dessert cravings.');
     if(hour>=19) tips.push('<b>Evening:</b> kitchen closes 2–3 hrs before bed. If you truly need something: casein/cottage cheese, not carbs.');
   }
+  { const used=calsUsed(d); const left=calBudget()-used;
+    if(used>0) tips.unshift(left>=0
+      ? `<b>Calories:</b> ${used.toLocaleString()} in, <b>${left.toLocaleString()} left</b> in today's ${calBudget().toLocaleString()} budget${left<400?' — make what\'s left protein + veggies':''}.`
+      : `<b>Calories:</b> you're ${Math.abs(left).toLocaleString()} over budget. Don't starve tomorrow to compensate — normal day, extra walk, back on plan.`); }
   if(h.water!=null && h.water<75) tips.push(`<b>Hydration:</b> you're at ${h.water} oz — get to 75+ before evening. Water first when you feel snacky; thirst masquerades as hunger.`);
   if(h.steps!=null && h.steps<7000) tips.push(`<b>Steps:</b> ${h.steps.toLocaleString()} so far — a 15-min walk after dinner is the cheapest fat-loss tool you have. Target 7k–10k.`);
-  if(h.workout>0) tips.push('<b>Training day:</b> put carbs + protein within a couple hours after the workout; that\'s where they do the most good.');
+  if(h.workout>0) tips.push('<b>Training day:</b> carbs + protein within a couple hours post-workout. If today included conditioning (sprints, cuts, ball work) on top of your normal training, nudge calories up 100–200 rather than staying rigid.');
   document.getElementById('coachBox').innerHTML='<b>Coach:</b><ul>'+tips.slice(0,5).map(t=>'<li>'+t+'</li>').join('')+'</ul>';
 }
 
@@ -887,7 +1333,15 @@ function dailyReportHTML(k){
   const h=dd.health||{};
   html+='<h3>Health</h3><table><tr><th>Sleep Number score</th><th>Water (oz)</th><th>Steps</th><th>Workout</th><th>Zone 2</th><th>Zone 4</th></tr>';
   html+=`<tr><td>${h.score??'—'}${healthMark(h,'score')}</td><td>${h.water??'—'}${healthMark(h,'water')}</td><td>${h.steps!=null?h.steps.toLocaleString():'—'}${healthMark(h,'steps')}</td><td>${h.workout??'—'} min${healthMark(h,'workout')}</td><td>${h.z2??'—'} min${healthMark(h,'z2')}</td><td>${h.z4??'—'} min${healthMark(h,'z4')}</td></tr></table>`;
+  const cals=(h.cals||[]);
+  if(cals.length){
+    const used=cals.reduce((a,e)=>a+(e.cal||0),0); const budget=calBudget();
+    html+='<h3>Calories — '+used.toLocaleString()+' of '+budget.toLocaleString()+' budget'+(used<=budget?' <span class="ok">✓</span>':' <span class="no">over</span>')+'</h3><table><tr><th class="l">Item</th><th>Calories</th></tr>';
+    cals.forEach(e=>{ html+='<tr><td class="l">'+esc(e.name)+'</td><td>'+(e.cal||0).toLocaleString()+'</td></tr>'; });
+    html+='<tr><th class="l">Total</th><th>'+used.toLocaleString()+'</th></tr></table>';
+  }
   if(h.food) html+='<h3>Food Diary</h3><div class="note">'+esc(h.food)+'</div>';
+  html+=prayerReportHTML(wkey(dt));
   return html;
 }
 
@@ -963,6 +1417,12 @@ function weeklyReportHTML(monday){
   days.forEach(x=>{const dd=all[dkey(x)]; if(dd&&dd.health){z2+=dd.health.z2||0;z4+=dd.health.z4||0;wo+=dd.health.workout||0;}});
   html+='<h3>Training Totals</h3><table><tr><th>Zone 2</th><th>Zone 4</th><th>Total workout</th></tr>'
       +`<tr><td>${z2} min</td><td>${z4} min</td><td>${wo} min</td></tr></table>`;
+  html+=prayerReportHTML(wk);
+  { const sunEnd=new Date(monday); sunEnd.setDate(sunEnd.getDate()+7);
+    html+=finReportHTML(monday,sunEnd,'week of '+monday.toLocaleDateString('en-US',{month:'short',day:'numeric'}));
+    const prevSun=new Date(monday); prevSun.setDate(prevSun.getDate()-1);
+    const thisSun=new Date(monday); thisSun.setDate(thisSun.getDate()+6);
+    html+=assetsReportHTML(thisSun,prevSun,'as of '+thisSun.toLocaleDateString('en-US',{month:'short',day:'numeric'})); }
   const avg=pcts.length?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0;
   const met=WEEKLY_ITEMS.filter(i=>{ if(i.type==='count')return (w.counts[i.id]||0)>=i.goal; if(i.type==='input')return (w.counts[i.id]??0)>=i.goal; return w.checks[i.id]; }).length + (fd>=FLOSS_GOAL?1:0) + customWMet;
   html+=`<div class="note"><b>Week summary:</b> ${avg}% average daily completion across ${pcts.length} day${pcts.length!==1?'s':''}. Avg Sleep Number score: ${scN?Math.round(scSum/scN):'—'}. Water goal hit ${wDays?wSucc+' of '+wDays+' logged days ('+Math.round(wSucc/wDays*100)+'%)':'— no days logged'}. Weekly tasks met: ${met}/${WEEKLY_ITEMS.length+1+customW.length}.</div>`;
@@ -1023,6 +1483,8 @@ function monthlyReportHTML(y,m){
     dates.forEach(d=>{ html+='<tr><td>'+MONTHS[m].slice(0,3)+' '+d.day+'</td><td class="l">'+esc(d.name)+'</td><td>'+esc(d.type)+'</td></tr>'; });
     html+='</table>';
   }
+  html+=finReportHTML(new Date(y,m,1),new Date(y,m+1,1),MONTHS[m]+' overview');
+  html+=assetsReportHTML(new Date(y,m+1,0),new Date(y,m,0),'end of '+MONTHS[m]);
   html+=`<div class="note"><b>Month summary:</b> ${tracked?Math.round(sum/tracked):0}% average daily completion across ${tracked} tracked day${tracked!==1?'s':''} in ${MONTHS[m]}. Avg Sleep Number score: ${scN?Math.round(scSum/scN):'—'} (${scN} days logged). Water goal hit ${wDays?wSucc+' of '+wDays+' logged days ('+Math.round(wSucc/wDays*100)+'%)':'— no days logged'}. Avg steps: ${stN?Math.round(stSum/stN).toLocaleString():'—'}. Flossed ${flossN} day${flossN!==1?'s':''}.</div>`;
   return html;
 }
@@ -1278,7 +1740,7 @@ async function saveCalUrl(){
 
 /* ================= BACKUP ================= */
 function exportData(){
-  const data={days:store.get('days',{}),weeks:store.get('weeks',{}),months:store.get('months',{}),dates:store.get('dates',[]),custom:store.get('custom',[]),customW:store.get('customW',[]),customM:store.get('customM',[]),catov:store.get('catov',{}),hgoals:store.get('hgoals',{}),calurl:store.get('calurl','')};
+  const data={days:store.get('days',{}),weeks:store.get('weeks',{}),months:store.get('months',{}),dates:store.get('dates',[]),custom:store.get('custom',[]),customW:store.get('customW',[]),customM:store.get('customM',[]),catov:store.get('catov',{}),hgoals:store.get('hgoals',{}),prayers:store.get('prayers',{}),calbudget:store.get('calbudget',2425),fintx:store.get('fintx',[]),finaccts:store.get('finaccts',[]),finsnaps:store.get('finsnaps',{}),calurl:store.get('calurl','')};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='thrive3-backup-'+TKEY+'.json';a.click();
@@ -1288,7 +1750,7 @@ document.getElementById('importFile').onchange=function(){
   const r=new FileReader();
   r.onload=()=>{try{
     const d=JSON.parse(r.result);
-    ['days','weeks','months','dates','custom','customW','customM','catov','hgoals','calurl'].forEach(k=>{ if(d[k]!==undefined) store.set(k,d[k]); });
+    ['days','weeks','months','dates','custom','customW','customM','catov','hgoals','prayers','calbudget','fintx','finaccts','finsnaps','calurl'].forEach(k=>{ if(d[k]!==undefined) store.set(k,d[k]); });
     alert('Backup restored.'); location.reload();
   }catch(e){alert('Invalid backup file.');}};
   r.readAsText(f);
@@ -1296,10 +1758,12 @@ document.getElementById('importFile').onchange=function(){
 
 /* ================= HOME GRIDS + NAVIGATION ================= */
 let openSec=null;
+function renderFoodSec(){ renderHealth(); renderCalories(); }
 const SECTION_RENDER={
-  'sec-daily':renderDaily,'sec-top3':renderTop3,'sec-health':renderHealth,'sec-food':renderHealth,
+  'sec-daily':renderDaily,'sec-top3':renderTop3,'sec-health':renderHealth,'sec-food':renderFoodSec,
+  'sec-prayer':renderPrayers,
   'sec-cal':renderCalToday,'sec-pillars':renderPillars,
-  'sec-wtasks':renderWeek,'sec-wsnap':renderWeek,'sec-wcal':renderCalWeek,
+  'sec-wtasks':renderWeek,'sec-wsnap':renderWeek,'sec-wcal':renderCalWeek,'sec-finance':renderFinance,
   'sec-mtasks':renderMonthly,'sec-mcal':renderMonth,'sec-mdates':renderDates,'sec-managedates':renderDates
 };
 function openSection(id){
@@ -1357,8 +1821,9 @@ function renderHomes(){
     <div class="blocks">
       ${blockHtml('sec-top3','🎯','Top 3 Today', t3all.length?`${t3done}/${t3all.length} done`:'Tap to set priorities','bw')}
       ${blockHtml('sec-daily','✅','Daily To-Do', `${done}/${items.length} done`,'bp')}
-      ${blockHtml('sec-health','❤️','Health Log', gTot?`${gHit}/${gTot} goals hit${gLog<gTot?' · '+(gTot-gLog)+' unlogged':''}`:'Log today\'s numbers','bt')}
-      ${blockHtml('sec-food','🍎','Food & Coach', h.food?'Logged today ✓':'Tap to log meals','bw')}
+      ${blockHtml('sec-prayer','🙏','Prayer Requests', (()=>{const pl=prayersFor(WKEY);const act=pl.filter(p=>!p.answered).length;return pl.length?`${act} active this week`:'Add requests';})(),'bt')}
+      ${blockHtml('sec-health','❤️','Health Log', gTot?`${gHit}/${gTot} goals hit${gLog<gTot?' · '+(gTot-gLog)+' unlogged':''}`:'Log today\'s numbers','bw')}
+      ${blockHtml('sec-food','🍎','Food & Calories', (()=>{const used=calsUsed(d);const left=calBudget()-used;return used?`${used.toLocaleString()} cal · ${left>=0?left.toLocaleString()+' left':'over'}`:(h.food?'Diary logged ✓':'Tap to log');})(),'bp')}
     </div>`;
   // WEEK
   const all=store.get('days',{}); let sumw=0;
@@ -1388,6 +1853,7 @@ function renderHomes(){
       ${blockHtml('sec-wtasks','🏋️','Weekly Tasks', `${wm.met}/${wm.total} goals met`,'bp')}
       ${blockHtml('sec-wsnap','📊','Snapshot & Report', 'Chart + printable report','bw')}
       ${blockHtml('sec-wcal','📆','Look-Ahead', CAL_EVENTS===null?'Connect calendar':`${evWeek} events this week`,'bt')}
+      ${blockHtml('sec-finance','💰','Finances', (()=>{ if(!finTx().length) return 'Upload Rocket Money CSV'; const mon=mondayOf(TODAY); const sun=new Date(mon); sun.setDate(sun.getDate()+7); return money(finSummary(finForRange(mon,sun)).spend)+' spent this week'; })(),'bw')}
     </div>`;
   // MONTH
   const y=TODAY.getFullYear(), m=TODAY.getMonth();
@@ -1442,7 +1908,8 @@ document.querySelectorAll('.navbtn').forEach(t=>t.onclick=()=>{
 
 /* ================= INIT ================= */
 document.getElementById('s_calurl').value = store.get('calurl','');
-renderHomes(); renderHealth(); loadCalendar();
+document.getElementById('finFile').onchange=function(){ if(this.files[0]) importFinCSV(this.files[0]); this.value=''; };
+renderHomes(); renderHealth(); renderCalories(); loadCalendar();
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
