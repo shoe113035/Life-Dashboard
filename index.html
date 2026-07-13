@@ -421,6 +421,34 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
   </div>
 </div>
 
+<!-- ============ WORKOUT / LIFTS ============ -->
+<div id="tab-workout" style="display:none">
+  <div class="home" id="home-workout"></div>
+
+  <div class="card section" id="sec-wkday">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <div id="wkDayBody"></div>
+  </div>
+
+  <div class="card section" id="sec-wkprogram">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">12-Month Program <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">by phase · month · day</span></h2>
+    <div id="wkProgramBody"></div>
+  </div>
+
+  <div class="card section" id="sec-wksettings">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">Program Settings</h2>
+    <div class="muted" style="margin-bottom:8px">Set the date you started (or want to start) Month 1. The app uses it to show which month, phase, and week you're on. The 12-month cycle repeats after month 12.</div>
+    <div class="hrow"><span class="lbl">Program start date</span><input type="date" id="wk_start" style="width:150px"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn teal" onclick="wkSaveStart()">Save start date</button>
+      <button class="btn ghost" onclick="wkResetStart()">Reset to 1st of this month</button>
+    </div>
+    <div id="wkStartMsg" class="muted" style="margin-top:8px"></div>
+  </div>
+</div>
+
 <div class="footer"><img src="logo.png" alt="Thrive³"><div class="slogan">to be better daily</div></div>
 
 <div id="printArea" class="rpt"></div>
@@ -429,6 +457,7 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
   <button class="navbtn active" data-tab="today"><span class="ico">☀️</span><span class="lbl">Today</span></button>
   <button class="navbtn" data-tab="week"><span class="ico">📊</span><span class="lbl">Week</span></button>
   <button class="navbtn" data-tab="month"><span class="ico">🗓️</span><span class="lbl">Month</span></button>
+  <button class="navbtn" data-tab="workout"><span class="ico">🏋️</span><span class="lbl">Lifts</span></button>
   <button class="navbtn" data-tab="reports"><span class="ico">🗂️</span><span class="lbl">Reports</span></button>
   <button class="navbtn" data-tab="settings"><span class="ico">⚙️</span><span class="lbl">Settings</span></button>
 </nav>
@@ -1740,7 +1769,7 @@ async function saveCalUrl(){
 
 /* ================= BACKUP ================= */
 function exportData(){
-  const data={days:store.get('days',{}),weeks:store.get('weeks',{}),months:store.get('months',{}),dates:store.get('dates',[]),custom:store.get('custom',[]),customW:store.get('customW',[]),customM:store.get('customM',[]),catov:store.get('catov',{}),hgoals:store.get('hgoals',{}),prayers:store.get('prayers',{}),calbudget:store.get('calbudget',2425),fintx:store.get('fintx',[]),finaccts:store.get('finaccts',[]),finsnaps:store.get('finsnaps',{}),calurl:store.get('calurl','')};
+  const data={days:store.get('days',{}),weeks:store.get('weeks',{}),months:store.get('months',{}),dates:store.get('dates',[]),custom:store.get('custom',[]),customW:store.get('customW',[]),customM:store.get('customM',[]),catov:store.get('catov',{}),hgoals:store.get('hgoals',{}),prayers:store.get('prayers',{}),calbudget:store.get('calbudget',2425),fintx:store.get('fintx',[]),finaccts:store.get('finaccts',[]),finsnaps:store.get('finsnaps',{}),calurl:store.get('calurl',''),progstart:store.get('progstart',null)};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='thrive3-backup-'+TKEY+'.json';a.click();
@@ -1750,7 +1779,7 @@ document.getElementById('importFile').onchange=function(){
   const r=new FileReader();
   r.onload=()=>{try{
     const d=JSON.parse(r.result);
-    ['days','weeks','months','dates','custom','customW','customM','catov','hgoals','prayers','calbudget','fintx','finaccts','finsnaps','calurl'].forEach(k=>{ if(d[k]!==undefined) store.set(k,d[k]); });
+    ['days','weeks','months','dates','custom','customW','customM','catov','hgoals','prayers','calbudget','fintx','finaccts','finsnaps','calurl','progstart'].forEach(k=>{ if(d[k]!==undefined) store.set(k,d[k]); });
     alert('Backup restored.'); location.reload();
   }catch(e){alert('Invalid backup file.');}};
   r.readAsText(f);
@@ -1764,7 +1793,8 @@ const SECTION_RENDER={
   'sec-prayer':renderPrayers,
   'sec-cal':renderCalToday,'sec-pillars':renderPillars,
   'sec-wtasks':renderWeek,'sec-wsnap':renderWeek,'sec-wcal':renderCalWeek,'sec-finance':renderFinance,
-  'sec-mtasks':renderMonthly,'sec-mcal':renderMonth,'sec-mdates':renderDates,'sec-managedates':renderDates
+  'sec-mtasks':renderMonthly,'sec-mcal':renderMonth,'sec-mdates':renderDates,'sec-managedates':renderDates,
+  'sec-wkday':renderWkDay,'sec-wkprogram':renderWkProgram,'sec-wksettings':renderWkSettings
 };
 function openSection(id){
   const sec=document.getElementById(id); if(!sec) return;
@@ -1890,13 +1920,14 @@ function renderHomes(){
       ${blockHtml('sec-mcal','🗓️','Month Calendar', 'Scores + events by day','bw')}
       ${blockHtml('sec-managedates','🎂','Manage Dates', (store.get('dates',[]).length||0)+' saved dates','bt')}
     </div>`;
+  if(document.getElementById('home-workout')) renderWorkout();
 }
 
 /* ================= NAV ================= */
 document.querySelectorAll('.navbtn').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
-  ['today','week','month','reports','settings'].forEach(n=>document.getElementById('tab-'+n).style.display = n===t.dataset.tab?'':'none');
+  ['today','week','month','workout','reports','settings'].forEach(n=>document.getElementById('tab-'+n).style.display = n===t.dataset.tab?'':'none');
   // reset any open section and show that tab's home
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('open'));
   document.querySelectorAll('.home').forEach(hm=>hm.style.display='');
@@ -1905,6 +1936,162 @@ document.querySelectorAll('.navbtn').forEach(t=>t.onclick=()=>{
   else renderHomes();
   window.scrollTo(0,0);
 });
+
+/* ================= WORKOUT PROGRAM ================= */
+const WK_DAYNAMES={A:'Day A — Individual Blocks',B:'Day B — Push/Pull Pairs',C:'Day C — Upper/Lower Pairs'};
+const WK_SLOTS=['A-1a','A-1b','A-2a','A-2b','A-3a','A-3b','A-4a','A-4b','B-1a','B-1b','B-2a','B-2b','B-3a','B-3b','B-4a','B-4b','C-1a','C-1b','C-2a','C-2b','C-3a','C-3b','C-4a','C-4b'];
+const WK_PHASES=[
+  {name:'Block 1',phase:'Arms + Glutes',months:[1,2]},
+  {name:'Block 2',phase:'Chest + Quads',months:[3,4]},
+  {name:'Block 3',phase:'Back + Hamstrings',months:[5,6]},
+  {name:'Block 4',phase:'Arms + Quads',months:[7,8]},
+  {name:'Block 5',phase:'Chest + Glutes',months:[9,10]},
+  {name:'Block 6',phase:'Back + Hamstrings',months:[11,12]}
+];
+const WK_PROGRAM={
+ 1:{stage:'Stage 1',block:'Foundation',phase:'Arms + Glutes',reps:'8-10',rest:'60s',
+   ex:['DB Neutral Overhead Press','Barbell Hip Thrust','Close-Grip DB Floor Press','DB Bulgarian Split Squat','Barbell Underhand Bent-Over Row','DB Single-Leg Hip Thrust','DB Overhand Upright Row','Banded Hip Abduction','Arnold Press','DB Reverse Lunge','DB Elbows-Supported Skullcrusher','Barbell Glute Bridge','Landmine Row','DB RDL','Barbell Underhand Curl','DB Curtsy Lunge','DB Alternating Floor Press','Barbell Back Box Squat','DB Overhead Triceps Extension','DB Lateral Lunge','DB Hammer Curl','B-Stance Barbell Hip Thrust','Chin-Ups','Band Glute Kickback'],
+   mus:['Shoulders','Glutes','Chest/Triceps','Glutes/Quads','Back/Biceps','Glutes','Shoulders','Glutes','Shoulders','Glutes','Triceps','Glutes','Back','Hamstrings','Biceps','Glutes','Chest','Quads/Glutes','Triceps','Glutes','Biceps','Glutes','Back/Biceps','Glutes']},
+ 2:{stage:'Stage 3',block:'Extension',phase:'Arms + Glutes',reps:'12-15',rest:'45s',
+   ex:['Half-Kneeling Landmine Press','DB B-Stance Hip Thrust','DB Tempo Neutral Floor Press','DB Front-Foot-Elevated Split Squat','DB Chest-Supported Row','Single-Leg DB RDL','DB Leaning Lateral Raise','Band Standing Hip Abduction','DB Seated Neutral Press','DB Curtsy Lunge','DB Overhead Triceps Extension','Barbell Glute Bridge (Tempo)','Chin-Ups (Tempo)','DB Stiff-Leg Deadlift','DB Incline Curl','DB Frog Pump','DB Squeeze Press','Heels-Elevated Goblet Squat','DB Triceps Kickback','DB Lateral Lunge','DB Cross-Body Hammer Curl','Single-Leg Hip Thrust','Band Face Pull','Band Glute Kickback'],
+   mus:['Shoulders','Glutes','Chest/Triceps','Glutes/Quads','Back','Hamstrings/Glutes','Shoulders','Glutes','Shoulders','Glutes','Triceps','Glutes','Back/Biceps','Hamstrings','Biceps','Glutes','Chest','Quads','Triceps','Glutes','Biceps','Glutes','Rear Delts','Glutes']},
+ 3:{stage:'Stage 1',block:'Foundation',phase:'Chest + Quads',reps:'8-10',rest:'60s',
+   ex:['DB Flat Bench Press','Barbell Back Squat','DB Incline Press','DB Bulgarian Split Squat','Barbell Overhand Bent-Over Row','Barbell Hip Thrust','DB Overhead Press','DB Step-Up','Barbell Bench Press','Front Squat','Close-Grip Barbell Press','Heels-Elevated Barbell Squat','Pull-Ups','DB RDL','DB Hammer Curl','DB Reverse Lunge','DB Incline Fly','Barbell Box Squat','DB Lateral Raise','DB Goblet Squat','DB Rear Delt Raise (Chest Supported)','Banded Hip Abduction','DB Chest-Supported Row','DB Bulgarian Split Squat'],
+   mus:['Chest','Quads','Chest','Quads/Glutes','Back','Glutes','Shoulders','Quads','Chest','Quads','Chest/Triceps','Quads','Back','Hamstrings','Biceps','Quads/Glutes','Chest','Quads','Shoulders','Quads','Rear Delts','Glutes','Back','Quads']},
+ 4:{stage:'Stage 3',block:'Extension',phase:'Chest + Quads',reps:'12-15',rest:'45s',
+   ex:['DB Incline Neutral Press','Heels-Elevated Goblet Squat','DB Squeeze Press','DB Front-Foot-Elevated Split Squat','DB Kneeling Row','DB B-Stance Hip Thrust','Half-Kneeling Landmine Press','DB Step-Down','DB Alternating Floor Press','Tempo Front Squat','DB Elbows-Supported Skullcrusher','DB Walking Lunge','Neutral-Grip Pull-Ups','Single-Leg DB RDL','DB Incline Curl','Front-Foot-Elevated Split Squat','DB Flat Fly','Landmine Squat','DB Leaning Lateral Raise','DB Goblet Squat (Tempo)','Band Face Pull','Single-Leg Hip Thrust','DB Chest-Supported Row','Bulgarian Split Squat'],
+   mus:['Chest','Quads','Chest','Quads','Back','Glutes','Shoulders','Quads','Chest','Quads','Triceps','Quads','Back','Hamstrings','Biceps','Quads','Chest','Quads','Shoulders','Quads','Rear Delts','Glutes','Back','Quads']},
+ 5:{stage:'Stage 1',block:'Foundation',phase:'Back + Hamstrings',reps:'8-10',rest:'60s',
+   ex:['Barbell Overhand Bent-Over Row','Barbell RDL','DB Overhead Press','DB Single-Leg RDL','Pull-Ups','Barbell Hip Thrust','DB Chest-Supported Row','Barbell Good Morning','DB Neutral Overhead Press','Barbell Deadlift','DB Skullcrusher','DB Stiff-Leg Deadlift','Landmine Row','DB Reverse Lunge','Chin-Ups','Nordic Curl','DB Flat Bench Press','Single-Leg RDL','DB Rear Delt Raise (Chest Supported)','Barbell Back Squat','Barbell Underhand Row','B-Stance RDL','DB Pullover','Barbell Hip Thrust'],
+   mus:['Back','Hamstrings','Shoulders','Hamstrings','Back','Glutes','Back','Hamstrings','Shoulders','Hamstrings/Back','Triceps','Hamstrings','Back','Quads/Glutes','Back/Biceps','Hamstrings','Chest','Hamstrings','Rear Delts','Quads','Back/Biceps','Hamstrings','Back','Glutes']},
+ 6:{stage:'Stage 3',block:'Extension',phase:'Back + Hamstrings',reps:'12-15',rest:'45s',
+   ex:['DB Chest-Supported Row','DB RDL (Tempo)','Half-Kneeling Landmine Press','Single-Leg DB RDL','Neutral-Grip Pull-Ups','DB B-Stance Hip Thrust','DB Kneeling Row','Band Leg Curl (Sliding)','Arnold Press','DB Stiff-Leg Deadlift','DB Overhead Triceps Extension','B-Stance RDL','Landmine Meadows Row','DB Walking Lunge','DB Hammer Curl','Nordic Curl (Eccentric)','DB Incline Press','Single-Leg RDL','Band Face Pull','DB Goblet Squat','Inverted Row','Barbell Good Morning (Tempo)','DB Pullover','DB Single-Leg Hip Thrust'],
+   mus:['Back','Hamstrings','Shoulders','Hamstrings','Back','Glutes','Back','Hamstrings','Shoulders','Hamstrings','Triceps','Hamstrings','Back','Quads/Glutes','Biceps','Hamstrings','Chest','Hamstrings','Rear Delts','Quads','Back','Hamstrings','Back','Glutes']},
+ 7:{stage:'Stage 1',block:'Foundation',phase:'Arms + Quads',reps:'8-10',rest:'60s',
+   ex:['Close-Grip Barbell Bench Press','Barbell Back Squat','DB Overhead Press','Front Squat','Barbell Underhand Bent-Over Row','DB Bulgarian Split Squat','DB Overhand Upright Row','DB Step-Up','Arnold Press','Heels-Elevated Barbell Squat','DB Elbows-Supported Skullcrusher','Barbell Box Squat','Chin-Ups','DB Reverse Lunge','Barbell Underhand Curl','DB RDL','DB Close-Grip Floor Press','DB Goblet Squat','DB Overhead Triceps Extension','DB Walking Lunge','DB Hammer Curl','Barbell Hip Thrust','DB Incline Curl','Landmine Squat'],
+   mus:['Triceps/Chest','Quads','Shoulders','Quads','Back/Biceps','Quads','Shoulders','Quads','Shoulders','Quads','Triceps','Quads','Back/Biceps','Quads/Glutes','Biceps','Hamstrings','Triceps','Quads','Triceps','Quads','Biceps','Glutes','Biceps','Quads']},
+ 8:{stage:'Stage 3',block:'Extension',phase:'Arms + Quads',reps:'12-15',rest:'45s',
+   ex:['DB Close-Grip Neutral Press','Heels-Elevated Goblet Squat','Half-Kneeling Landmine Press','DB Front-Foot-Elevated Split Squat','DB Chest-Supported Row','DB Step-Down','DB Leaning Lateral Raise','DB Walking Lunge','DB Seated Neutral Press','Tempo Front Squat','DB Overhead Triceps Extension','Landmine Reverse Lunge','Neutral-Grip Pull-Ups','DB RDL','DB Cross-Body Hammer Curl','Bulgarian Split Squat','DB Triceps Kickback','Landmine Squat','DB Zottman Curl','DB Goblet Squat (Tempo)','DB Spider Curl','Single-Leg Hip Thrust','Bench Dips','DB Step-Up'],
+   mus:['Triceps/Chest','Quads','Shoulders','Quads','Back','Quads','Shoulders','Quads','Shoulders','Quads','Triceps','Quads/Glutes','Back/Biceps','Hamstrings','Biceps','Quads','Triceps','Quads','Biceps','Quads','Biceps','Glutes','Triceps','Quads']},
+ 9:{stage:'Stage 1',block:'Foundation',phase:'Chest + Glutes',reps:'8-10',rest:'60s',
+   ex:['DB Flat Bench Press','Barbell Hip Thrust','DB Incline Press','DB Bulgarian Split Squat','Barbell Overhand Bent-Over Row','DB Single-Leg Hip Thrust','DB Overhead Press','Banded Hip Abduction','Barbell Bench Press','DB Reverse Lunge','Close-Grip DB Floor Press','Barbell Glute Bridge','Pull-Ups','DB RDL','DB Hammer Curl','DB Curtsy Lunge','DB Incline Fly','B-Stance Barbell Hip Thrust','DB Lateral Raise','DB Lateral Lunge','DB Rear Delt Raise (Chest Supported)','Band Glute Kickback','DB Chest-Supported Row','Barbell Back Box Squat'],
+   mus:['Chest','Glutes','Chest','Glutes/Quads','Back','Glutes','Shoulders','Glutes','Chest','Glutes','Chest/Triceps','Glutes','Back','Hamstrings/Glutes','Biceps','Glutes','Chest','Glutes','Shoulders','Glutes','Rear Delts','Glutes','Back','Quads/Glutes']},
+ 10:{stage:'Stage 3',block:'Extension',phase:'Chest + Glutes',reps:'12-15',rest:'45s',
+   ex:['DB Incline Neutral Press','DB B-Stance Hip Thrust','DB Squeeze Press','DB Front-Foot-Elevated Split Squat','DB Kneeling Row','Single-Leg Hip Thrust','Half-Kneeling Landmine Press','Band Standing Hip Abduction','DB Alternating Floor Press','DB Curtsy Lunge','DB Flat Fly','Barbell Glute Bridge (Tempo)','Neutral-Grip Pull-Ups','Single-Leg DB RDL','DB Incline Curl','DB Frog Pump','DB Incline Fly','DB Lateral Lunge','Band Face Pull','Heels-Elevated Goblet Squat','DB Hammer Curl','DB Single-Leg Hip Thrust','DB Chest-Supported Row','Band Glute Kickback'],
+   mus:['Chest','Glutes','Chest','Glutes/Quads','Back','Glutes','Shoulders','Glutes','Chest','Glutes','Chest','Glutes','Back','Hamstrings/Glutes','Biceps','Glutes','Chest','Glutes','Rear Delts','Quads','Biceps','Glutes','Back','Glutes']},
+ 11:{stage:'Stage 1',block:'Foundation',phase:'Back + Hamstrings',reps:'8-10',rest:'60s',
+   ex:['Barbell Underhand Bent-Over Row','Barbell RDL','DB Neutral Overhead Press','DB Single-Leg RDL','Pull-Ups','Barbell Hip Thrust','DB Seal Row','Barbell Good Morning','Arnold Press','Barbell Deadlift','DB Skullcrusher','DB Stiff-Leg Deadlift','Landmine Meadows Row','DB Walking Lunge','Chin-Ups','Nordic Curl','DB Incline Press','Single-Leg RDL','DB Rear Delt Raise (Chest Supported)','Barbell Back Squat','Barbell Pendlay Row','B-Stance RDL','DB Pullover','Barbell Hip Thrust'],
+   mus:['Back','Hamstrings','Shoulders','Hamstrings','Back','Glutes','Back','Hamstrings','Shoulders','Hamstrings/Back','Triceps','Hamstrings','Back','Quads/Glutes','Back/Biceps','Hamstrings','Chest','Hamstrings','Rear Delts','Quads','Back','Hamstrings','Back','Glutes']},
+ 12:{stage:'Stage 3',block:'Extension',phase:'Back + Hamstrings',reps:'12-15',rest:'45s',
+   ex:['DB Chest-Supported Row','DB RDL (Tempo)','Half-Kneeling Landmine Press','Single-Leg DB RDL','Neutral-Grip Pull-Ups','DB B-Stance Hip Thrust','DB Kneeling Row','Band Leg Curl (Sliding)','DB Seated Neutral Press','DB Stiff-Leg Deadlift','DB Overhead Triceps Extension','B-Stance RDL','Landmine Meadows Row','DB Reverse Lunge','DB Hammer Curl','Nordic Curl (Eccentric)','DB Incline Fly','Single-Leg RDL','Band Face Pull','DB Goblet Squat','Inverted Row','Barbell Good Morning (Tempo)','DB Pullover','DB Single-Leg Hip Thrust'],
+   mus:['Back','Hamstrings','Shoulders','Hamstrings','Back','Glutes','Back','Hamstrings','Shoulders','Hamstrings','Triceps','Hamstrings','Back','Quads/Glutes','Biceps','Hamstrings','Chest','Hamstrings','Rear Delts','Quads','Back','Hamstrings','Back','Glutes']}
+};
+let WK_SEL={m:1,day:'A'};
+function wkStart(){ const s=store.get('progstart',null); return s?new Date(s+'T12:00:00'):new Date(TODAY.getFullYear(),TODAY.getMonth(),1); }
+function wkPos(){
+  const st=wkStart(); const s0=new Date(st.getFullYear(),st.getMonth(),st.getDate());
+  const t0=new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate());
+  let months=(t0.getFullYear()-s0.getFullYear())*12+(t0.getMonth()-s0.getMonth());
+  if(t0.getDate()<s0.getDate()) months--;
+  if(months<0) months=0;
+  const idx=((months%12)+12)%12;
+  const mStart=new Date(s0); mStart.setMonth(mStart.getMonth()+months);
+  const week=Math.min(4,Math.floor((t0-mStart)/86400000/7)+1);
+  return {month:idx+1, week:Math.max(1,week), cycle:Math.floor(months/12)+1};
+}
+function wkWeekHint(w){ return ['Establish working weights near the bottom of the rep range.','Add reps toward the top of the range on each lift.','Add load, reset to the bottom of the range.','Push top-range reps, then ease off going into next month.'][Math.min(Math.max(w,1),4)-1]; }
+function wkStageColor(st){ return st==='Stage 1'?'var(--phys)':'var(--mental)'; }
+function wkDayCard(m,day){
+  const d=WK_PROGRAM[m]; const base={A:0,B:8,C:16}[day];
+  const chip='<span class="pill '+(d.stage==='Stage 1'?'p-phys':'p-mental')+'">'+d.stage+'</span>';
+  let h='<div class="block bw" style="min-height:auto;cursor:pointer" onclick="wkOpenDay('+m+",'"+day+'\')">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="btitle">'+WK_DAYNAMES[day].split('—')[0].trim()+'</span>'+chip+'</div>'
+    +'<span class="bstat">'+WK_DAYNAMES[day].split('—')[1].trim()+' · tap to open</span></div>';
+  return h;
+}
+function renderWorkout(){
+  const p=wkPos(); const d=WK_PROGRAM[p.month];
+  const st=wkStart();
+  const border=d.stage==='Stage 1'?'#0d9284':'#8a5fd6';
+  let html='<div class="sumstrip" style="border-left-color:'+border+';cursor:default">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center"><b>Month '+p.month+' of 12</b><span class="pill '+(d.stage==='Stage 1'?'p-phys':'p-mental')+'">'+d.stage+'</span></div>'
+    +'<div class="bstat" style="margin-top:4px"><b style="color:var(--ink)">'+esc(d.phase)+'</b> emphasis · '+d.block+' · '+d.reps+' reps · 3 sets · '+d.rest+' rest</div>'
+    +'<div class="bstat" style="margin-top:4px">Week '+p.week+' — '+wkWeekHint(p.week)+(p.cycle>1?' · cycle '+p.cycle:'')+'</div>'
+    +'</div>';
+  html+='<div class="dayhdr" style="margin-top:14px">This month\'s sessions — rotate A → B → C</div>';
+  html+='<div class="blocks" style="grid-template-columns:1fr">'+wkDayCard(p.month,'A')+wkDayCard(p.month,'B')+wkDayCard(p.month,'C')+'</div>';
+  html+='<div class="blocks" style="margin-top:12px">'
+    +blockHtml('sec-wkprogram','📅','Full 12-Month Plan','Browse every phase & month','bp')
+    +blockHtml('sec-wksettings','⚙️','Program Start', st.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),'bt')
+    +'</div>';
+  html+='<div class="card" style="margin-top:12px"><h2>Home-Gym Program <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">John Schuster</span></h2>'
+    +'<div class="bstat" style="line-height:1.6">Upper-body priority · Achilles-safe (no explosive work) · never above 15 reps · 3 sets on everything.<br>'
+    +'<b style="color:var(--ink)">Gear:</b> dumbbells · barbell + rack · bands · bench · pull-up bar · landmine.<br>'
+    +'<b style="color:var(--ink)">Stages alternate monthly:</b> odd = Stage 1 (8–10 reps, 60s) · even = Stage 3 (12–15 reps, 45s).</div></div>';
+  document.getElementById('home-workout').innerHTML=html;
+}
+function wkOpenDay(m,day){ WK_SEL={m,day}; openSection('sec-wkday'); }
+function renderWkDay(){
+  const m=WK_SEL.m, day=WK_SEL.day; const d=WK_PROGRAM[m]; const base={A:0,B:8,C:16}[day];
+  const p=wkPos();
+  let html='<h2 style="margin-top:10px">Month '+m+' · '+WK_DAYNAMES[day].split('—')[0].trim()
+    +' <span class="pill '+(d.stage==='Stage 1'?'p-phys':'p-mental')+'">'+d.stage+'</span></h2>';
+  html+='<div class="bstat" style="margin-bottom:6px">'+esc(d.phase)+' emphasis · '+d.reps+' reps · 3 sets · '+d.rest+' rest · '+WK_DAYNAMES[day].split('—')[1].trim()+'</div>';
+  html+='<table style="width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px">';
+  html+='<tr><th style="text-align:left;padding:6px 4px;border-bottom:2px solid var(--line);color:var(--purple);font-size:11px">Slot</th>'
+    +'<th style="text-align:left;padding:6px 4px;border-bottom:2px solid var(--line);color:var(--purple);font-size:11px">Exercise</th>'
+    +'<th style="text-align:center;padding:6px 4px;border-bottom:2px solid var(--line);color:var(--purple);font-size:11px">Sets×Reps</th></tr>';
+  for(let k=0;k<8;k++){
+    const slot=WK_SLOTS[base+k];
+    const alt=k%2===1?'background:'+(d.stage==='Stage 1'?'rgba(13,146,132,.06)':'rgba(138,95,214,.07)'):'';
+    html+='<tr style="'+alt+'"><td style="padding:8px 4px;border-bottom:1px solid var(--line);font-weight:700;color:var(--purple);white-space:nowrap">'+slot+'</td>'
+      +'<td style="padding:8px 4px;border-bottom:1px solid var(--line)"><div style="font-weight:600">'+esc(d.ex[base+k])+'</div><div class="muted" style="font-size:11px">'+esc(d.mus[base+k])+'</div></td>'
+      +'<td style="padding:8px 4px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap">3 × '+d.reps+'</td></tr>';
+  }
+  html+='</table>';
+  html+='<div class="coach" style="margin-top:12px"><b>Pairing:</b> the a/b at each number are a superset — alternate the two, resting '+d.rest+' between rounds. Progress week to week: '+wkWeekHint(p.week).toLowerCase()+'</div>';
+  html+='<button class="btn teal" style="margin-top:12px" onclick="wkLogLift(event)">✓ Log this lift (+1 to Weekly Lifts)</button>';
+  document.getElementById('wkDayBody').innerHTML=html;
+}
+function wkLogLift(ev){
+  const ww=weekData(WKEY); ww.counts=ww.counts||{}; ww.counts.lifts=Math.min(4,(ww.counts.lifts||0)+1);
+  saveWeek(WKEY,ww);
+  const btn=ev&&ev.target; if(btn){ btn.textContent='✓ Logged — '+ww.counts.lifts+'/3 lifts this week'; btn.disabled=true; btn.style.opacity=.7; }
+}
+function renderWkProgram(){
+  let html='';
+  WK_PHASES.forEach(bl=>{
+    html+='<div style="margin-top:16px;padding:8px 12px;border-radius:12px;background:linear-gradient(120deg,#efe6fc,#cef2ea);font-weight:800;color:var(--ink)">'
+      +bl.name+' · '+esc(bl.phase)+' <span class="muted" style="font-weight:400">Months '+bl.months[0]+'–'+bl.months[1]+'</span></div>';
+    bl.months.forEach(m=>{
+      const d=WK_PROGRAM[m];
+      html+='<div class="dayhdr" style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">'
+        +'<span>Month '+m+' — '+d.stage+'</span>'
+        +'<span class="pill '+(d.stage==='Stage 1'?'p-phys':'p-mental')+'">'+d.reps+' reps</span></div>';
+      ['A','B','C'].forEach(day=>{
+        html+='<button style="display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:7px;cursor:pointer;color:var(--ink)" onclick="wkOpenDay('+m+",'"+day+'\')"><b style="color:var(--purple)">'+WK_DAYNAMES[day].split('—')[0].trim()+'</b> — '+WK_DAYNAMES[day].split('—')[1].trim()+'</button>';
+      });
+    });
+  });
+  document.getElementById('wkProgramBody').innerHTML=html;
+}
+function renderWkSettings(){
+  const s=store.get('progstart',null);
+  document.getElementById('wk_start').value = s || dkey(new Date(TODAY.getFullYear(),TODAY.getMonth(),1));
+  const p=wkPos();
+  document.getElementById('wkStartMsg').textContent='Currently on Month '+p.month+' of 12, week '+p.week+(p.cycle>1?' (cycle '+p.cycle+')':'')+'.';
+}
+function wkSaveStart(){
+  const v=document.getElementById('wk_start').value;
+  if(!v){ alert('Pick a date.'); return; }
+  store.set('progstart',v);
+  renderWkSettings(); renderWorkout();
+  document.getElementById('wkStartMsg').textContent='Saved. '+document.getElementById('wkStartMsg').textContent;
+}
+function wkResetStart(){
+  store.set('progstart',dkey(new Date(TODAY.getFullYear(),TODAY.getMonth(),1)));
+  renderWkSettings(); renderWorkout();
+}
 
 /* ================= INIT ================= */
 document.getElementById('s_calurl').value = store.get('calurl','');
