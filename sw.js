@@ -1,4 +1,4 @@
-const CACHE = 'life-dash-v18';
+const CACHE = 'life-dash-v19';
 const ASSETS = [
   './index.html',
   './manifest.webmanifest',
@@ -19,8 +19,24 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   // Never cache calendar (Apps Script) requests
   if (url.hostname.includes('script.google')) return;
+  // NETWORK-FIRST for the app shell: always fetch the newest index.html when online,
+  // fall back to the cached copy only when offline.
+  const isShell = e.request.mode === 'navigate' || url.pathname.endsWith('index.html');
+  if (isShell) {
+    e.respondWith(
+      fetch(e.request).then(resp => {
+        if (resp.ok) {
+          const copy = resp.clone();
+          caches.open(CACHE).then(c => c.put('./index.html', copy));
+        }
+        return resp;
+      }).catch(() => caches.match('./index.html', { ignoreSearch: true }))
+    );
+    return;
+  }
+  // cache-first for everything else (icons, logo, chart.js)
   e.respondWith(
-    caches.match(e.request, { ignoreSearch: url.pathname.endsWith('index.html') }).then(hit =>
+    caches.match(e.request, { ignoreSearch: false }).then(hit =>
       hit || fetch(e.request).then(resp => {
         if (e.request.method === 'GET' && resp.ok) {
           const copy = resp.clone();
