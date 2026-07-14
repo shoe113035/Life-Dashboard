@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0d9284">
+<meta name="theme-color" content="#14b3a3">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Thrive³</title>
@@ -21,7 +21,7 @@
   --bg:#0d9284;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(170deg,#14b9a4 0%,#0d9284 45%,#0a6c60 100%) fixed;color:var(--ink);padding:16px 14px calc(96px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;min-height:100vh}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(170deg,#3bdfce 0%,#17c0af 45%,#0c9184 100%) fixed;color:var(--ink);padding:16px 14px calc(96px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;min-height:100vh}
 .hdr{display:flex;align-items:center;gap:10px}
 .hdr img{width:44px;height:44px;border-radius:13px;border:2px solid var(--trim);background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25)}
 h1{font-size:24px;font-weight:800;color:#fff;letter-spacing:.01em;text-shadow:0 1px 6px rgba(0,0,0,.3)}
@@ -30,13 +30,16 @@ h1{font-size:24px;font-weight:800;color:#fff;letter-spacing:.01em;text-shadow:0 
 .topbtn{width:42px;height:42px;border-radius:50%;border:2px solid var(--trim);background:#fff;font-size:18px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
 .topbtn.active{background:var(--purple-md)}
 .neontile{background:#0d0d12;border-radius:9px;display:flex;align-items:center;justify-content:center;border:1px solid #000;overflow:hidden}
-.navbtn .neontile{width:46px;height:26px;padding:1px 3px}
+.navbtn .neontile{width:50px;height:30px;padding:1px 3px}
 .navbtn .neontile svg{width:100%;height:100%}
-.bic.neon{width:64px;height:44px;border-radius:12px;background:#0d0d12;border:1px solid #000}
-.bic.neon svg{width:86%;height:86%}
+.bic.neon{width:66px;height:50px;background:transparent;border:none;box-shadow:none;border-radius:0}
+.bic.neon svg{width:100%;height:100%}
 /* ===== home grid ===== */
 .home{margin-top:14px}
-.sumstrip{background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,.18);cursor:pointer;margin-bottom:12px;border:1px solid var(--trim);border-left:6px solid var(--purple-md)}
+.sumstrip{background:linear-gradient(120deg,#5b2d8f,#0d9284);color:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,.22);cursor:pointer;margin-bottom:12px;border:1px solid var(--trim);border-left:6px solid #3bdfce}
+.sumstrip .bstat{color:rgba(255,255,255,.82)}
+.sumstrip .big{color:#7effe9}
+.sumstrip .bar{background:rgba(255,255,255,.25)}
 .footer{margin:24px auto 6px;text-align:center;background:#fff;border-radius:22px;padding:20px 16px 16px;box-shadow:0 6px 20px rgba(0,0,0,.25);border:2px solid var(--trim)}
 .footer img{width:62%;max-width:280px}
 .footer .slogan{font-size:15px;font-weight:800;font-style:italic;letter-spacing:.10em;text-transform:lowercase;background:linear-gradient(90deg,#0d9284,#5b2d8f);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:4px}
@@ -44,20 +47,18 @@ h1{font-size:24px;font-weight:800;color:#fff;letter-spacing:.01em;text-shadow:0 
 .heroes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .hero{border-radius:20px;padding:14px;color:#fff;min-height:136px;cursor:pointer;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 18px rgba(0,0,0,.25);border:1px solid var(--trim)}
 .hero.p{background:linear-gradient(150deg,#5b2d8f,#2c0f55)}
-.hero.t{background:#fff;color:var(--purple)}
-.hero.t .hline{color:#4b3a68}
-.hero.t .hmut{color:#8a7fa5}
+.hero.t{background:linear-gradient(150deg,#14ceb6,#0a6c60)}
 .hero .htitle{font-weight:800;font-size:15px}
 .hero .hline{font-size:12.5px;color:rgba(255,255,255,.9);line-height:1.45}
 .hero .hbig{font-size:22px;font-weight:800}
 .hero .hmut{color:rgba(255,255,255,.7);font-size:11.5px}
 .blocks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.block{border-radius:20px;padding:14px;cursor:pointer;min-height:118px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 14px rgba(0,0,0,.18);border:1px solid var(--trim)}
-.block.bw{background:#fff;border-top:5px solid var(--purple-md)}
-.block.bp{background:linear-gradient(160deg,#5b2d8f,#3a1668);color:#fff}
-.block.bp .btitle{color:#fff}
-.block.bp .bstat{color:rgba(255,255,255,.78)}
-.block.bt{background:#fff;border-top:5px solid var(--teal)}
+.block{border-radius:20px;padding:14px;cursor:pointer;min-height:118px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 14px rgba(0,0,0,.2);border:1px solid var(--trim);color:#fff}
+.block .btitle{color:#fff}
+.block .bstat{color:rgba(255,255,255,.82)}
+.block.bw{background:linear-gradient(160deg,#8a5fd6,#5b2d8f)}
+.block.bp{background:linear-gradient(160deg,#5b2d8f,#33125e)}
+.block.bt{background:linear-gradient(160deg,#12c9b2,#0a6c60)}
 .block .bic{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(90,60,150,.14)}
 .block .btitle{font-weight:800;font-size:14.5px}
 .block .bstat{font-size:12px;color:var(--muted)}
@@ -211,7 +212,7 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 
   <div class="card section" id="sec-health">
     <button class="backbtn" onclick="closeSection()">‹ Back</button>
-    <h2 style="margin-top:10px">Health Log <span><button class="printbtn" onclick="openSection('sec-stretch')">🧘 Stretch Guide</button> <button class="printbtn" id="editHBtn" onclick="toggleEditH()">⚙ Metrics</button></span></h2>
+    <h2 style="margin-top:10px">Health Log <button class="printbtn" id="editHBtn" onclick="toggleEditH()">⚙ Metrics</button></h2>
     <div id="healthRows"></div>
     <div id="editPanelH" style="display:none">
       <div class="muted" style="margin:8px 0 4px">Set how each metric is rated — hit it and it gets a ✓ for the day:</div>
@@ -282,6 +283,19 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     <div class="muted" style="margin-top:8px">Requests appear on every daily report this week, then the list resets Monday. Check one off when it's answered.</div>
   </div>
 
+  <div class="card section" id="sec-skin">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">🧴 Skincare Routine <button class="printbtn" onclick="fireAndPrint(document.getElementById('skinBody').innerHTML)">🖨 Print</button></h2>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button class="btn" id="skBtnAM" onclick="renderSkin('am')">☀️ Morning</button>
+      <button class="btn ghost" id="skBtnPM" onclick="renderSkin('pm')">🌙 Evening</button>
+    </div>
+    <div id="skinBody"></div>
+  </div>
+</div>
+
+<!-- ============ STRETCH GUIDE (lives in Workout tab) ============ -->
+<div id="stretch-holder" style="display:none">
   <div class="card section" id="sec-stretch">
     <button class="backbtn" onclick="closeSection()">‹ Back</button>
     <h2 style="margin-top:10px">🧘 Daily Stretch & Strengthen Guide <button class="printbtn" onclick="fireAndPrint(document.getElementById('stretchGuide').innerHTML)">🖨 Print / Save PDF</button></h2>
@@ -294,8 +308,8 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
         🌙 <b>15-min evening:</b> the full list below, one body part at a time, top to bottom</div>
       </div>
 
-      <div style="border:1px solid var(--line);border-left:5px solid #5b2d8f;border-radius:12px;padding:12px 14px;margin-bottom:10px">
-        <div style="font-weight:800;color:#5b2d8f;font-size:14.5px">🔙 Back</div>
+      <div style="border-radius:12px;padding:12px 14px;margin-bottom:10px;background:linear-gradient(120deg,#5b2d8f,#0d9284);color:#fff">
+        <div style="font-weight:800;font-size:14.5px">🔙 Back</div>
         <div style="font-size:13px;line-height:1.7;margin-top:6px">
         <b>Stretch daily:</b><br>
         • Cat-cow — 10 slow reps (morning stiffness breaker)<br>
@@ -322,8 +336,8 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
         • Banded monster walks — 3×10 steps each way (pairs with your glute program days)</div>
       </div>
 
-      <div style="border:1px solid var(--line);border-left:5px solid #5b2d8f;border-radius:12px;padding:12px 14px;margin-bottom:10px">
-        <div style="font-weight:800;color:#5b2d8f;font-size:14.5px">🎯 Psoas (hip flexor)</div>
+      <div style="border-radius:12px;padding:12px 14px;margin-bottom:10px;background:linear-gradient(120deg,#5b2d8f,#0d9284);color:#fff">
+        <div style="font-weight:800;font-size:14.5px">🎯 Psoas (hip flexor)</div>
         <div style="font-size:13px;line-height:1.7;margin-top:6px">
         <b>Stretch daily:</b><br>
         • Half-kneeling hip-flexor stretch — 45–60s per side. Squeeze the back-leg glute and tuck the pelvis first; you should feel it in the front of the hip, not the low back<br>
@@ -347,8 +361,8 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
         • Seated / bent-knee calf raises — 3×15 (hits soleus directly)</div>
       </div>
 
-      <div style="border:1px solid var(--line);border-left:5px solid #5b2d8f;border-radius:12px;padding:12px 14px;margin-bottom:10px">
-        <div style="font-weight:800;color:#5b2d8f;font-size:14.5px">🦶 Feet</div>
+      <div style="border-radius:12px;padding:12px 14px;margin-bottom:10px;background:linear-gradient(120deg,#5b2d8f,#0d9284);color:#fff">
+        <div style="font-weight:800;font-size:14.5px">🦶 Feet</div>
         <div style="font-size:13px;line-height:1.7;margin-top:6px">
         <b>Stretch daily:</b><br>
         • Plantar-fascia ball roll — 60s per foot (lacrosse/golf ball, morning is best)<br>
@@ -566,8 +580,8 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 <nav class="navbar">
   <button class="navbtn active" data-tab="today"><span class="ico">☀️</span><span class="lbl">Today</span></button>
   <button class="navbtn" data-tab="week"><span class="neontile"><svg viewBox="0 0 88 24" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngW" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><text x="44" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" letter-spacing="2.5" font-size="12.5" fill="#ffb3ec" stroke="#ff4fd8" stroke-width="0.9" filter="url(#ngW)">WEEKLY</text></svg></span><span class="lbl">Week</span></button>
-  <button class="navbtn" data-tab="month"><span class="ico">🗓️</span><span class="lbl">Month</span></button>
-  <button class="navbtn" data-tab="workout"><span class="neontile"><svg viewBox="0 0 64 30" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngD" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke="#ff2d78" stroke-width="2.6" stroke-linecap="round" filter="url(#ngD)"><line x1="5" y1="10" x2="5" y2="20"/><line x1="12" y1="6" x2="12" y2="24"/><line x1="19" y1="9" x2="19" y2="21"/><line x1="45" y1="9" x2="45" y2="21"/><line x1="52" y1="6" x2="52" y2="24"/><line x1="59" y1="10" x2="59" y2="20"/><line x1="19" y1="15" x2="45" y2="15"/></g></svg></span><span class="lbl">Workout</span></button>
+  <button class="navbtn" data-tab="month"><span class="neontile"><svg viewBox="0 0 72 28" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngC" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="0.9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke-linecap="round" stroke-width="1.6" filter="url(#ngC)"><g stroke="#a86bff"><rect x="3" y="7" width="16" height="15" rx="2"/><line x1="7" y1="4" x2="7" y2="9"/><line x1="15" y1="4" x2="15" y2="9"/><line x1="3" y1="12" x2="19" y2="12"/><rect x="6.5" y="15" width="3" height="3"/><rect x="12.5" y="15" width="3" height="3"/></g><g stroke="#ff5c5c"><rect x="28" y="7" width="16" height="15" rx="2"/><line x1="32" y1="4" x2="32" y2="9"/><line x1="40" y1="4" x2="40" y2="9"/><line x1="28" y1="12" x2="44" y2="12"/><rect x="31.5" y="15" width="3" height="3"/><rect x="37.5" y="15" width="3" height="3"/></g><g stroke="#b7e94a"><rect x="53" y="7" width="16" height="15" rx="2"/><line x1="57" y1="4" x2="57" y2="9"/><line x1="65" y1="4" x2="65" y2="9"/><line x1="53" y1="12" x2="69" y2="12"/><rect x="56.5" y="15" width="3" height="3"/><rect x="62.5" y="15" width="3" height="3"/></g></g></svg></span><span class="lbl">Month</span></button>
+  <button class="navbtn" data-tab="workout"><span class="neontile"><svg viewBox="0 0 64 38" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngF" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke="#ff4f6e" stroke-width="3" stroke-linecap="round" filter="url(#ngF)"><line x1="10" y1="6" x2="10" y2="18"/><line x1="17" y1="3" x2="17" y2="21"/><line x1="47" y1="3" x2="47" y2="21"/><line x1="54" y1="6" x2="54" y2="18"/><line x1="17" y1="12" x2="47" y2="12"/></g><text x="32" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="8" letter-spacing="1.5" fill="#7fd4ff" filter="url(#ngF)">FITNESS</text><text x="32" y="37.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="7" letter-spacing="1.5" fill="#ffb14d" filter="url(#ngF)">CLUB</text></svg></span><span class="lbl">Workout</span></button>
 </nav>
 
 <script>
@@ -823,7 +837,7 @@ function renderCalories(){
   const used=calsUsed(d); const budget=calBudget(); const left=budget-used;
   const pctUsed=budget?Math.min(100,Math.round(used/budget*100)):0;
   document.getElementById('calSummary').innerHTML=
-    `<div style="display:flex;justify-content:space-between;align-items:center"><b>${used.toLocaleString()} cal eaten</b><b style="color:${left>=0?'var(--teal-bright)':'var(--purple)'}">${left>=0?left.toLocaleString()+' left':Math.abs(left).toLocaleString()+' over'}</b></div>
+    `<div style="display:flex;justify-content:space-between;align-items:center"><b>${used.toLocaleString()} cal eaten</b><b style="color:${left>=0?'#7effe9':'#ffb3ec'}">${left>=0?left.toLocaleString()+' left':Math.abs(left).toLocaleString()+' over'}</b></div>
      <div class="bar"><div style="width:${pctUsed}%"></div></div>
      <div class="bstat">budget ${budget.toLocaleString()} cal · macros ≈ 215g protein / 75–80g fat / 215–225g carbs</div>`;
   const el=document.getElementById('calEntries'); el.innerHTML='';
@@ -1333,6 +1347,63 @@ function coach(){
   if(h.water!=null && h.water<75) tips.push(`<b>Hydration:</b> ${h.water} oz so far — get to 75+ before evening. Water first when snacky; thirst masquerades as hunger.`);
   if(hour>=19 && left>0) tips.push('<b>Evening:</b> kitchen closes 2–3 hrs before bed — protects the stomach-fat goal and your sleep score.');
   document.getElementById('coachBox').innerHTML='<b>Coach:</b><ul>'+tips.slice(0,6).map(t=>'<li>'+t+'</li>').join('')+'</ul>';
+}
+
+/* ================= SKINCARE ROUTINE ================= */
+const SKIN_AM=[
+ ['1 · Wash your face','COSRX Low pH Good Morning Gel Cleanser','Lukewarm water (never hot), massage 60s, rinse, pat dry — don\'t rub.'],
+ ['2 · Niacinamide serum','The Ordinary Niacinamide 10% + Zinc 1%','3–4 drops on dry face, press & pat gently, wait 60s.'],
+ ['3 · Moisturize','Illiyoon Ceramide Ato Concentrate Cream','Pea-sized, warm between fingertips, press in — even if skin feels oily.'],
+ ['4 · Sunscreen','Beauty of Joseon Relief Sun SPF 50+','Two-finger amount, face + back of neck, last step, absorb 2 min — every day, even cloudy.']
+];
+const SKIN_PM={
+ bha:{name:'BHA night',steps:[
+  ['1 · Cleanse','COSRX gel cleanser — same as morning; washes off the day\'s sunscreen and oil.'],
+  ['2 · BHA exfoliant','Paula\'s Choice 2% BHA on a cotton pad, swipe whole face, do NOT rinse, wait 5 min. Never more than 3 nights/week.'],
+  ['3 · High Roller','Topicals High Roller on ingrown spots only (jawline, neck, chin) — wait 3 min. BHA nights only.'],
+  ['4 · Moisturize','Illiyoon cream — extra important tonight; seals and protects.']]},
+ cent:{name:'Centella night',steps:[
+  ['1 · Cleanse','COSRX gel cleanser.'],
+  ['2 · Centella toner','Skin1004 Centella: pat over face, wait 1 min. (Week 5 onward: swap for Skin1004 Retinol 0.1%.)'],
+  ['3 · Moisturize','Illiyoon cream — always the last step.']]},
+ rest:{name:'REST night',steps:[
+  ['1 · Cleanse','COSRX gel cleanser.'],
+  ['2 · Moisturize','Illiyoon cream. That\'s it — no actives. Skin repairs best when it\'s resting.']]}
+};
+const SKIN_WEEK=[['Monday','bha'],['Tuesday','cent'],['Wednesday','bha'],['Thursday','rest'],['Friday','bha'],['Saturday','cent'],['Sunday','rest']];
+let SKIN_MODE='am';
+function skinTodayLabel(){
+  const t=SKIN_WEEK[(TODAY.getDay()+6)%7][1];
+  return t==='bha'?'BHA + High Roller':t==='cent'?'Centella toner':'REST — cleanse + moisturize';
+}
+function renderSkin(mode){
+  if(mode) SKIN_MODE=mode;
+  const am=SKIN_MODE==='am';
+  const bAM=document.getElementById('skBtnAM'), bPM=document.getElementById('skBtnPM');
+  if(bAM){ bAM.className='btn'+(am?'':' ghost'); bPM.className='btn'+(am?' ghost':''); }
+  const todayIdx=(TODAY.getDay()+6)%7;
+  const cardStyle=i=>'border-radius:12px;padding:11px 13px;margin-top:8px;color:#fff;'
+    +(i%2===0?'background:linear-gradient(120deg,#5b2d8f,#0d9284)':'background:linear-gradient(120deg,#8a5fd6,#5b2d8f)')
+    +(i===todayIdx?';outline:2.5px solid #3bdfce':'');
+  let h='';
+  if(am){
+    h+='<div class="summary-note" style="margin-top:0"><b>Morning — same 4 steps every single day,</b> right after your shower. Sunscreen is non-negotiable: even indoors, even cloudy.</div>';
+    SKIN_WEEK.forEach((d,i)=>{
+      h+='<div style="'+cardStyle(i)+'"><div style="font-weight:800;font-size:13.5px">☀️ '+d[0]+(i===todayIdx?' · TODAY':'')+'</div>'
+        +SKIN_AM.map(s=>'<div style="font-size:12px;line-height:1.55;margin-top:5px"><b>'+s[0]+'</b> — '+s[1]+'<br><span style="color:rgba(255,255,255,.82)">'+s[2]+'</span></div>').join('')
+        +'</div>';
+    });
+  } else {
+    h+='<div class="summary-note" style="margin-top:0"><b>Evening — cleanse + moisturize every night;</b> the middle step rotates by day. Shaving tomorrow? Tonight must be a BHA night.</div>';
+    SKIN_WEEK.forEach((d,i)=>{
+      const t=SKIN_PM[d[1]];
+      h+='<div style="'+cardStyle(i)+'"><div style="font-weight:800;font-size:13.5px">🌙 '+d[0]+' — '+t.name+(i===todayIdx?' · TONIGHT':'')+'</div>'
+        +t.steps.map(s=>'<div style="font-size:12px;line-height:1.55;margin-top:5px"><b>'+s[0]+'</b> — <span style="color:rgba(255,255,255,.85)">'+s[1]+'</span></div>').join('')
+        +'</div>';
+    });
+    h+='<div class="summary-note" style="margin-top:10px"><b>Shave-day rules:</b> BHA the night before · shower first · cleanse before gel · Bevel clear gel, never foam · with the grain only · finish with Centella toner (no alcohol aftershave), then normal morning steps · fresh blade every 5–7 shaves.</div>';
+  }
+  document.getElementById('skinBody').innerHTML=h;
 }
 
 /* ================= PILLARS ================= */
@@ -2048,7 +2119,7 @@ let openSec=null;
 function renderFoodSec(){ renderHealth(); renderCalories(); }
 const SECTION_RENDER={
   'sec-daily':renderDaily,'sec-top3':renderTop3,'sec-health':renderHealth,'sec-food':renderFoodSec,
-  'sec-prayer':renderPrayers,
+  'sec-prayer':renderPrayers,'sec-skin':function(){renderSkin();},
   'sec-cal':renderCalToday,'sec-pillars':renderPillars,
   'sec-wtasks':renderWeek,'sec-wsnap':renderWeek,'sec-wcal':renderCalWeek,'sec-finance':renderFinance,
   'sec-mtasks':renderMonthly,'sec-mcal':renderMonth,'sec-mdates':renderDates,'sec-managedates':renderDates,
@@ -2078,10 +2149,12 @@ function blockHtml(sec,ico,title,stat,cls){
   const isSvg = typeof ico==='string' && ico.indexOf('<svg')===0;
   return `<div class="block ${cls}" onclick="openSection('${sec}')"><span class="bic${isSvg?' neon':''}">${ico}</span><span class="btitle">${title}</span><span class="bstat">${stat}</span></div>`;
 }
-/* neon sign icons (recreated from John's reference images) */
-const NEON_HEART='<svg viewBox="0 0 44 40" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngH" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke="#3dffab" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#ngH)"><path d="M22 35 C8 25 3 16 7 9.5 C10.5 4 18 5 22 11 C26 5 33.5 4 37 9.5 C41 16 36 25 22 35 Z"/><polyline points="9,20 16,20 19,13 23,27 26,17 28,20 35,20"/></g></svg>';
-const NEON_EAT='<svg viewBox="0 0 92 46" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngE" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(#ngE)" font-family="\'Brush Script MT\',\'Segoe Script\',cursive" text-anchor="middle"><text x="46" y="20" font-size="18" fill="#f4fff5">Eat good</text><text x="46" y="40" font-size="16" fill="#3dffab">feel good</text></g></svg>';
-const NEON_PRAY='<svg viewBox="0 0 40 46" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ngPg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#57b6ff"/><stop offset="1" stop-color="#ff9d4d"/></linearGradient><filter id="ngP2" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke="url(#ngPg)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#ngP2)"><path d="M20 6 L20 34"/><path d="M20 10 C15 5 10.5 7 11.5 13 L13.5 26 C10 24.5 7.5 27 9.5 30.5 L15 38 C17 41 20 40.5 20 37"/><path d="M20 10 C25 5 29.5 7 28.5 13 L26.5 26 C30 24.5 32.5 27 30.5 30.5 L25 38 C23 41 20 40.5 20 37"/></g></svg>';
+/* neon sign icons (recreated from John's reference images — transparent, no boxes) */
+const NEON_WATCH='<svg viewBox="0 0 44 48" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngW2" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke="#5fd7ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#ngW2)"><rect x="14" y="2" width="16" height="8" rx="2"/><circle cx="22" cy="6" r="1.5"/><rect x="11" y="10" width="22" height="28" rx="6"/><rect x="15" y="16" width="14" height="16" rx="2"/><rect x="14" y="38" width="16" height="8" rx="2"/><circle cx="22" cy="42" r="1.5"/><line x1="24.5" y1="19" x2="27.5" y2="19"/><line x1="24.5" y1="22" x2="27.5" y2="22"/></g><path d="M17 20.5 C17 19 18.5 18.3 19.5 19.3 C20.5 18.3 22 19 22 20.5 C22 22 19.5 23.5 19.5 23.5 C19.5 23.5 17 22 17 20.5 Z" fill="none" stroke="#ff8ad9" stroke-width="1.4" filter="url(#ngW2)"/><polyline points="16,28.5 18.5,28.5 20,25.5 21.5,31 23,27.5 24,28.5 28,28.5" fill="none" stroke="#5fd7ff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" filter="url(#ngW2)"/></svg>';
+const NEON_FOODLIST='<svg viewBox="0 0 46 48" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngL" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke="#ff4fa3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#ngL)"><rect x="8" y="7" width="26" height="36" rx="3"/><rect x="16" y="3" width="10" height="7" rx="1.5"/><line x1="13" y1="16" x2="29" y2="16"/><line x1="13" y1="21" x2="29" y2="21"/><line x1="13" y1="26" x2="29" y2="26"/><line x1="13" y1="31" x2="23" y2="31"/><path d="M30.5 32 C27 32 25 35 25 38 C25 42 28 45.5 31 45.5 C32 45.5 32.5 45 33 45 C33.5 45 34 45.5 35 45.5 C38 45.5 41 42 41 38 C41 35 39 32 35.5 32 C34.5 32 33.8 32.5 33 32.5 C32.2 32.5 31.5 32 30.5 32 Z"/><path d="M33 32 C33 29.5 34.5 28 36.5 27.5"/></g></svg>';
+const NEON_CROSSHANDS='<svg viewBox="0 0 44 46" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngX" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke="#8f7bff" stroke-width="2.6" stroke-linecap="round" filter="url(#ngX)"><line x1="22" y1="3" x2="22" y2="22"/><line x1="15" y1="10" x2="29" y2="10"/></g><g fill="none" stroke="#ff7ad9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#ngX)"><path d="M8 45 C4.5 40 4 34 7 30 L11 25.5 M11.5 33 L11.5 24 M15 34 L15 23 M18.5 35.5 L18.5 25"/><path d="M36 45 C39.5 40 40 34 37 30 L33 25.5 M32.5 33 L32.5 24 M29 34 L29 23 M25.5 35.5 L25.5 25"/></g></svg>';
+const NEON_TOP3='<svg viewBox="0 0 48 46" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngT" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="24" cy="21" r="15" fill="none" stroke="#c46bff" stroke-width="2" filter="url(#ngT)"/><text x="24" y="30" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="25" fill="#b05ce8" stroke="#e8c2ff" stroke-width="0.8" filter="url(#ngT)">3</text><text x="24" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="2" fill="#9fc8ff" filter="url(#ngT)">TOP</text></svg>';
+const NEON_CHECKLIST='<svg viewBox="0 0 46 48" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngK" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke="#e14bff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" filter="url(#ngK)"><rect x="8" y="6" width="28" height="39" rx="3"/><path d="M17 6 C17 3.5 19 2 22 2 C25 2 27 3.5 27 6 L28 8 L16 8 Z"/><line x1="13" y1="15" x2="30" y2="15"/><line x1="13" y1="21" x2="30" y2="21"/><line x1="13" y1="27" x2="26" y2="27"/><line x1="13" y1="38" x2="20" y2="38"/><circle cx="33" cy="31" r="7.5"/><polyline points="29.5,31 32,33.5 36.5,27.5"/></g></svg>';
 function renderHomes(){
   const items=dailyItems(); const d=dayData(TKEY);
   const done=dayDone(d,items); const pct=items.length?Math.round(done/items.length*100):0;
@@ -2112,11 +2185,12 @@ function renderHomes(){
       </div>
     </div>
     <div class="blocks">
-      ${blockHtml('sec-top3','🎯','Top 3 Today', t3all.length?`${t3done}/${t3all.length} done`:'Tap to set priorities','bw')}
+      ${blockHtml('sec-top3',NEON_TOP3,'Top 3 Today', t3all.length?`${t3done}/${t3all.length} done`:'Tap to set priorities','bw')}
       ${blockHtml('sec-daily','✅','Daily To-Do', `${done}/${items.length} done`,'bp')}
-      ${blockHtml('sec-prayer',NEON_PRAY,'Prayer Requests', (()=>{const pl=prayersFor(WKEY);const act=pl.filter(p=>!p.answered).length;return pl.length?`${act} active this week`:'Add requests';})(),'bt')}
-      ${blockHtml('sec-health',NEON_HEART,'Health Log', gTot?`${gHit}/${gTot} goals hit${gLog<gTot?' · '+(gTot-gLog)+' unlogged':''}`:'Log today\'s numbers','bw')}
-      ${blockHtml('sec-food',NEON_EAT,'Food & Calories', (()=>{const used=calsUsed(d);const left=calBudget()-used;return used?`${used.toLocaleString()} cal · ${left>=0?left.toLocaleString()+' left':'over'}`:'📷 Scan or snap to log';})(),'bp')}
+      ${blockHtml('sec-prayer',NEON_CROSSHANDS,'Prayer Requests', (()=>{const pl=prayersFor(WKEY);const act=pl.filter(p=>!p.answered).length;return pl.length?`${act} active this week`:'Add requests';})(),'bt')}
+      ${blockHtml('sec-health',NEON_WATCH,'Health Log', gTot?`${gHit}/${gTot} goals hit${gLog<gTot?' · '+(gTot-gLog)+' unlogged':''}`:'Log today\'s numbers','bw')}
+      ${blockHtml('sec-food',NEON_FOODLIST,'Food & Calories', (()=>{const used=calsUsed(d);const left=calBudget()-used;return used?`${used.toLocaleString()} cal · ${left>=0?left.toLocaleString()+' left':'over'}`:'📷 Scan or snap to log';})(),'bp')}
+      ${blockHtml('sec-skin','🧴','Skincare', 'Tonight: '+skinTodayLabel(),'bt')}
     </div>`;
   // WEEK
   const all=store.get('days',{}); let sumw=0;
@@ -2143,7 +2217,7 @@ function renderHomes(){
       </div>
     </div>
     <div class="blocks">
-      ${blockHtml('sec-wtasks','🏋️','Weekly Tasks', `${wm.met}/${wm.total} goals met`,'bp')}
+      ${blockHtml('sec-wtasks',NEON_CHECKLIST,'Weekly Tasks', `${wm.met}/${wm.total} goals met`,'bp')}
       ${blockHtml('sec-wsnap','📊','Snapshot & Report', 'Chart + printable report','bw')}
       ${blockHtml('sec-wcal','📆','Look-Ahead', CAL_EVENTS===null?'Connect calendar':`${evWeek} events this week`,'bt')}
       ${blockHtml('sec-finance','💰','Finances', (()=>{ if(!finTx().length) return 'Upload Rocket Money CSV'; const mon=mondayOf(TODAY); const sun=new Date(mon); sun.setDate(sun.getDate()+7); return money(finSummary(finForRange(mon,sun)).spend)+' spent this week'; })(),'bw')}
@@ -2277,9 +2351,10 @@ function renderWorkout(){
   const p=wkPos(); const d=WK_PROGRAM[p.month];
   const st=wkStart();
   const border=d.stage==='Stage 1'?'#0d9284':'#8a5fd6';
-  let html='<div class="sumstrip" style="border-left-color:'+border+';cursor:default">'
+  let html='<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="printbtn" onclick="openSection(\'sec-stretch\')">🧘 Stretch & Strengthen Guide</button></div>';
+  html+='<div class="sumstrip" style="border-left-color:'+border+';cursor:default">'
     +'<div style="display:flex;justify-content:space-between;align-items:center"><b>Month '+p.month+' of 12</b><span class="pill '+(d.stage==='Stage 1'?'p-phys':'p-mental')+'">'+d.stage+'</span></div>'
-    +'<div class="bstat" style="margin-top:4px"><b style="color:var(--ink)">'+esc(d.phase)+'</b> emphasis · '+d.block+' · '+d.reps+' reps · 3 sets · '+d.rest+' rest</div>'
+    +'<div class="bstat" style="margin-top:4px"><b style="color:#fff">'+esc(d.phase)+'</b> emphasis · '+d.block+' · '+d.reps+' reps · 3 sets · '+d.rest+' rest</div>'
     +'<div class="bstat" style="margin-top:4px">Week '+p.week+' — '+wkWeekHint(p.week)+(p.cycle>1?' · cycle '+p.cycle:'')+'</div>'
     +'</div>';
   html+='<div class="dayhdr" style="margin-top:14px">This month\'s sessions — rotate A → B → C</div>';
@@ -2288,10 +2363,10 @@ function renderWorkout(){
     +blockHtml('sec-wkprogram','📅','Full 12-Month Plan','Browse every phase & month','bp')
     +blockHtml('sec-wksettings','⚙️','Program Start', st.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),'bt')
     +'</div>';
-  html+='<div class="card" style="margin-top:12px"><h2>Home-Gym Program <span class="muted" style="font-weight:400;text-transform:none;letter-spacing:0">John Schuster</span></h2>'
-    +'<div class="bstat" style="line-height:1.6">Upper-body priority · Achilles-safe (no explosive work) · never above 15 reps · 3 sets on everything.<br>'
-    +'<b style="color:var(--ink)">Gear:</b> dumbbells · barbell + rack · bands · bench · pull-up bar · landmine.<br>'
-    +'<b style="color:var(--ink)">Stages alternate monthly:</b> odd = Stage 1 (8–10 reps, 60s) · even = Stage 3 (12–15 reps, 45s).</div></div>';
+  html+='<div class="card" style="margin-top:12px;background:linear-gradient(160deg,#5b2d8f,#0a6c60);border-color:var(--trim)"><h2 style="color:#c9f2ea">Home-Gym Program <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.7);font-size:12px">John Schuster</span></h2>'
+    +'<div style="font-size:12px;line-height:1.6;color:rgba(255,255,255,.88)">Upper-body priority · Achilles-safe (no explosive work) · never above 15 reps · 3 sets on everything.<br>'
+    +'<b style="color:#fff">Gear:</b> dumbbells · barbell + rack · bands · bench · pull-up bar · landmine.<br>'
+    +'<b style="color:#fff">Stages alternate monthly:</b> odd = Stage 1 (8–10 reps, 60s) · even = Stage 3 (12–15 reps, 45s).</div></div>';
   document.getElementById('home-workout').innerHTML=html;
 }
 function wkOpenDay(m,day){ WK_SEL={m,day}; openSection('sec-wkday'); }
@@ -2478,6 +2553,7 @@ function wkResetStart(){
 }
 
 /* ================= INIT ================= */
+document.getElementById('tab-workout').appendChild(document.getElementById('sec-stretch'));
 document.getElementById('s_calurl').value = store.get('calurl','');
 document.getElementById('finFile').onchange=function(){ if(this.files[0]) importFinCSV(this.files[0]); this.value=''; };
 renderHomes(); renderHealth(); renderCalories(); loadCalendar();
