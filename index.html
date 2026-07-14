@@ -37,7 +37,7 @@ h1{font-size:24px;font-weight:800;color:#fff;letter-spacing:.01em;text-shadow:0 
 /* ===== home grid ===== */
 .home{margin-top:14px}
 .sumstrip{background:linear-gradient(120deg,#5b2d8f,#0d9284);color:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,.22);cursor:pointer;margin-bottom:12px;border:1px solid var(--trim);border-left:6px solid #3bdfce}
-.sumstrip .bstat{color:rgba(255,255,255,.82)}
+.sumstrip .bstat{color:#fff}
 .sumstrip .big{color:#7effe9}
 .sumstrip .bar{background:rgba(255,255,255,.25)}
 .footer{margin:24px auto 6px;text-align:center;background:#fff;border-radius:22px;padding:20px 16px 16px;box-shadow:0 6px 20px rgba(0,0,0,.25);border:2px solid var(--trim)}
@@ -47,18 +47,18 @@ h1{font-size:24px;font-weight:800;color:#fff;letter-spacing:.01em;text-shadow:0 
 .heroes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .hero{border-radius:20px;padding:14px;color:#fff;min-height:136px;cursor:pointer;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 18px rgba(0,0,0,.25);border:1px solid var(--trim)}
 .hero.p{background:linear-gradient(150deg,#5b2d8f,#2c0f55)}
-.hero.t{background:linear-gradient(150deg,#14ceb6,#0a6c60)}
+.hero.t{background:linear-gradient(120deg,#5b2d8f,#0d9284);border:1.5px solid rgba(255,255,255,.85)}
 .hero .htitle{font-weight:800;font-size:15px}
-.hero .hline{font-size:12.5px;color:rgba(255,255,255,.9);line-height:1.45}
+.hero .hline{font-size:12.5px;color:#fff;line-height:1.45}
 .hero .hbig{font-size:22px;font-weight:800}
-.hero .hmut{color:rgba(255,255,255,.7);font-size:11.5px}
+.hero .hmut{color:#fff;font-size:11.5px}
 .blocks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
 .block{border-radius:20px;padding:14px;cursor:pointer;min-height:118px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 14px rgba(0,0,0,.2);border:1px solid var(--trim);color:#fff}
 .block .btitle{color:#fff}
-.block .bstat{color:rgba(255,255,255,.82)}
+.block .bstat{color:#fff}
 .block.bw{background:linear-gradient(160deg,#8a5fd6,#5b2d8f)}
 .block.bp{background:linear-gradient(160deg,#5b2d8f,#33125e)}
-.block.bt{background:linear-gradient(160deg,#12c9b2,#0a6c60)}
+.block.bt{background:linear-gradient(120deg,#5b2d8f,#0d9284);border:1.5px solid rgba(255,255,255,.85)}
 .block .bic{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(90,60,150,.14)}
 .block .btitle{font-weight:800;font-size:14.5px}
 .block .bstat{font-size:12px;color:var(--muted)}
@@ -302,7 +302,7 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     <div id="stretchGuide">
       <div style="border-radius:14px;padding:12px 14px;background:linear-gradient(120deg,#5b2d8f,#0d9284);color:#fff;margin-bottom:12px">
         <div style="font-weight:800;font-size:15px">Pick one each day</div>
-        <div style="font-size:12.5px;line-height:1.6;margin-top:4px;color:rgba(255,255,255,.92)">
+        <div style="font-size:12.5px;line-height:1.6;margin-top:4px;color:#fff">
         ⚡ <b>5-min morning:</b> cat-cow · 90/90 switches · half-kneeling psoas stretch · calf wall stretch · arch doming<br>
         🏃 <b>10-min post-run:</b> couch stretch · pigeon · both calf stretches · eccentric heel drops · plantar ball roll<br>
         🌙 <b>15-min evening:</b> the full list below, one body part at a time, top to bottom</div>
@@ -1390,7 +1390,7 @@ function renderSkin(mode){
     h+='<div class="summary-note" style="margin-top:0"><b>Morning — same 4 steps every single day,</b> right after your shower. Sunscreen is non-negotiable: even indoors, even cloudy.</div>';
     SKIN_WEEK.forEach((d,i)=>{
       h+='<div style="'+cardStyle(i)+'"><div style="font-weight:800;font-size:13.5px">☀️ '+d[0]+(i===todayIdx?' · TODAY':'')+'</div>'
-        +SKIN_AM.map(s=>'<div style="font-size:12px;line-height:1.55;margin-top:5px"><b>'+s[0]+'</b> — '+s[1]+'<br><span style="color:rgba(255,255,255,.82)">'+s[2]+'</span></div>').join('')
+        +SKIN_AM.map(s=>'<div style="font-size:12px;line-height:1.55;margin-top:5px"><b>'+s[0]+'</b> — '+s[1]+'<br><span style="color:#fff">'+s[2]+'</span></div>').join('')
         +'</div>';
     });
   } else {
@@ -1398,7 +1398,7 @@ function renderSkin(mode){
     SKIN_WEEK.forEach((d,i)=>{
       const t=SKIN_PM[d[1]];
       h+='<div style="'+cardStyle(i)+'"><div style="font-weight:800;font-size:13.5px">🌙 '+d[0]+' — '+t.name+(i===todayIdx?' · TONIGHT':'')+'</div>'
-        +t.steps.map(s=>'<div style="font-size:12px;line-height:1.55;margin-top:5px"><b>'+s[0]+'</b> — <span style="color:rgba(255,255,255,.85)">'+s[1]+'</span></div>').join('')
+        +t.steps.map(s=>'<div style="font-size:12px;line-height:1.55;margin-top:5px"><b>'+s[0]+'</b> — <span style="color:#fff">'+s[1]+'</span></div>').join('')
         +'</div>';
     });
     h+='<div class="summary-note" style="margin-top:10px"><b>Shave-day rules:</b> BHA the night before · shower first · cleanse before gel · Bevel clear gel, never foam · with the grain only · finish with Centella toner (no alcohol aftershave), then normal morning steps · fresh blade every 5–7 shaves.</div>';
@@ -2357,14 +2357,14 @@ function renderWorkout(){
     +'<div class="bstat" style="margin-top:4px"><b style="color:#fff">'+esc(d.phase)+'</b> emphasis · '+d.block+' · '+d.reps+' reps · 3 sets · '+d.rest+' rest</div>'
     +'<div class="bstat" style="margin-top:4px">Week '+p.week+' — '+wkWeekHint(p.week)+(p.cycle>1?' · cycle '+p.cycle:'')+'</div>'
     +'</div>';
-  html+='<div class="dayhdr" style="margin-top:14px">This month\'s sessions — rotate A → B → C</div>';
+  html+='<div class="dayhdr" style="margin-top:14px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.25)">This month\'s sessions — rotate A → B → C</div>';
   html+='<div class="blocks" style="grid-template-columns:1fr">'+wkDayCard(p.month,'A')+wkDayCard(p.month,'B')+wkDayCard(p.month,'C')+'</div>';
   html+='<div class="blocks" style="margin-top:12px">'
     +blockHtml('sec-wkprogram','📅','Full 12-Month Plan','Browse every phase & month','bp')
     +blockHtml('sec-wksettings','⚙️','Program Start', st.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),'bt')
     +'</div>';
-  html+='<div class="card" style="margin-top:12px;background:linear-gradient(160deg,#5b2d8f,#0a6c60);border-color:var(--trim)"><h2 style="color:#c9f2ea">Home-Gym Program <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.7);font-size:12px">John Schuster</span></h2>'
-    +'<div style="font-size:12px;line-height:1.6;color:rgba(255,255,255,.88)">Upper-body priority · Achilles-safe (no explosive work) · never above 15 reps · 3 sets on everything.<br>'
+  html+='<div class="card" style="margin-top:12px;background:linear-gradient(160deg,#5b2d8f,#0a6c60);border-color:var(--trim)"><h2 style="color:#c9f2ea">Home-Gym Program <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#fff;font-size:12px">John Schuster</span></h2>'
+    +'<div style="font-size:12px;line-height:1.6;color:#fff">Upper-body priority · Achilles-safe (no explosive work) · never above 15 reps · 3 sets on everything.<br>'
     +'<b style="color:#fff">Gear:</b> dumbbells · barbell + rack · bands · bench · pull-up bar · landmine.<br>'
     +'<b style="color:#fff">Stages alternate monthly:</b> odd = Stage 1 (8–10 reps, 60s) · even = Stage 3 (12–15 reps, 45s).</div></div>';
   document.getElementById('home-workout').innerHTML=html;
