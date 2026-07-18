@@ -387,6 +387,7 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 
 <!-- ============ WEEK ============ -->
 <div id="tab-week" style="display:none">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="printbtn" onclick="aiShowList('weekly')">🤖 Weekly Summaries</button></div>
   <div class="home" id="home-week"></div>
 
   <div class="card section" id="sec-wtasks">
@@ -448,6 +449,7 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 
 <!-- ============ MONTH ============ -->
 <div id="tab-month" style="display:none">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="printbtn" onclick="aiShowList('monthly')">🤖 Monthly Summaries</button></div>
   <div class="home" id="home-month"></div>
 
   <div class="card section" id="sec-mtasks">
@@ -521,6 +523,16 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
   <div class="card">
     <h2>🗓️ Monthly Reports</h2>
     <div class="replist" id="repMonthly"></div>
+  </div>
+  <div class="card">
+    <h2>🤖 AI Weekly Summaries</h2>
+    <div class="replist" id="repAIWeekly"></div>
+    <div class="muted" style="margin-top:4px">AI insights on your workouts &amp; diet, generated every Sunday evening.</div>
+  </div>
+  <div class="card">
+    <h2>🤖 AI Monthly Summaries</h2>
+    <div class="replist" id="repAIMonthly"></div>
+    <div class="muted" style="margin-top:4px">AI insights on your workouts &amp; diet, generated the 1st of each month.</div>
   </div>
 </div>
 
@@ -663,7 +675,7 @@ const FLOSS_GOAL = 3;
 /* ================= STORAGE ================= */
 const store = {
   get(k, fb){ try{ const v = localStorage.getItem('ld_'+k); return v?JSON.parse(v):fb; }catch(e){ return fb; } },
-  set(k, v){ localStorage.setItem('ld_'+k, JSON.stringify(v)); }
+  set(k, v){ localStorage.setItem('ld_'+k, JSON.stringify(v)); if(window.sbQueueSnapshot) window.sbQueueSnapshot(); }
 };
 function dkey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function wkey(d){ const t=new Date(d); t.setHours(0,0,0,0); t.setDate(t.getDate()+3-((t.getDay()+6)%7)); const w1=new Date(t.getFullYear(),0,4); return t.getFullYear()+'-W'+String(1+Math.round(((t-w1)/864e5-3+((w1.getDay()+6)%7))/7)).padStart(2,'0'); }
@@ -1913,6 +1925,7 @@ function isoWeekMonday(wk){
   return mon;
 }
 function renderReports(){
+  aiRenderLists();
   const all=store.get('days',{});
   const dayKeys=Object.keys(all).sort().reverse();
   const el=document.getElementById('repDaily');
@@ -2639,9 +2652,58 @@ async function sbInit(){
 }
 function sbSetUser(u){
   sbUser = u;
+  window.__sbU = u;
   const inEl=document.getElementById('sbLoggedIn'), outEl=document.getElementById('sbLoggedOut');
   if(inEl&&outEl){ inEl.style.display=u?'':'none'; outEl.style.display=u?'none':''; }
-  if(u){ const w=document.getElementById('sbWho'); if(w) w.textContent=u.email; }
+  if(u){ const w=document.getElementById('sbWho'); if(w) w.textContent=u.email; sbQueueSnapshot(); }
+}
+
+/* ===== full app-state snapshot (backup + analysis) ===== */
+let sbSnapT=null;
+function sbQueueSnapshot(){
+  if(!window.__sbU || !sb) return;
+  clearTimeout(sbSnapT);
+  sbSnapT=setTimeout(sbPushSnapshot, 8000);
+}
+async function sbPushSnapshot(){
+  if(!window.__sbU || !sb) return;
+  const dump={};
+  for(let i=0;i<localStorage.length;i++){
+    const key=localStorage.key(i);
+    if(key && key.startsWith('ld_')){
+      try{ dump[key.slice(3)]=JSON.parse(localStorage.getItem(key)); }catch(e){}
+    }
+  }
+  try{ await sb.from('app_snapshots').upsert({ user_id:window.__sbU.id, data:dump, updated_at:new Date().toISOString() }); }catch(e){}
+}
+
+/* ===== AI summaries (weekly / monthly) ===== */
+async function aiShowList(type){
+  if(!sbUser){ alert('Sign in first: Settings → Cloud Sync.'); return; }
+  const { data, error } = await sb.from('ai_reports').select('id,title,period_start')
+    .eq('period_type',type).order('period_start',{ascending:false});
+  const label=type==='weekly'?'Weekly':'Monthly';
+  let html='<h1>🤖 AI '+label+' Summaries</h1>';
+  if(error) html+='<p>Error: '+esc(error.message)+'</p>';
+  else if(!data.length) html+='<p>None yet. '+(type==='weekly'?'Your first one lands Sunday evening.':'Your first one lands the 1st of next month.')+'</p>';
+  else data.forEach(r=>{ html+='<p><button class="printbtn" onclick="aiOpen(\''+r.id+'\')">'+esc(r.title)+'</button></p>'; });
+  showTab('reports'); showViewer(html);
+}
+async function aiOpen(id){
+  const { data, error } = await sb.from('ai_reports').select('html').eq('id',id).single();
+  showViewer(error?'<p>Error: '+esc(error.message)+'</p>':data.html);
+}
+async function aiRenderLists(){
+  const w=document.getElementById('repAIWeekly'), m=document.getElementById('repAIMonthly');
+  if(!w||!m) return;
+  if(!sbUser){ w.innerHTML=m.innerHTML='<span class="muted">Sign in under Settings → Cloud Sync.</span>'; return; }
+  const { data, error } = await sb.from('ai_reports').select('id,title,period_type,period_start').order('period_start',{ascending:false});
+  if(error){ w.innerHTML=m.innerHTML='<span class="muted">Error loading.</span>'; return; }
+  const wk=data.filter(r=>r.period_type==='weekly'), mo=data.filter(r=>r.period_type==='monthly');
+  w.innerHTML=wk.length?'':'<span class="muted">First one lands Sunday evening.</span>';
+  wk.forEach(r=>{ const b=document.createElement('button'); b.className='printbtn'; b.textContent=r.title; b.onclick=()=>aiOpen(r.id); w.appendChild(b); });
+  m.innerHTML=mo.length?'':'<span class="muted">First one lands the 1st of next month.</span>';
+  mo.forEach(r=>{ const b=document.createElement('button'); b.className='printbtn'; b.textContent=r.title; b.onclick=()=>aiOpen(r.id); m.appendChild(b); });
 }
 async function sbSignIn(){
   const email=document.getElementById('sbEmail').value.trim();
