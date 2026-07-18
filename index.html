@@ -230,7 +230,9 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     <div id="calEntries"></div>
     <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
       <input type="text" id="cal_name" placeholder="Food item" style="flex:1;min-width:110px">
-      <input type="number" id="cal_amt" placeholder="cal" style="width:80px">
+      <input type="number" id="cal_amt" placeholder="cal" style="width:74px">
+      <input type="number" id="cal_p" placeholder="protein g" style="width:88px">
+      <input type="number" id="cal_f" placeholder="fat g" style="width:70px">
       <button class="btn teal" onclick="addCalEntry()">Add</button>
       <button class="btn" onclick="scanBarcode()">📷 Camera</button>
     </div>
@@ -597,7 +599,8 @@ const DAILY_BASE = [
   {id:'teethAM',  label:'Brush teeth (morning)',   cat:'phys'},
   {id:'teethPM',  label:'Brush teeth (night)',     cat:'phys'},
   {id:'floss',    label:'Floss',                   cat:'phys'},
-  {id:'skin',     label:'Skin routine',            cat:'phys'},
+  {id:'skinAM',   label:'🧴 Skincare routine — morning', cat:'phys'},
+  {id:'skinPM',   label:'🧴 Skincare routine — night',   cat:'phys'},
   {id:'nightguard',label:'Night guard',            cat:'phys'},
   {id:'makebed',  label:'Make bed',                cat:'home'},
   {id:'tidy',     label:'Tidy up (dishes, laundry, clean up)', cat:'home'},
@@ -608,6 +611,9 @@ const WEEKLY_ITEMS = [
   {id:'sermons',label:'Sermons / Verdict / Additional', type:'input', goal:3, goalMax:5, unit:''},
   {id:'lifts',  label:'Lifts',                     type:'count', goal:3, max:4},
   {id:'runs',   label:'Runs',                      type:'count', goal:3, max:7},
+  {id:'z2days', label:'Zone 2 cardio — 25–45 min sessions', type:'count', goal:3, max:7},
+  {id:'z4min',  label:'Zone 4 minutes — max 60/week, however you get there', type:'input', goal:20, goalMax:60},
+  {id:'womin',  label:'Total workout time (min)',  type:'input', goal:150, goalMax:600},
   {id:'yoga',   label:'Yoga sessions',             type:'count', goal:2, max:7},
   {id:'pt',     label:'Calf & hip therapy',        type:'count', goal:3, max:7},
   {id:'blinkist',label:'Blinkist books',           type:'count', goal:3, max:10},
@@ -711,13 +717,9 @@ const HEALTH_METRICS = [
   {k:'score',  label:'😴 Sleep Number score', rlabel:'Sleep Number score', step:1},
   {k:'water',  label:'💧 Water (oz)',         rlabel:'Water (oz)',         step:5},
   {k:'steps',  label:'👟 Steps',              rlabel:'Steps',              step:100},
-  {k:'workout',label:'🏋️ Total workout (min)',rlabel:'Workout (min)',     step:5},
-  {k:'z2',     label:'🫀 Zone 2 (min)',       rlabel:'Zone 2 (min)',       step:5},
-  {k:'z4',     label:'🔥 Zone 4 (min)',       rlabel:'Zone 4 (min)',       step:5},
 ];
 const HGOAL_DEFAULTS = {
-  score:{type:'gte',a:75}, water:{type:'gte',a:75}, steps:{type:'range',a:7000,b:10000},
-  workout:{type:'none'}, z2:{type:'none'}, z4:{type:'none'}
+  score:{type:'gte',a:75}, water:{type:'gte',a:75}, steps:{type:'range',a:7000,b:10000}
 };
 function hGoals(){ return Object.assign({}, HGOAL_DEFAULTS, store.get('hgoals',{})); }
 function hGoalText(cfg){
@@ -834,18 +836,22 @@ function editBudget(){
 }
 function calsFor(d){ return (d.health&&d.health.cals)||[]; }
 function calsUsed(d){ return calsFor(d).reduce((a,e)=>a+(e.cal||0),0); }
+function calsProt(d){ return Math.round(calsFor(d).reduce((a,e)=>a+(e.p||0),0)); }
+function calsFat(d){ return Math.round(calsFor(d).reduce((a,e)=>a+(e.f||0),0)); }
 function renderCalories(){
   const d=dayData(TKEY); const list=calsFor(d);
   const used=calsUsed(d); const budget=calBudget(); const left=budget-used;
+  const totP=calsProt(d), totF=calsFat(d);
   const pctUsed=budget?Math.min(100,Math.round(used/budget*100)):0;
   document.getElementById('calSummary').innerHTML=
     `<div style="display:flex;justify-content:space-between;align-items:center"><b>${used.toLocaleString()} cal eaten</b><b style="color:${left>=0?'#7effe9':'#ffb3ec'}">${left>=0?left.toLocaleString()+' left':Math.abs(left).toLocaleString()+' over'}</b></div>
      <div class="bar"><div style="width:${pctUsed}%"></div></div>
-     <div class="bstat">budget ${budget.toLocaleString()} cal · macros ≈ 215g protein / 75–80g fat / 215–225g carbs</div>`;
+     <div class="bstat">budget ${budget.toLocaleString()} cal · 💪 protein <b>${totP}g</b> of 210–220g · 🧈 fat <b>${totF}g</b> of 75–80g</div>`;
   const el=document.getElementById('calEntries'); el.innerHTML='';
   list.forEach(e=>{
     const row=document.createElement('div'); row.className='hrow';
-    row.innerHTML=`<span class="lbl"></span><b>${(e.cal||0).toLocaleString()}</b><button class="del" style="background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:4px">✕</button>`;
+    const macros=(e.p!=null||e.f!=null)?`<span class="goalhint">${e.p!=null?'P '+Math.round(e.p)+'g':''}${e.p!=null&&e.f!=null?' · ':''}${e.f!=null?'F '+Math.round(e.f)+'g':''}</span>`:'';
+    row.innerHTML=`<span class="lbl"></span>${macros}<b>${(e.cal||0).toLocaleString()}</b><button class="del" style="background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:4px">✕</button>`;
     row.querySelector('.lbl').textContent=e.name||'Item';
     row.querySelector('.del').onclick=()=>{
       const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.cals=calsFor(dd).filter(x=>x.id!==e.id);
@@ -856,11 +862,16 @@ function renderCalories(){
 }
 function addCalEntry(prefName,prefCal){
   const nameEl=document.getElementById('cal_name'), amtEl=document.getElementById('cal_amt');
+  const pEl=document.getElementById('cal_p'), fEl=document.getElementById('cal_f');
   const name=(prefName??nameEl.value).trim(); const cal=parseInt(prefCal??amtEl.value);
   if(!name||isNaN(cal)){alert('Enter the item and its calories.');return;}
+  const entry={id:'c'+Date.now(),name,cal};
+  const p=parseFloat(pEl.value), f=parseFloat(fEl.value);
+  if(!isNaN(p)) entry.p=p;
+  if(!isNaN(f)) entry.f=f;
   const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.cals=calsFor(dd);
-  dd.health.cals.push({id:'c'+Date.now(),name,cal});
-  saveDay(TKEY,dd); nameEl.value=''; amtEl.value='';
+  dd.health.cals.push(entry);
+  saveDay(TKEY,dd); nameEl.value=''; amtEl.value=''; pEl.value=''; fEl.value='';
   renderCalories(); coach(); renderHomes();
 }
 let scanStream=null, scanTimer=null;
@@ -921,6 +932,7 @@ async function lookupBarcode(code){
       servingSize:p.serving_size||null,
       servKcal:n['energy-kcal_serving']??null,
       servProt:n['proteins_serving']??null,
+      servFat:n['fat_serving']??null,
       servSugar:n['sugars_serving']??null,
       kcal100:n['energy-kcal_100g']??null,
       prot100:n['proteins_100g']??null,
@@ -934,6 +946,7 @@ async function lookupBarcode(code){
     if(LAST_SCAN.servKcal!=null) facts.push(Math.round(LAST_SCAN.servKcal)+' cal per serving'+(LAST_SCAN.servingSize?' ('+LAST_SCAN.servingSize+')':''));
     if(LAST_SCAN.kcal100!=null) facts.push(Math.round(LAST_SCAN.kcal100)+' cal per 100g');
     if(LAST_SCAN.prot100!=null) facts.push(Math.round(LAST_SCAN.prot100)+'g protein /100g');
+    if(LAST_SCAN.fat100!=null) facts.push(Math.round(LAST_SCAN.fat100)+'g fat /100g');
     document.getElementById('sr_facts').textContent=facts.join(' · ');
     const unit=document.getElementById('sr_unit'); unit.innerHTML='';
     if(LAST_SCAN.servKcal!=null){ const o=document.createElement('option'); o.value='serv'; o.textContent='serving(s)'; unit.appendChild(o); }
@@ -973,8 +986,14 @@ function addScanned(){
   const qty=parseFloat(document.getElementById('sr_qty').value)||0;
   const unit=document.getElementById('sr_unit').value==='serv'?'serving'+(qty!==1?'s':''):'× 100g';
   const label=LAST_SCAN.name+' ('+qty+' '+unit+')';
+  const entry={id:'c'+Date.now(),name:label,cal};
+  { const useServ=document.getElementById('sr_unit').value==='serv';
+    const perP=useServ?(LAST_SCAN.servProt??LAST_SCAN.prot100):LAST_SCAN.prot100;
+    const perF=useServ?(LAST_SCAN.servFat??LAST_SCAN.fat100):LAST_SCAN.fat100;
+    if(perP!=null) entry.p=Math.round(qty*perP*10)/10;
+    if(perF!=null) entry.f=Math.round(qty*perF*10)/10; }
   const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.cals=calsFor(dd);
-  dd.health.cals.push({id:'c'+Date.now(),name:label,cal});
+  dd.health.cals.push(entry);
   saveDay(TKEY,dd);
   document.getElementById('scanResult').style.display='none';
   LAST_SCAN=null;
@@ -982,22 +1001,24 @@ function addScanned(){
 }
 
 /* ===== PHOTO ESTIMATOR — snap a plate, answer questions, get a ballpark ===== */
+/* items: [label, cal, flag, protein g, fat g] */
 const FOOD_CATS=[
- {name:'🍳 Eggs / breakfast', items:[['2 eggs + toast',320],['3-egg omelet (no cheese)',330],['Eggs, bacon & toast',500],['Oatmeal + fruit',300],['Pancakes / waffles (stack)',520,'sugar'],['Breakfast burrito',550]]},
- {name:'🍗 Meat / fish plate', items:[['Grilled chicken + 2 sides',550],['Steak + 2 sides',700],['Salmon or fish + 2 sides',550],['Pork chop + 2 sides',600],['Rotisserie chicken quarter',400]]},
- {name:'🥪 Sandwich / wrap / burger', items:[['Turkey sandwich',420],['Chicken wrap',500],['Sub — 6 inch',450],['Sub — 12 inch',850],['Burger',650],['Cheeseburger',750,'dairy']]},
- {name:'🍚 Bowl / rice / pasta', items:[['Burrito bowl (no cheese/sour cream)',650],['Chicken & rice bowl',650],['Pasta, red sauce',600],['Pasta, cream sauce',850,'dairy'],['Fried rice',700],['Poke bowl',600]]},
- {name:'🥗 Salad', items:[['Garden salad, light dressing',250],['Grilled chicken salad',450],['Caesar w/ chicken',550,'dairy'],['Cobb salad',600,'dairy']]},
- {name:'🍕 Pizza', items:[['1 slice',285,'dairy'],['2 slices',570,'dairy'],['3 slices',855,'dairy'],['Personal pizza',900,'dairy']]},
- {name:'🍲 Soup / chili', items:[['Broth soup (bowl)',150],['Chicken noodle (bowl)',250],['Chili (bowl)',450],['Creamy soup (bowl)',400,'dairy']]},
- {name:'🍟 Fast food meal', items:[['Burger + fries',950],['Chicken sandwich + fries',900],['Nuggets (6) + fries',650],['Taco (each)',210,'dairy'],['Burrito',600,'dairy']]},
- {name:'🍎 Fruit / veggies', items:[['Apple / banana / orange',95],['Berries (cup)',85],['Veggie plate',120],['Whole avocado',240]]},
- {name:'🥜 Snack / bar', items:[['Protein bar',210],['Granola bar',140,'sugar'],['Chips (single bag)',160],['Nuts (handful)',170],['Jerky (bag)',120],['Trail mix (handful)',150]]},
- {name:'🍰 Dessert', items:[['Cookie',160,'sugar'],['Ice cream (scoop)',270,'dairy'],['Cake slice',350,'sugar'],['Donut',260,'sugar'],['Candy bar',250,'sugar']]},
- {name:'🥤 Drink', items:[['Soda (can)',140,'sugar'],['Juice (glass)',110,'sugar'],['Beer',150],['Wine (glass)',125],['Protein shake (water/almond milk)',180],['Coffee w/ cream & sugar',80,'dairy'],['Black coffee / tea',5]]}
+ {name:'🍳 Eggs / breakfast', items:[['2 eggs + toast',320,'',16,14],['3-egg omelet (no cheese)',330,'',19,22],['Eggs, bacon & toast',500,'',25,30],['Oatmeal + fruit',300,'',8,5],['Pancakes / waffles (stack)',520,'sugar',11,14],['Breakfast burrito',550,'',24,26]]},
+ {name:'🍗 Meat / fish plate', items:[['Grilled chicken + 2 sides',550,'',45,15],['Steak + 2 sides',700,'',45,35],['Salmon or fish + 2 sides',550,'',40,25],['Pork chop + 2 sides',600,'',42,28],['Rotisserie chicken quarter',400,'',38,22]]},
+ {name:'🥪 Sandwich / wrap / burger', items:[['Turkey sandwich',420,'',28,10],['Chicken wrap',500,'',32,18],['Sub — 6 inch',450,'',24,16],['Sub — 12 inch',850,'',46,30],['Burger',650,'',32,34],['Cheeseburger',750,'dairy',36,42]]},
+ {name:'🍚 Bowl / rice / pasta', items:[['Burrito bowl (no cheese/sour cream)',650,'',40,20],['Chicken & rice bowl',650,'',42,16],['Pasta, red sauce',600,'',20,14],['Pasta, cream sauce',850,'dairy',24,38],['Fried rice',700,'',20,26],['Poke bowl',600,'',32,18]]},
+ {name:'🥗 Salad', items:[['Garden salad, light dressing',250,'',6,14],['Grilled chicken salad',450,'',40,24],['Caesar w/ chicken',550,'dairy',38,32],['Cobb salad',600,'dairy',40,40]]},
+ {name:'🍕 Pizza', items:[['1 slice',285,'dairy',12,10],['2 slices',570,'dairy',24,20],['3 slices',855,'dairy',36,30],['Personal pizza',900,'dairy',36,34]]},
+ {name:'🍲 Soup / chili', items:[['Broth soup (bowl)',150,'',8,4],['Chicken noodle (bowl)',250,'',16,6],['Chili (bowl)',450,'',32,16],['Creamy soup (bowl)',400,'dairy',10,24]]},
+ {name:'🍟 Fast food meal', items:[['Burger + fries',950,'',35,45],['Chicken sandwich + fries',900,'',34,42],['Nuggets (6) + fries',650,'',22,34],['Taco (each)',210,'dairy',9,10],['Burrito',600,'dairy',24,22]]},
+ {name:'🍎 Fruit / veggies', items:[['Apple / banana / orange',95,'',1,0],['Berries (cup)',85,'',1,0],['Veggie plate',120,'',4,1],['Whole avocado',240,'',3,22]]},
+ {name:'🥜 Snack / bar', items:[['Protein bar',210,'',20,8],['Granola bar',140,'sugar',3,5],['Chips (single bag)',160,'',2,10],['Nuts (handful)',170,'',6,15],['Jerky (bag)',120,'',12,2],['Trail mix (handful)',150,'',4,9]]},
+ {name:'🍰 Dessert', items:[['Cookie',160,'sugar',2,8],['Ice cream (scoop)',270,'dairy',5,14],['Cake slice',350,'sugar',4,16],['Donut',260,'sugar',4,14],['Candy bar',250,'sugar',4,13]]},
+ {name:'🥤 Drink', items:[['Soda (can)',140,'sugar',0,0],['Juice (glass)',110,'sugar',1,0],['Beer',150,'',2,0],['Wine (glass)',125,'',0,0],['Protein shake (water/almond milk)',180,'',25,3],['Coffee w/ cream & sugar',80,'dairy',1,3],['Black coffee / tea',5,'',0,0]]}
 ];
 const PH_PORTIONS=[['Smaller than usual',0.75],['Regular',1],['Large',1.4],['Extra large',1.8]];
-const PH_EXTRAS=[['Fried or breaded',150,''],['Cheese on it',100,'dairy'],['Creamy sauce / dressing',120,'dairy'],['Extra carb side (fries, rice, bread)',250,''],['Sugary drink with it',150,'sugar']];
+/* extras: [label, cal, flag, protein g, fat g] */
+const PH_EXTRAS=[['Fried or breaded',150,'',2,12],['Cheese on it',100,'dairy',6,8],['Creamy sauce / dressing',120,'dairy',1,12],['Extra carb side (fries, rice, bread)',250,'',4,10],['Sugary drink with it',150,'sugar',0,0]];
 let PH={photo:null,cat:null,item:null,portion:1,extras:[]};
 function phPanel(){ return document.getElementById('photoPanel'); }
 function phStart(photo){
@@ -1032,7 +1053,7 @@ function phRender(){
     PH_EXTRAS.forEach(([lbl,add],i)=>{ const on=PH.extras.includes(i);
       h+='<button class="printbtn" style="'+(on?'background:var(--teal-dk);color:#fff;border-color:var(--teal-dk)':'')+'" onclick="phToggleExtra('+i+')">'+lbl+' +'+add+'</button>'; });
     const est=phEstimate();
-    h+='</div><div style="margin-top:12px;font-size:16px"><b>≈ '+est.toLocaleString()+' cal</b> <span class="muted">(ballpark: '+Math.round(est*0.8).toLocaleString()+'–'+Math.round(est*1.2).toLocaleString()+')</span></div>';
+    h+='</div><div style="margin-top:12px;font-size:16px"><b>≈ '+est.cal.toLocaleString()+' cal</b> · '+est.p+'g protein · '+est.f+'g fat <span class="muted">(ballpark: '+Math.round(est.cal*0.8).toLocaleString()+'–'+Math.round(est.cal*1.2).toLocaleString()+' cal)</span></div>';
     const flags=phFlags();
     if(flags.dairy) h+='<div class="bstat" style="margin-top:4px">🥛 Heads up: this pick usually involves dairy — you aim to stay dairy-free.</div>';
     if(flags.sugar) h+='<div class="bstat" style="margin-top:4px">🍬 Heads up: likely added/artificial sugars in this one.</div>';
@@ -1046,9 +1067,9 @@ function phPickItem(j){ PH.item=j; PH.portion=1; PH.extras=[]; phRender(); }
 function phToggleExtra(i){ const ix=PH.extras.indexOf(i); if(ix>=0)PH.extras.splice(ix,1); else PH.extras.push(i); phRender(); }
 function phEstimate(){
   const it=FOOD_CATS[PH.cat].items[PH.item];
-  let cal=it[1]*PH.portion;
-  PH.extras.forEach(i=>cal+=PH_EXTRAS[i][1]);
-  return Math.round(cal/10)*10;
+  let cal=it[1]*PH.portion, p=(it[3]||0)*PH.portion, f=(it[4]||0)*PH.portion;
+  PH.extras.forEach(i=>{ cal+=PH_EXTRAS[i][1]; p+=PH_EXTRAS[i][3]||0; f+=PH_EXTRAS[i][4]||0; });
+  return {cal:Math.round(cal/10)*10, p:Math.round(p), f:Math.round(f)};
 }
 function phFlags(){
   const it=FOOD_CATS[PH.cat].items[PH.item];
@@ -1058,9 +1079,9 @@ function phFlags(){
 }
 function phAdd(){
   const it=FOOD_CATS[PH.cat].items[PH.item];
-  const cal=phEstimate();
+  const est=phEstimate();
   const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.cals=calsFor(dd);
-  dd.health.cals.push({id:'c'+Date.now(),name:'📷 '+it[0]+(PH.portion!==1?' ('+PH_PORTIONS.find(p=>p[1]===PH.portion)[0].toLowerCase()+')':''),cal});
+  dd.health.cals.push({id:'c'+Date.now(),name:'📷 '+it[0]+(PH.portion!==1?' ('+PH_PORTIONS.find(p=>p[1]===PH.portion)[0].toLowerCase()+')':''),cal:est.cal,p:est.p,f:est.f});
   saveDay(TKEY,dd);
   phCancel();
   renderCalories(); coach(); renderHomes();
@@ -1316,6 +1337,8 @@ function coach(){
   const d=dayData(TKEY); const h=d.health||{};
   const list=calsFor(d);
   const used=calsUsed(d); const budget=calBudget(); const left=budget-used;
+  const totP=calsProt(d), totF=calsFat(d);
+  const trained=wlogFor(TKEY).length>0;
   const hour=new Date().getHours();
   const logged=list.map(e=>(e.name||'').toLowerCase()).join(' ');
   const tips=[];
@@ -1326,6 +1349,10 @@ function coach(){
     tips.push(`<b>Tracker:</b> ${used.toLocaleString()} in · <b>${left.toLocaleString()} left</b> of ${budget.toLocaleString()}.`);
   } else {
     tips.push(`<b>Tracker:</b> ${Math.abs(left).toLocaleString()} over today's ${budget.toLocaleString()}. Don't starve tomorrow to make up for it — normal day, extra walk, back on plan.`);
+  }
+  if(list.length){
+    const needP=Math.max(0,215-totP);
+    tips.push(`<b>Macros so far:</b> 💪 protein <b>${totP}g</b>${needP>0?' — ~'+needP+'g to go toward 210–220g; make the next meal lead with protein':' — target hit ✓'} · 🧈 fat <b>${totF}g</b> of 75–80g${totF>85?' — over the range, keep the rest of today lean':''}.`);
   }
   // suggestions that fit what's LEFT in the tracker
   if(left>=550){
@@ -1343,8 +1370,8 @@ function coach(){
   if(/diet |zero sugar|sugar[- ]free|sucralose|aspartame|splenda/.test(logged))
     tips.push('<b>🚫 Artificial sweeteners:</b> spotted in today\'s log. Better route for a sweet hit: fruit, berries, or sparkling water with lime.');
   // protein + training alignment
-  tips.push('<b>Protein is the #1 lever:</b> ~210–220g/day (1.1 g/lb) keeps your lifts intact in the deficit — every meal should lead with 40–50g.');
-  if(h.workout>0) tips.push('<b>Training day:</b> put carbs + protein within a couple hours post-workout. Heavy conditioning on top of training? Nudge today up 100–200 cal rather than staying rigid.');
+  if(!list.length) tips.push('<b>Protein is the #1 lever:</b> ~210–220g/day (1.1 g/lb) keeps your lifts intact in the deficit — every meal should lead with 40–50g.');
+  if(trained) tips.push('<b>Training day (sets logged ✓):</b> put carbs + protein within a couple hours post-workout. Heavy conditioning on top of training? Nudge today up 100–200 cal rather than staying rigid.');
   else tips.push('<b>Carbs:</b> don\'t gut them — running and lifting run on glycogen. Put most carbs around training; rest-day meals lean protein + veggies + fats.');
   if(h.water!=null && h.water<75) tips.push(`<b>Hydration:</b> ${h.water} oz so far — get to 75+ before evening. Water first when snacky; thirst masquerades as hunger.`);
   if(hour>=19 && left>0) tips.push('<b>Evening:</b> kitchen closes 2–3 hrs before bed — protects the stomach-fat goal and your sleep score.');
@@ -1417,14 +1444,14 @@ function streak(itemId){
   return s;
 }
 function weekHealthTotals(){
-  const all=store.get('days',{}); let z2=0,z4=0,wo=0,scN=0,scSum=0,stN=0,stSum=0;
+  const all=store.get('days',{}); let scN=0,scSum=0,stN=0,stSum=0;
   const d=new Date(TODAY);
   for(let i=0;i<7;i++){ const dd=all[dkey(d)];
-    if(dd&&dd.health){ z2+=dd.health.z2||0; z4+=dd.health.z4||0; wo+=dd.health.workout||0;
+    if(dd&&dd.health){
       if(dd.health.score!=null){scSum+=dd.health.score;scN++;}
       if(dd.health.steps!=null){stSum+=dd.health.steps;stN++;} }
     d.setDate(d.getDate()-1); }
-  return {z2,z4,wo,avgScore: scN?Math.round(scSum/scN):'—', avgSteps: stN?Math.round(stSum/stN).toLocaleString():'—'};
+  return {avgScore: scN?Math.round(scSum/scN):'—', avgSteps: stN?Math.round(stSum/stN).toLocaleString():'—'};
 }
 function renderPillars(){
   const w=weekData(WKEY); const h=weekHealthTotals();
@@ -1445,8 +1472,8 @@ function renderPillars(){
       <div class="statrow">
         <div class="stat"><div class="v">${h.avgScore}</div><div class="l">Avg Sleep Number score</div></div>
         <div class="stat"><div class="v">${h.avgSteps}</div><div class="l">Avg steps (7 days)</div></div>
-        <div class="stat"><div class="v">${h.z2}m</div><div class="l">Zone 2 (7 days)</div></div>
-        <div class="stat"><div class="v">${h.z4}m</div><div class="l">Zone 4 (7 days)</div></div>
+        <div class="stat"><div class="v">${w.counts.z2days||0}/3–4</div><div class="l">Zone 2 sessions this week</div></div>
+        <div class="stat"><div class="v">${w.counts.z4min??0}m</div><div class="l">Zone 4 this week (20–60)</div></div>
       </div>
     </div>`;
 }
@@ -1671,14 +1698,15 @@ function dailyReportHTML(k){
     html+='</table>';
   }
   const h=dd.health||{};
-  html+='<h3>Health</h3><table><tr><th>Sleep Number score</th><th>Water (oz)</th><th>Steps</th><th>Workout</th><th>Zone 2</th><th>Zone 4</th></tr>';
-  html+=`<tr><td>${h.score??'—'}${healthMark(h,'score')}</td><td>${h.water??'—'}${healthMark(h,'water')}</td><td>${h.steps!=null?h.steps.toLocaleString():'—'}${healthMark(h,'steps')}</td><td>${h.workout??'—'} min${healthMark(h,'workout')}</td><td>${h.z2??'—'} min${healthMark(h,'z2')}</td><td>${h.z4??'—'} min${healthMark(h,'z4')}</td></tr></table>`;
+  html+='<h3>Health</h3><table><tr><th>Sleep Number score</th><th>Water (oz)</th><th>Steps</th></tr>';
+  html+=`<tr><td>${h.score??'—'}${healthMark(h,'score')}</td><td>${h.water??'—'}${healthMark(h,'water')}</td><td>${h.steps!=null?h.steps.toLocaleString():'—'}${healthMark(h,'steps')}</td></tr></table>`;
   const cals=(h.cals||[]);
   if(cals.length){
     const used=cals.reduce((a,e)=>a+(e.cal||0),0); const budget=calBudget();
-    html+='<h3>Calories — '+used.toLocaleString()+' of '+budget.toLocaleString()+' budget'+(used<=budget?' <span class="ok">✓</span>':' <span class="no">over</span>')+'</h3><table><tr><th class="l">Item</th><th>Calories</th></tr>';
-    cals.forEach(e=>{ html+='<tr><td class="l">'+esc(e.name)+'</td><td>'+(e.cal||0).toLocaleString()+'</td></tr>'; });
-    html+='<tr><th class="l">Total</th><th>'+used.toLocaleString()+'</th></tr></table>';
+    const tP=Math.round(cals.reduce((a,e)=>a+(e.p||0),0)), tF=Math.round(cals.reduce((a,e)=>a+(e.f||0),0));
+    html+='<h3>Food — '+used.toLocaleString()+' of '+budget.toLocaleString()+' cal'+(used<=budget?' <span class="ok">✓</span>':' <span class="no">over</span>')+'</h3><table><tr><th class="l">Item</th><th>Calories</th><th>Protein (g)</th><th>Fat (g)</th></tr>';
+    cals.forEach(e=>{ html+='<tr><td class="l">'+esc(e.name)+'</td><td>'+(e.cal||0).toLocaleString()+'</td><td>'+(e.p!=null?Math.round(e.p):'—')+'</td><td>'+(e.f!=null?Math.round(e.f):'—')+'</td></tr>'; });
+    html+='<tr><th class="l">Total</th><th>'+used.toLocaleString()+'</th><th>'+tP+' / 210–220</th><th>'+tF+' / 75–80</th></tr></table>';
   }
   if(h.food) html+='<h3>Food Diary</h3><div class="note">'+esc(h.food)+'</div>';
   html+=prayerReportHTML(wkey(dt));
@@ -1752,11 +1780,9 @@ function weeklyReportHTML(monday){
     html+='<tr><td class="l">'+esc(item.label)+'</td><td>'+goalTxt+'</td><td>'+done+'</td><td>'+(met?'<span class="ok">✓ Met</span>':'Open')+'</td></tr>';
   });
   html+='</table>';
-  // workout totals
-  let z2=0,z4=0,wo=0;
-  days.forEach(x=>{const dd=all[dkey(x)]; if(dd&&dd.health){z2+=dd.health.z2||0;z4+=dd.health.z4||0;wo+=dd.health.workout||0;}});
-  html+='<h3>Training Totals</h3><table><tr><th>Zone 2</th><th>Zone 4</th><th>Total workout</th></tr>'
-      +`<tr><td>${z2} min</td><td>${z4} min</td><td>${wo} min</td></tr></table>`;
+  // training totals — weekly goals
+  html+='<h3>Training Totals (weekly goals)</h3><table><tr><th>Zone 2 sessions (goal 3–4, 25–45 min)</th><th>Zone 4 minutes (20–60 max)</th><th>Total workout (min)</th></tr>'
+      +`<tr><td>${w.counts.z2days||0}${(w.counts.z2days||0)>=3?' <span class="ok">✓</span>':''}</td><td>${w.counts.z4min??'—'}${(w.counts.z4min||0)>=20&&(w.counts.z4min||0)<=60?' <span class="ok">✓</span>':''}</td><td>${w.counts.womin??'—'}</td></tr></table>`;
   html+=prayerReportHTML(wk);
   { const sunEnd=new Date(monday); sunEnd.setDate(sunEnd.getDate()+7);
     html+=finReportHTML(monday,sunEnd,'week of '+monday.toLocaleDateString('en-US',{month:'short',day:'numeric'}));
@@ -2178,7 +2204,7 @@ function renderHomes(){
       <div class="hero p" onclick="openSection('sec-pillars')">
         <div class="htitle">Three Pillars</div>
         <div class="hline">📖 Bible ${streak('bible')}🔥<br>🙏 Prayer ${streak('prayer')}🔥<br>🧠 Madison ${streak('madison')}🔥</div>
-        <div class="hmut">Sleep avg ${hw.avgScore} · Z2 ${hw.z2}m · tap for more</div>
+        <div class="hmut">Sleep avg ${hw.avgScore} · Z2 ${weekData(WKEY).counts.z2days||0} sessions this wk · tap for more</div>
       </div>
       <div class="hero t" onclick="openSection('sec-cal')">
         <div class="htitle">Today's Calendar</div>
