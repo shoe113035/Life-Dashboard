@@ -566,13 +566,16 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
       </div>
     </div>
     <div id="sbLoggedIn" style="display:none">
-      <p class="muted" style="margin-bottom:8px">Signed in as <b id="sbWho"></b>. Workout sets sync automatically as you log them.</p>
+      <p class="muted" style="margin-bottom:8px">Signed in as <b id="sbWho"></b>. Everything you log — checks, health, calories, workouts — backs up automatically and is restored if this device ever clears its storage.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn ghost" onclick="sbBackfill()">Sync full history now</button>
+        <button class="btn" onclick="sbFlush(true)">Sync now</button>
+        <button class="btn ghost" onclick="sbRestore()">Restore from cloud</button>
+        <button class="btn ghost" onclick="sbBackfill()">Sync full history</button>
         <button class="btn ghost" onclick="sbSignOut()">Sign out</button>
       </div>
     </div>
     <div id="sbStatus" class="muted" style="margin-top:8px"></div>
+    <div id="sbHealth" class="muted" style="margin-top:4px;font-size:12px"></div>
   </div>
   <div class="card">
     <h2>🐞 Bug Reports & Ideas</h2>
@@ -673,20 +676,31 @@ const MONTHS = ['January','February','March','April','May','June','July','August
 const FLOSS_GOAL = 3;
 
 /* ================= STORAGE ================= */
+/* Keys that live as their own cloud row under kind='setting'. Anything not
+   listed here stays device-local (transient UI state). */
+const SETTING_KEYS=['dates','custom','customW','customM','catov','hgoals','prayers',
+  'calbudget','fintx','finaccts','finsnaps','calurl','progstart','wlogs'];
 const store = {
   get(k, fb){ try{ const v = localStorage.getItem('ld_'+k); return v?JSON.parse(v):fb; }catch(e){ return fb; } },
-  set(k, v){ localStorage.setItem('ld_'+k, JSON.stringify(v)); if(window.sbQueueSnapshot) window.sbQueueSnapshot(); }
+  /* quiet=true writes locally without queueing a cloud push — used by the
+     restore path so pulling data down doesn't echo straight back up. */
+  set(k, v, quiet){
+    localStorage.setItem('ld_'+k, JSON.stringify(v));
+    if(quiet) return;
+    if(SETTING_KEYS.includes(k) && window.sbSyncOne) window.sbSyncOne('setting',k,v);
+    if(window.sbQueueSnapshot) window.sbQueueSnapshot();
+  }
 };
 function dkey(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function wkey(d){ const t=new Date(d); t.setHours(0,0,0,0); t.setDate(t.getDate()+3-((t.getDay()+6)%7)); const w1=new Date(t.getFullYear(),0,4); return t.getFullYear()+'-W'+String(1+Math.round(((t-w1)/864e5-3+((w1.getDay()+6)%7))/7)).padStart(2,'0'); }
 function mondayOf(d){ const t=new Date(d); t.setHours(0,0,0,0); t.setDate(t.getDate()-((t.getDay()+6)%7)); return t; }
 const TODAY = new Date(); const TKEY = dkey(TODAY); const WKEY = wkey(TODAY); const MKEY = TKEY.slice(0,7);
 function dayData(k){ const all = store.get('days',{}); return all[k] || {checks:{},top3:[{},{},{}],top3x:[{},{},{}],health:{}}; }
-function saveDay(k, data){ const all = store.get('days',{}); all[k]=data; store.set('days',all); }
+function saveDay(k, data){ const all = store.get('days',{}); all[k]=data; store.set('days',all); if(window.sbSyncOne) window.sbSyncOne('day',k,data); }
 function weekData(k){ const all = store.get('weeks',{}); return all[k] || {counts:{},checks:{}}; }
-function saveWeek(k, data){ const all = store.get('weeks',{}); all[k]=data; store.set('weeks',all); }
+function saveWeek(k, data){ const all = store.get('weeks',{}); all[k]=data; store.set('weeks',all); if(window.sbSyncOne) window.sbSyncOne('week',k,data); }
 function monthData(k){ const all = store.get('months',{}); return all[k] || {checks:{},vals:{}}; }
-function saveMonth(k, data){ const all = store.get('months',{}); all[k]=data; store.set('months',all); }
+function saveMonth(k, data){ const all = store.get('months',{}); all[k]=data; store.set('months',all); if(window.sbSyncOne) window.sbSyncOne('month',k,data); }
 function dailyItems(){
   const ov = store.get('catov',{});
   return DAILY_BASE.map(i=>({...i, cat: ov[i.id]||i.cat})).concat(store.get('custom',[]));
@@ -2639,26 +2653,217 @@ function wkResetStart(){
 /* ================= CLOUD SYNC (Supabase) ================= */
 const SB_URL='https://cdvqpdsgzsrbjxifwjfa.supabase.co';
 const SB_KEY='sb_publishable_wUI-FqpfKc79kP2Mk_tGWw_POiusiX7';
-const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
+const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY, {
+  auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true }
+}) : null;
 let sbUser = null;
+let sbRestored = false;   // true once the cloud pull has completed this session
 
 function sbMsg(t){ const el=document.getElementById('sbStatus'); if(el) el.textContent=t; }
 
-async function sbInit(){
-  if(!sb) return;
-  const { data:{ session } } = await sb.auth.getSession();
-  sbSetUser(session ? session.user : null);
-  sb.auth.onAuthStateChange((_e, s)=> sbSetUser(s ? s.user : null));
+/* ================= SYNC STATUS BANNER ================= */
+/* States: ok | pending | offline | signedout | error */
+function sbBanner(state, detail){
+  let el=document.getElementById('syncBanner');
+  if(!el){
+    el=document.createElement('div');
+    el.id='syncBanner';
+    el.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:9999;padding:9px 14px;'
+      +'font-size:13px;font-weight:600;text-align:center;cursor:pointer;display:none;'
+      +'box-shadow:0 -2px 12px rgba(0,0,0,.35)';
+    el.onclick=()=>{ showTab('settings'); sbFlush(true); };
+    document.body.appendChild(el);
+  }
+  const q=sbQueueLen();
+  if(state==='ok'){ el.style.display='none'; return; }
+  el.style.display='block';
+  if(state==='signedout'){
+    el.style.background='#b3003c'; el.style.color='#fff';
+    el.textContent='⚠️ Not syncing — you are signed out. '+(q?q+' change'+(q===1?'':'s')+' waiting. ':'')+'Tap to sign in.';
+  } else if(state==='offline'){
+    el.style.background='#7a4a00'; el.style.color='#fff';
+    el.textContent='📴 Offline — '+q+' change'+(q===1?'':'s')+' saved on this device, will upload when you reconnect.';
+  } else if(state==='error'){
+    el.style.background='#b3003c'; el.style.color='#fff';
+    el.textContent='⚠️ Sync failed'+(detail?' ('+detail+')':'')+' — '+q+' change'+(q===1?'':'s')+' not backed up. Tap to retry.';
+  } else if(state==='pending'){
+    el.style.background='#2b3a55'; el.style.color='#cfe3ff';
+    el.textContent='⏳ Syncing '+q+' change'+(q===1?'':'s')+'…';
+  }
 }
-function sbSetUser(u){
+function sbHealthLine(){
+  const el=document.getElementById('sbHealth'); if(!el) return;
+  const q=sbQueueLen();
+  const t=parseInt(localStorage.getItem('thrive_lastsync')||'0');
+  const when=t?new Date(t).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'never';
+  el.textContent='Last successful backup: '+when+(q?' · '+q+' change'+(q===1?'':'s')+' waiting':' · everything backed up');
+}
+function sbRefreshBanner(){
+  sbHealthLine();
+  if(!sbQueueLen()) return sbBanner('ok');
+  if(!navigator.onLine) return sbBanner('offline');
+  if(!window.__sbU) return sbBanner('signedout');
+  sbBanner('pending');
+}
+
+/* ================= DURABLE WRITE QUEUE ================= *
+ * Queue lives OUTSIDE the ld_ prefix and survives reloads. Every entry is a
+ * single (kind,key) row, so a failed or partial sync can never affect
+ * anything other than the exact item that failed. */
+const SBQ='thrive_syncq';
+function sbQueueRead(){ try{ return JSON.parse(localStorage.getItem(SBQ)||'{}'); }catch(e){ return {}; } }
+function sbQueueWrite(q){ try{ localStorage.setItem(SBQ, JSON.stringify(q)); }catch(e){} }
+function sbQueueLen(){ return Object.keys(sbQueueRead()).length; }
+
+/* Enqueue one row and try to flush. Called by saveDay/saveWeek/saveMonth/store.set. */
+function sbSyncOne(kind, key, data){
+  if(kind==null||key==null) return;
+  const q=sbQueueRead();
+  q[kind+'|'+key]={ kind, item_key:String(key), data:data===undefined?null:data, at:Date.now() };
+  sbQueueWrite(q);
+  sbRefreshBanner();
+  clearTimeout(sbFlushT);
+  sbFlushT=setTimeout(()=>sbFlush(), 1200);
+}
+window.sbSyncOne=sbSyncOne;
+
+let sbFlushT=null, sbFlushing=false;
+async function sbFlush(manual){
+  if(sbFlushing) return;
+  const q=sbQueueRead();
+  const keys=Object.keys(q);
+  if(!keys.length){ sbBanner('ok'); return; }
+  if(!sb || !window.__sbU){ sbBanner('signedout'); return; }
+  if(!navigator.onLine){ sbBanner('offline'); return; }
+  sbFlushing=true; sbBanner('pending');
+  let lastErr=null;
+  try{
+    const rows=keys.map(k=>({
+      user_id:window.__sbU.id, kind:q[k].kind, item_key:q[k].item_key,
+      data:q[k].data, updated_at:new Date().toISOString()
+    }));
+    /* chunked so one oversized payload can't stall the whole queue */
+    for(let i=0;i<rows.length;i+=40){
+      const batch=rows.slice(i,i+40);
+      const { error } = await sb.from('state_rows')
+        .upsert(batch, { onConflict:'user_id,kind,item_key' });
+      if(error){ lastErr=error; break; }
+      /* only clear what actually landed */
+      const cur=sbQueueRead();
+      batch.forEach(r=>{ delete cur[r.kind+'|'+r.item_key]; });
+      sbQueueWrite(cur);
+    }
+  }catch(e){ lastErr=e; }
+  sbFlushing=false;
+  if(lastErr){ sbBanner('error', (lastErr.message||'').slice(0,60)); }
+  else {
+    try{ localStorage.setItem('thrive_lastsync', String(Date.now())); }catch(e){}
+    sbBanner('ok'); sbQueueSnapshot();
+  }
+  sbHealthLine();
+  if(manual) sbMsg(lastErr ? 'Sync failed: '+(lastErr.message||'unknown error') : 'All changes backed up.');
+}
+
+/* retry on reconnect, on tab focus, and on a slow heartbeat */
+window.addEventListener('online', ()=>sbFlush());
+window.addEventListener('offline', ()=>sbRefreshBanner());
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) sbFlush(); });
+setInterval(()=>sbFlush(), 60000);
+
+async function sbInit(){
+  if(!sb){ sbBanner('error','cloud library failed to load'); return; }
+  const { data:{ session } } = await sb.auth.getSession();
+  await sbSetUser(session ? session.user : null);
+  sb.auth.onAuthStateChange((_e, s)=> sbSetUser(s ? s.user : null));
+  sbRefreshBanner();
+}
+async function sbSetUser(u){
   sbUser = u;
   window.__sbU = u;
   const inEl=document.getElementById('sbLoggedIn'), outEl=document.getElementById('sbLoggedOut');
   if(inEl&&outEl){ inEl.style.display=u?'':'none'; outEl.style.display=u?'none':''; }
-  if(u){ const w=document.getElementById('sbWho'); if(w) w.textContent=u.email; sbQueueSnapshot(); }
+  if(u){
+    const w=document.getElementById('sbWho'); if(w) w.textContent=u.email;
+    await sbRestore();        // pull down BEFORE anything pushes up
+    await sbFlush();
+  } else {
+    sbRefreshBanner();
+  }
 }
 
-/* ===== full app-state snapshot (backup + analysis) ===== */
+/* ================= RESTORE ON LOGIN =================
+ * Pulls every cloud row down and merges into localStorage. Merge is a strict
+ * UNION — a day present in the cloud but missing locally is restored; a day
+ * present locally is kept. Nothing is ever deleted by a restore. This is what
+ * makes a browser storage purge self-healing instead of fatal. */
+async function sbRestore(){
+  if(!sb || !window.__sbU) return;
+  sbMsg('Restoring from cloud…');
+  let rows=[], from=0;
+  try{
+    /* paginate — PostgREST caps at 1000 rows per request */
+    for(;;){
+      const { data, error } = await sb.from('state_rows')
+        .select('kind,item_key,data,updated_at').range(from, from+999);
+      if(error){ sbMsg('Restore failed: '+error.message); sbBanner('error','restore failed'); return; }
+      rows=rows.concat(data||[]);
+      if(!data || data.length<1000) break;
+      from+=1000;
+    }
+  }catch(e){ sbMsg('Restore failed: '+e.message); return; }
+
+  let added=0;
+  const buckets={ day:'days', week:'weeks', month:'months' };
+  const local={ days:store.get('days',{}), weeks:store.get('weeks',{}), months:store.get('months',{}) };
+
+  rows.forEach(r=>{
+    if(r.kind==='setting'){
+      if(r.data===null || r.data===undefined) return;
+      const raw=localStorage.getItem('ld_'+r.item_key);
+      if(raw===null){ store.set(r.item_key, r.data, true); added++; return; }
+      let cur; try{ cur=JSON.parse(raw); }catch(e){ store.set(r.item_key, r.data, true); added++; return; }
+      /* Keyed objects (wlogs, finsnaps, hgoals, catov, prayers…) merge per key
+         so a thin local copy still gets the cloud's missing entries back.
+         Local wins on any key it already has. */
+      const keyed = v => v && typeof v==='object' && !Array.isArray(v);
+      if(keyed(cur) && keyed(r.data)){
+        let gained=0;
+        Object.keys(r.data).forEach(k=>{ if(cur[k]===undefined){ cur[k]=r.data[k]; gained++; } });
+        if(gained){ store.set(r.item_key, cur, true); added+=gained; sbSyncOne('setting', r.item_key, cur); }
+      } else if(Array.isArray(cur) && Array.isArray(r.data) && cur.length===0 && r.data.length){
+        store.set(r.item_key, r.data, true); added++;
+      }
+      return;
+    }
+    const b=buckets[r.kind]; if(!b) return;
+    if(local[b][r.item_key]===undefined){ local[b][r.item_key]=r.data; added++; }
+  });
+
+  store.set('days',   local.days,   true);
+  store.set('weeks',  local.weeks,  true);
+  store.set('months', local.months, true);
+
+  /* anything the device has that the cloud doesn't → queue it upward */
+  const have=new Set(rows.map(r=>r.kind+'|'+r.item_key));
+  Object.keys(local.days  ).forEach(k=>{ if(!have.has('day|'  +k)) sbSyncOne('day',  k, local.days[k]);   });
+  Object.keys(local.weeks ).forEach(k=>{ if(!have.has('week|' +k)) sbSyncOne('week', k, local.weeks[k]);  });
+  Object.keys(local.months).forEach(k=>{ if(!have.has('month|'+k)) sbSyncOne('month',k, local.months[k]); });
+  SETTING_KEYS.forEach(k=>{
+    const v=localStorage.getItem('ld_'+k);
+    if(v!==null && !have.has('setting|'+k)){ try{ sbSyncOne('setting',k,JSON.parse(v)); }catch(e){} }
+  });
+
+  sbRestored = true;
+  sbMsg(added ? 'Restored '+added+' item'+(added===1?'':'s')+' from cloud.' : 'Up to date with cloud.');
+  if(added){
+    ['renderHomes','renderHealth','renderCalories','renderDaily','coach']
+      .forEach(fn=>{ try{ if(window[fn]) window[fn](); }catch(e){} });
+  }
+}
+
+/* ===== full app-state snapshot (kept for the AI weekly/monthly jobs) =====
+ * NOW NON-DESTRUCTIVE: merges into whatever is already in the cloud and
+ * refuses to write a snapshot that would drop days. */
 let sbSnapT=null;
 function sbQueueSnapshot(){
   if(!window.__sbU || !sb) return;
@@ -2667,6 +2872,7 @@ function sbQueueSnapshot(){
 }
 async function sbPushSnapshot(){
   if(!window.__sbU || !sb) return;
+  if(!sbRestored) return;   // never write before we've pulled — this was the data-loss bug
   const dump={};
   for(let i=0;i<localStorage.length;i++){
     const key=localStorage.key(i);
@@ -2674,7 +2880,23 @@ async function sbPushSnapshot(){
       try{ dump[key.slice(3)]=JSON.parse(localStorage.getItem(key)); }catch(e){}
     }
   }
-  try{ await sb.from('app_snapshots').upsert({ user_id:window.__sbU.id, data:dump, updated_at:new Date().toISOString() }); }catch(e){}
+  try{
+    const { data:existing } = await sb.from('app_snapshots')
+      .select('data').eq('user_id',window.__sbU.id).maybeSingle();
+    const prev=(existing&&existing.data)||{};
+    const merged=Object.assign({}, prev, dump);
+    /* union the keyed buckets so a thin local copy can never prune the cloud */
+    ['days','weeks','months'].forEach(b=>{
+      merged[b]=Object.assign({}, prev[b]||{}, dump[b]||{});
+    });
+    /* hard guard: refuse any write that would reduce stored days */
+    const prevDays=Object.keys(prev.days||{}).length;
+    const newDays=Object.keys(merged.days||{}).length;
+    if(newDays<prevDays){ sbBanner('error','snapshot guard tripped'); return; }
+    await sb.from('app_snapshots').upsert({
+      user_id:window.__sbU.id, data:merged, updated_at:new Date().toISOString()
+    });
+  }catch(e){}
 }
 
 /* ===== AI summaries (weekly / monthly) ===== */
@@ -2712,7 +2934,11 @@ async function sbSignIn(){
   const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.origin + window.location.pathname } });
   sbMsg(error ? 'Error: '+error.message : 'Check your email and tap the login link (open it on this device).');
 }
-async function sbSignOut(){ await sb.auth.signOut(); sbMsg('Signed out.'); }
+async function sbSignOut(){
+  const q=sbQueueLen();
+  if(q && !confirm(q+' change'+(q===1?' is':'s are')+" not backed up yet. Sign out anyway? They'll stay on this device and upload next time you sign in.")) return;
+  await sb.auth.signOut(); sbMsg('Signed out.'); sbRefreshBanner();
+}
 
 /* push one set to cloud; returns row id or null */
 async function sbPushSet(dateKey, name, slot, day, w, r){
@@ -2784,6 +3010,12 @@ document.getElementById('tab-workout').appendChild(document.getElementById('sec-
 document.getElementById('s_calurl').value = store.get('calurl','');
 document.getElementById('finFile').onchange=function(){ if(this.files[0]) importFinCSV(this.files[0]); this.value=''; };
 renderHomes(); renderHealth(); renderCalories(); loadCalendar();
+/* Ask the browser not to evict our storage. Safari/iOS clears localStorage for
+   sites it considers inactive — that eviction is what kept "disconnecting" the
+   app. Granted automatically for installed PWAs; harmless where unsupported. */
+if(navigator.storage && navigator.storage.persist){
+  navigator.storage.persisted().then(p=>{ if(!p) navigator.storage.persist(); }).catch(()=>{});
+}
 sbInit();
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
