@@ -568,8 +568,8 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     <div id="sbLoggedIn" style="display:none">
       <p class="muted" style="margin-bottom:8px">Signed in as <b id="sbWho"></b>. Everything you log — checks, health, calories, workouts — backs up automatically and is restored if this device ever clears its storage.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn" onclick="sbFlush(true)">Sync now</button>
-        <button class="btn ghost" onclick="sbRestore()">Restore from cloud</button>
+        <button class="btn" id="sbSyncBtn" onclick="sbSyncNow()">Sync now</button>
+        <button class="btn ghost" id="sbRestoreBtn" onclick="sbRestoreNow()">Restore from cloud</button>
         <button class="btn ghost" onclick="sbBackfill()">Sync full history</button>
         <button class="btn ghost" onclick="sbSignOut()">Sign out</button>
       </div>
@@ -2659,7 +2659,16 @@ const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY, {
 let sbUser = null;
 let sbRestored = false;   // true once the cloud pull has completed this session
 
-function sbMsg(t){ const el=document.getElementById('sbStatus'); if(el) el.textContent=t; }
+function sbMsg(t){
+  const el=document.getElementById('sbStatus');
+  if(!el) return;
+  el.textContent=t;
+  /* muted grey is easy to miss — colour the result so a tap clearly did something */
+  const s=String(t);
+  el.style.color = s.startsWith('❌')||s.startsWith('⚠️') ? '#ffb3ec'
+                 : s.startsWith('✅') ? '#7effe9' : '';
+  el.style.fontWeight = (s.startsWith('❌')||s.startsWith('✅')||s.startsWith('⚠️')) ? '700' : '';
+}
 
 /* ================= SYNC STATUS BANNER ================= */
 /* States: ok | pending | offline | signedout | error */
@@ -2762,6 +2771,51 @@ async function sbFlush(manual){
   }
   sbHealthLine();
   if(manual) sbMsg(lastErr ? 'Sync failed: '+(lastErr.message||'unknown error') : 'All changes backed up.');
+  return lastErr;
+}
+
+/* Manual "Sync now". sbFlush() alone returns silently when the queue is empty,
+   which looks like a dead button — this always reports what happened and then
+   reads the cloud back to prove the write actually landed. */
+async function sbSyncNow(){
+  const btn=document.getElementById('sbSyncBtn');
+  const restore=()=>{ if(btn){ btn.disabled=false; btn.textContent='Sync now'; } sbHealthLine(); };
+  if(btn){ btn.disabled=true; btn.textContent='Syncing…'; }
+  sbMsg('⏳ Syncing…');
+  try{
+    if(!sb){ sbMsg('❌ Cloud library did not load — check your connection and reload the app.'); return restore(); }
+    if(!window.__sbU){ sbMsg('❌ You are signed out. Sign in above, then everything on this device uploads automatically.'); return restore(); }
+    if(!navigator.onLine){
+      sbMsg('📴 You are offline. '+sbQueueLen()+' change'+(sbQueueLen()===1?'':'s')+' are safe on this device and will upload when you reconnect.');
+      return restore();
+    }
+    const before=sbQueueLen();
+    const err=await sbFlush();
+    if(err){ sbMsg('❌ Upload failed: '+(err.message||'unknown error')+' — your data is still safe on this device.'); return restore(); }
+    const left=sbQueueLen();
+    if(left){ sbMsg('⚠️ '+left+' change'+(left===1?'':'s')+' still pending. Tap Sync now again in a moment.'); return restore(); }
+    await sbPushSnapshot();
+    /* read back so the message reflects the cloud, not just our optimism */
+    const { count, error } = await sb.from('state_rows').select('*',{ count:'exact', head:true });
+    if(error){ sbMsg('⚠️ Uploaded, but could not verify: '+error.message); return restore(); }
+    sbMsg('✅ Backed up — '+(before? before+' change'+(before===1?'':'s')+' uploaded, ' : 'nothing was pending, ')
+          +count+' item'+(count===1?'':'s')+' now stored in the cloud.');
+  }catch(e){
+    sbMsg('❌ Sync error: '+(e&&e.message?e.message:e));
+  }
+  restore();
+}
+
+/* Manual "Restore from cloud" — same reasoning: always report an outcome. */
+async function sbRestoreNow(){
+  const btn=document.getElementById('sbRestoreBtn');
+  const done=()=>{ if(btn){ btn.disabled=false; btn.textContent='Restore from cloud'; } sbHealthLine(); };
+  if(!sb || !window.__sbU){ sbMsg('❌ Sign in first — there is nothing to restore from until you do.'); return; }
+  if(!navigator.onLine){ sbMsg('📴 You are offline — reconnect to restore.'); return; }
+  if(btn){ btn.disabled=true; btn.textContent='Restoring…'; }
+  try{ await sbRestore(); }
+  catch(e){ sbMsg('❌ Restore error: '+(e&&e.message?e.message:e)); }
+  done();
 }
 
 /* retry on reconnect, on tab focus, and on a slow heartbeat */
@@ -2865,7 +2919,7 @@ async function sbRestore(){
   });
 
   sbRestored = true;
-  sbMsg(added ? 'Restored '+added+' item'+(added===1?'':'s')+' from cloud.' : 'Up to date with cloud.');
+  sbMsg(added ? '✅ Restored '+added+' item'+(added===1?'':'s')+' from the cloud.' : '✅ Already up to date with the cloud.');
   if(added){
     ['renderHomes','renderHealth','renderCalories','renderDaily','coach']
       .forEach(fn=>{ try{ if(window[fn]) window[fn](); }catch(e){} });
