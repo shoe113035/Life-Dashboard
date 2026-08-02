@@ -2813,7 +2813,9 @@ async function sbRestore(){
     /* paginate — PostgREST caps at 1000 rows per request */
     for(;;){
       const { data, error } = await sb.from('state_rows')
-        .select('kind,item_key,data,updated_at').range(from, from+999);
+        .select('kind,item_key,data,updated_at')
+        .order('kind').order('item_key')   // stable order or paging can skip rows
+        .range(from, from+999);
       if(error){ sbMsg('Restore failed: '+error.message); sbBanner('error','restore failed'); return; }
       rows=rows.concat(data||[]);
       if(!data || data.length<1000) break;
