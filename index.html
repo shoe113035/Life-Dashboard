@@ -2774,9 +2774,13 @@ async function sbInit(){
   if(!sb){ sbBanner('error','cloud library failed to load'); return; }
   const { data:{ session } } = await sb.auth.getSession();
   await sbSetUser(session ? session.user : null);
-  sb.auth.onAuthStateChange((_e, s)=> sbSetUser(s ? s.user : null));
+  /* IMPORTANT: never await other supabase calls directly inside this callback —
+     supabase-js serialises on the auth lock and it will deadlock. Defer instead.
+     Also note TOKEN_REFRESHED fires on a timer, so sbSetUser must be idempotent. */
+  sb.auth.onAuthStateChange((_e, s)=> setTimeout(()=>sbSetUser(s ? s.user : null), 0));
   sbRefreshBanner();
 }
+let sbLastUid=null;
 async function sbSetUser(u){
   sbUser = u;
   window.__sbU = u;
@@ -2784,9 +2788,14 @@ async function sbSetUser(u){
   if(inEl&&outEl){ inEl.style.display=u?'':'none'; outEl.style.display=u?'none':''; }
   if(u){
     const w=document.getElementById('sbWho'); if(w) w.textContent=u.email;
-    await sbRestore();        // pull down BEFORE anything pushes up
+    /* restore once per signed-in identity, not on every token refresh */
+    if(u.id!==sbLastUid){
+      sbLastUid=u.id;
+      await sbRestore();      // pull down BEFORE anything pushes up
+    }
     await sbFlush();
   } else {
+    sbLastUid=null; sbRestored=false;
     sbRefreshBanner();
   }
 }
