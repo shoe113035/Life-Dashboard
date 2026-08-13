@@ -780,8 +780,22 @@ const HEALTH_METRICS = [
   {k:'steps',  label:'👟 Steps',              rlabel:'Steps',              step:100},
 ];
 const HGOAL_DEFAULTS = {
-  score:{type:'gte',a:75}, water:{type:'gte',a:75}, steps:{type:'range',a:7000,b:10000}
+  score:{type:'gte',a:75}, water:{type:'gte',a:75}, steps:{type:'gte',a:7000}
 };
+/* One-time migration: the steps goal used to be a 7,000–10,000 range, which
+   marked big step days (12k, 13k…) as a miss. Convert any saved range on steps
+   to "at least <min>" and keep the minimum. Runs once; if John deliberately
+   sets a range again later it is left alone. */
+function migrateStepsGoal(){
+  try{
+    const g=store.get('hgoals',{});
+    if(g && g.steps && g.steps.type==='range' && g.steps.a===7000 && g.steps.b===10000){
+      g.steps={type:'gte', a:7000};
+      store.set('hgoals',g);
+    }
+  }catch(e){}
+}
+migrateStepsGoal();
 function hGoals(){ return Object.assign({}, HGOAL_DEFAULTS, store.get('hgoals',{})); }
 function hGoalText(cfg){
   if(!cfg||cfg.type==='none') return 'track only';
@@ -2919,6 +2933,9 @@ async function sbRestore(){
     const v=localStorage.getItem('ld_'+k);
     if(v!==null && !have.has('setting|'+k)){ try{ sbSyncOne('setting',k,JSON.parse(v)); }catch(e){} }
   });
+
+  /* a restore can re-seed the legacy 7,000–10,000 steps range from the cloud */
+  try{ migrateStepsGoal(); }catch(e){}
 
   sbRestored = true;
   sbMsg(added ? '✅ Restored '+added+' item'+(added===1?'':'s')+' from the cloud.' : '✅ Already up to date with the cloud.');
