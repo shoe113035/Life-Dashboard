@@ -3058,17 +3058,34 @@ const BR_IC={bug:'🐛',idea:'💡',change:'✏️'};
 function brDate(d){ return d? new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ''; }
 function brRow(r,done){
   const strike = done ? 'text-decoration:line-through;opacity:.62;' : '';
+  const badge = done
+    ? '<span style="display:inline-block;font-size:10px;font-weight:800;letter-spacing:.6px;padding:2px 7px;border-radius:999px;background:rgba(120,120,120,.18);color:#7b7b7b;border:1px solid rgba(120,120,120,.35);vertical-align:middle;margin-right:6px">DONE</span>'
+    : '<span style="display:inline-block;font-size:10px;font-weight:800;letter-spacing:.6px;padding:2px 7px;border-radius:999px;background:rgba(214,138,20,.15);color:#c07d10;border:1px solid rgba(214,138,20,.45);vertical-align:middle;margin-right:6px">OPEN</span>';
   const btn = done
     ? '<button class="printbtn" style="padding:2px 8px;font-size:11px;float:right;opacity:.8" onclick="brReopen(\''+r.id+'\')">↩ reopen</button>'
     : '<button class="printbtn" style="padding:2px 8px;font-size:11px;float:right" onclick="brDone(\''+r.id+'\')">✓ done</button>';
-  return '<div style="padding:8px 0;border-bottom:1px dashed var(--line)">'
-    +'<div style="font-weight:700;font-size:13.5px;'+strike+'">'+(BR_IC[r.category]||'')+' '+esc(r.title)+'</div>'
+  let res='';
+  if(done){
+    res = r.resolution
+      ? '<div style="font-size:12px;margin-top:5px;padding-left:9px;border-left:2px solid rgba(58,157,93,.5);color:#3a9d5d"><b>Resolution:</b> '+esc(r.resolution)+'</div>'
+      : '<div class="muted" style="font-size:12px;margin-top:5px;padding-left:9px;border-left:2px solid var(--line);font-style:italic">No resolution note recorded. <a href="#" onclick="brNote(\''+r.id+'\');return false;">Add one</a></div>';
+  }
+  return '<div style="padding:9px 0;border-bottom:1px dashed var(--line)">'
     +btn
-    +(r.details?'<div class="muted" style="font-size:12px;margin-top:2px;'+strike+'">'+esc(r.details)+'</div>':'')
-    +(done&&r.resolution?'<div style="font-size:12px;margin-top:4px;color:var(--good,#3a9d5d)">✔ '+esc(r.resolution)+'</div>':'')
-    +'<div class="muted" style="font-size:11px;margin-top:3px">Logged '+brDate(r.created_at)
+    +'<div style="font-size:13.5px">'+badge
+      +'<span style="font-weight:700;'+strike+'">'+(BR_IC[r.category]||'')+' '+esc(r.title)+'</span></div>'
+    +(r.details?'<div class="muted" style="font-size:12px;margin-top:3px;'+strike+'">'+esc(r.details)+'</div>':'')
+    +res
+    +'<div class="muted" style="font-size:11px;margin-top:4px">Logged '+brDate(r.created_at)
       +(done?' · Closed '+(r.resolved_at?brDate(r.resolved_at):'—'):'')+'</div>'
     +'</div>';
+}
+async function brNote(id){
+  const note=prompt('How was this resolved?','');
+  if(note===null || !note.trim()) return;
+  const { error } = await sb.from('bug_reports').update({resolution:note.trim()}).eq('id',id);
+  if(error){ alert('Error: '+error.message); return; }
+  brLoad();
 }
 async function brLoad(){
   const el=document.getElementById('brList');
