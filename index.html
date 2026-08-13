@@ -589,9 +589,9 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     <textarea id="brDetails" placeholder="Details (what happened, what you want, where in the app…)" style="width:100%;min-height:70px"></textarea>
     <div style="display:flex;gap:8px;margin-top:10px">
       <button class="btn" onclick="brSubmit()">Submit</button>
-      <button class="btn ghost" onclick="brLoad()">View open items</button>
+      <button class="btn ghost" onclick="brLoad()">↻ Refresh log</button>
     </div>
-    <div id="brList" style="margin-top:10px"></div>
+    <div id="brList" style="margin-top:14px"><span class="muted">Loading…</span></div>
   </div>
   <div class="card">
     <h2>About</h2>
@@ -2848,9 +2848,11 @@ async function sbSetUser(u){
       await sbRestore();      // pull down BEFORE anything pushes up
     }
     await sbFlush();
+    try{ brLoad(); }catch(e){}
   } else {
     sbLastUid=null; sbRestored=false;
     sbRefreshBanner();
+    try{ brLoad(); }catch(e){}
   }
 }
 
@@ -3052,21 +3054,51 @@ async function brSubmit(){
   document.getElementById('brTitle').value=''; document.getElementById('brDetails').value='';
   brLoad();
 }
+const BR_IC={bug:'🐛',idea:'💡',change:'✏️'};
+function brDate(d){ return d? new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ''; }
+function brRow(r,done){
+  const strike = done ? 'text-decoration:line-through;opacity:.62;' : '';
+  const btn = done
+    ? '<button class="printbtn" style="padding:2px 8px;font-size:11px;float:right;opacity:.8" onclick="brReopen(\''+r.id+'\')">↩ reopen</button>'
+    : '<button class="printbtn" style="padding:2px 8px;font-size:11px;float:right" onclick="brDone(\''+r.id+'\')">✓ done</button>';
+  return '<div style="padding:8px 0;border-bottom:1px dashed var(--line)">'
+    +'<div style="font-weight:700;font-size:13.5px;'+strike+'">'+(BR_IC[r.category]||'')+' '+esc(r.title)+'</div>'
+    +btn
+    +(r.details?'<div class="muted" style="font-size:12px;margin-top:2px;'+strike+'">'+esc(r.details)+'</div>':'')
+    +(done&&r.resolution?'<div style="font-size:12px;margin-top:4px;color:var(--good,#3a9d5d)">✔ '+esc(r.resolution)+'</div>':'')
+    +'<div class="muted" style="font-size:11px;margin-top:3px">Logged '+brDate(r.created_at)
+      +(done?' · Closed '+(r.resolved_at?brDate(r.resolved_at):'—'):'')+'</div>'
+    +'</div>';
+}
 async function brLoad(){
   const el=document.getElementById('brList');
+  if(!el) return;
   if(!sbUser){ el.innerHTML='<span class="muted">Sign in under Cloud Sync first.</span>'; return; }
-  const { data, error } = await sb.from('bug_reports').select('*').eq('status','open').order('created_at',{ascending:false});
+  const { data, error } = await sb.from('bug_reports').select('*').order('created_at',{ascending:false});
   if(error){ el.innerHTML='<span class="muted">Error: '+esc(error.message)+'</span>'; return; }
-  if(!data.length){ el.innerHTML='<span class="muted">No open items. 🎉</span>'; return; }
-  const ic={bug:'🐛',idea:'💡',change:'✏️'};
-  el.innerHTML=data.map(r=>'<div style="padding:8px 0;border-bottom:1px dashed var(--line)">'
-    +'<div style="font-weight:700;font-size:13.5px">'+(ic[r.category]||'')+' '+esc(r.title)
-    +' <button class="printbtn" style="padding:2px 8px;font-size:11px;float:right" onclick="brDone(\''+r.id+'\')">✓ done</button></div>'
-    +(r.details?'<div class="muted" style="font-size:12px;margin-top:2px">'+esc(r.details)+'</div>':'')
-    +'<div class="muted" style="font-size:11px;margin-top:2px">'+new Date(r.created_at).toLocaleDateString('en-US')+'</div></div>').join('');
+  if(!data.length){ el.innerHTML='<span class="muted">Nothing logged yet.</span>'; return; }
+  const open=data.filter(r=>r.status!=='done');
+  const done=data.filter(r=>r.status==='done').sort((a,b)=>new Date(b.resolved_at||b.created_at)-new Date(a.resolved_at||a.created_at));
+  let h='<div style="font-weight:700;font-size:12px;letter-spacing:.4px;text-transform:uppercase;margin:4px 0 2px" class="muted">Open · '+open.length+'</div>';
+  h += open.length ? open.map(r=>brRow(r,false)).join('')
+                   : '<div class="muted" style="font-size:12.5px;padding:6px 0">Nothing open. 🎉</div>';
+  h += '<div style="font-weight:700;font-size:12px;letter-spacing:.4px;text-transform:uppercase;margin:16px 0 2px" class="muted">Completed · '+done.length+'</div>';
+  h += done.length ? done.map(r=>brRow(r,true)).join('')
+                   : '<div class="muted" style="font-size:12.5px;padding:6px 0">Nothing completed yet.</div>';
+  el.innerHTML=h;
 }
 async function brDone(id){
-  await sb.from('bug_reports').update({status:'done'}).eq('id',id);
+  const note=prompt('What was changed / how was it resolved? (optional)','');
+  if(note===null) return;
+  const { error } = await sb.from('bug_reports')
+    .update({status:'done', resolved_at:new Date().toISOString(), resolution:note.trim()||null}).eq('id',id);
+  if(error){ alert('Error: '+error.message); return; }
+  brLoad();
+}
+async function brReopen(id){
+  const { error } = await sb.from('bug_reports')
+    .update({status:'open', resolved_at:null}).eq('id',id);
+  if(error){ alert('Error: '+error.message); return; }
   brLoad();
 }
 
