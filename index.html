@@ -95,6 +95,12 @@ input[type=number]{width:84px}
 select{padding:8px}
 textarea{min-height:74px;resize:vertical}
 .top3row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.weekstrip{display:flex;gap:4px;margin:8px 0 4px;flex-wrap:wrap}
+.weekstrip button{flex:1;min-width:38px;padding:5px 2px;border:1px solid var(--line,#ccc);border-radius:8px;background:transparent;color:inherit;font-size:11px;line-height:1.2;cursor:pointer}
+.weekstrip button b{display:block;font-size:13px}
+.weekstrip button.sel{background:var(--teal);border-color:var(--teal);color:#fff}
+.weekstrip button:disabled{opacity:.35;cursor:default}
+.pastday-note{font-size:12px;color:var(--muted);margin:2px 0 4px}
 .top3row input[type=checkbox]{width:21px;height:21px;accent-color:var(--teal);flex-shrink:0}
 .top3row.done input[type=text]{text-decoration:line-through;color:var(--muted)}
 .hrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
@@ -196,6 +202,8 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
   <div class="card section" id="sec-daily">
     <button class="backbtn" onclick="closeSection()">‹ Back</button>
     <h2 style="margin-top:10px">Daily To-Do List <span id="dailyPct" class="big" style="text-transform:none"></span> <button class="printbtn" id="editBtn" onclick="toggleEdit()">✎ Edit list</button></h2>
+    <div class="weekstrip" id="dailyWeekStrip"></div>
+    <div class="pastday-note" id="dailyPastNote"></div>
     <div class="bar"><div id="dailyBar" style="width:0%"></div></div>
     <div class="summary-note" id="dailyNote"></div>
     <div id="dailyList" style="margin-top:8px"></div>
@@ -1561,15 +1569,43 @@ function toggleEdit(){ editMode=!editMode;
   document.getElementById('editBtn').textContent=editMode?'✓ Done':'✎ Edit list';
   renderDaily(); }
 
+/* Week strip: any day of the current Mon–Sun week (up to today) can be
+   opened and edited until the week closes at midnight Sunday. Each day is
+   still saved under its own date key via saveDay(), so weekly/monthly
+   reports pick up late check-offs automatically. */
+let dailySelKey = TKEY;
+function renderDailyWeekStrip(){
+  const strip=document.getElementById('dailyWeekStrip'); if(!strip) return;
+  strip.innerHTML='';
+  const mon=mondayOf(TODAY), items=dailyItems(), all=store.get('days',{});
+  for(let i=0;i<7;i++){
+    const x=new Date(mon); x.setDate(mon.getDate()+i);
+    const k=dkey(x), future=k>TKEY;
+    const b=document.createElement('button');
+    const dd=all[k]; const pct=(dd&&items.length)?Math.round(dayDone(dd,items)/items.length*100):null;
+    b.innerHTML=x.toLocaleDateString('en-US',{weekday:'short'})+'<b>'+x.getDate()+'</b>'+(future?'':(pct==null?'–':pct+'%'));
+    if(k===dailySelKey) b.className='sel';
+    if(future) b.disabled=true;
+    else b.onclick=()=>{ dailySelKey=k; renderDaily(); };
+    strip.appendChild(b);
+  }
+  const note=document.getElementById('dailyPastNote');
+  if(dailySelKey===TKEY) note.textContent='Tap an earlier day this week to catch up on anything you forgot to mark — editable until midnight Sunday.';
+  else { const [y,m,dd]=dailySelKey.split('-').map(Number);
+    note.textContent='✎ Editing '+new Date(y,m-1,dd).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})+' (past day). Tap today to go back.'; }
+}
 function renderDaily(){
+  if(dailySelKey<dkey(mondayOf(TODAY)) || dailySelKey>TKEY) dailySelKey=TKEY;
+  const SK = dailySelKey;
+  renderDailyWeekStrip();
   const items = dailyItems();
-  const d = dayData(TKEY);
+  const d = dayData(SK);
   const el = document.getElementById('dailyList'); el.innerHTML='';
   const done = dayDone(d, items);
   ['spirit','mental','phys','home'].forEach(cat=>{
     items.filter(i=>i.cat===cat).forEach(item=>{
       const pill = `<span class="pill ${CAT_META[item.cat][1]}">${CAT_META[item.cat][0]}</span>`;
-      el.appendChild(taskWidgetRow(item, ()=>dayData(TKEY), dd=>{ saveDay(TKEY,dd); renderDaily(); renderPillars(); renderHomes(); }, pill));
+      el.appendChild(taskWidgetRow(item, ()=>dayData(SK), dd=>{ saveDay(SK,dd); renderDaily(); renderPillars(); renderHomes(); }, pill));
     });
   });
   if(editMode) renderEditList();
