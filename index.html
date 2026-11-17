@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#2D6A4F">
+<meta name="theme-color" content="#0E1512">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Thrive³</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.52.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
+<script>if(window.Chart){Chart.defaults.color="#9AA79F";Chart.defaults.borderColor="rgba(236,230,214,.08)";}</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root { color-scheme: light;
@@ -300,6 +301,74 @@ body{background:linear-gradient(170deg,#e6f1ea 0%,#f3f6f1 55%,#eef0f7 100%) fixe
 .smdrow .smdn{background:#DCEBE2;color:#1F4D36}
 .smdchk{border-color:#2D6A4F}.smdrow.done .smdchk{background:#2D6A4F}
 .item input[type=checkbox],.top3row input[type=checkbox],.aiitem input{accent-color:#2D6A4F}
+
+/* ===== DARK FOREST THEME — forest green · brass · cream on near-black ===== */
+:root{color-scheme:dark;--ink:#ECE6D6;--muted:#9AA79F;--line:#2A3830;--purple:#7CC49B;--purple-md:#2D6A4F;
+  --forest:#3F8A63;--brass:#C9AE74;--cream:#ECE6D6;--teal:#3F8A63;--teal-dk:#2D6A4F;--teal-bright:#7CC49B;
+  --surf:#17211C;--surf2:#111A15;--edge:#26332C;--good:#7CC49B;--bad:#D98C6F}
+body{background:#0E1512 !important;color:var(--ink)}
+h1{color:var(--cream)}
+.sub,.muted,.bstat{color:var(--muted)}
+.tabtitle{color:var(--cream)}
+.hdr img{background:#0E1512;border-color:var(--edge)}
+.card,.block,.hero,.sumstrip,.lbtn,.smdbar,.topbtn,.footer,.backbtn,.chip,.printbtn,.btn.ghost,.replist button,#smdOverlay .smdcard,.counter button{
+  background:var(--surf) !important;color:var(--ink) !important;border-color:var(--edge) !important;box-shadow:none !important}
+.block .btitle,.hero .htitle,.lbtn .lname,.smdrow .smdt{color:var(--cream) !important}
+.block .bstat,.block .muted,.hero .hline,.hero .hmut,.sumstrip .bstat,.lbtn .lsub{color:var(--muted) !important}
+.navbar{background:#141D18 !important;border-color:var(--edge) !important;box-shadow:0 4px 18px rgba(0,0,0,.4) !important}
+.navbar .navbtn{color:var(--muted)}
+.navbar .navbtn.active{color:var(--cream)}
+.topbtn .ti{color:var(--teal-bright)}
+.topbtn.active{background:var(--purple-md) !important;color:var(--cream) !important}
+.topbtn.active .ti{color:var(--cream)}
+.card h2{color:var(--teal-bright)}
+input[type=text],input[type=number],input[type=url],input[type=email],input[type=date],select,textarea{background:var(--surf2);color:var(--ink);border-color:var(--line)}
+input::placeholder,textarea::placeholder{color:#5f6d65}
+input[type=email]{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;font-size:15px;font-family:inherit}
+.summary-note,.stat{background:rgba(236,230,214,.05) !important;color:var(--ink)}
+.stat .v{color:var(--cream)}
+.coach{background:#1A2E23 !important;color:var(--ink)}
+.bar{background:rgba(236,230,214,.1) !important}
+.bar>div{background:linear-gradient(90deg,#2D6A4F,#C9AE74) !important}
+.ring svg text{fill:#ECE6D6}
+.ring svg circle:first-child{stroke:rgba(236,230,214,.1)}
+.ring .rl{color:var(--teal-bright)}
+.mg-cell{background:rgba(236,230,214,.05)}
+.mg-sel{background:var(--edge)}
+.smdrow .smdn{background:#1F3A2C !important;color:#7CC49B !important}
+.smdchk{background:var(--surf2) !important;border-color:#3F8A63 !important}
+.smdrow.done .smdchk{background:#3F8A63 !important}
+/* tiles: forest / brass / cream */
+.t-daily,.block .bic.t-daily{background:#3A3322 !important;color:#D9C08A !important}
+.t-spirit,.block .bic.t-spirit{background:#3A3322 !important;color:#D9C08A !important}
+.t-mental,.block .bic.t-mental{background:#2E302B !important;color:#ECE6D6 !important}
+.t-phys,.block .bic.t-phys{background:#1F3A2C !important;color:#7CC49B !important}
+.t-prog,.block .bic.t-prog{background:#1F3A2C !important;color:#7CC49B !important}
+.t-gray,.block .bic.t-gray{background:#2A2F2C !important;color:#B9B3A3 !important}
+.block:has(.t-daily),.block:has(.t-spirit){border-top:3px solid #C9AE74 !important}
+.block:has(.t-mental){border-top:3px solid #CFC8B6 !important}
+.block:has(.t-phys),.block:has(.t-prog){border-top:3px solid #3F8A63 !important}
+.block:has(.t-gray){border-top:3px solid #5A625D !important}
+.hero.p{border-left:4px solid #C9AE74 !important}
+.hero.t{border-left:4px solid #3F8A63 !important}
+.hero .hbig{color:#C9AE74 !important}
+.sumstrip{border-left:4px solid #3F8A63 !important}
+.sumstrip .big{color:#7CC49B !important}
+.sumstrip b[style*="#fff"]{color:var(--cream) !important}
+.p-spirit,.pill.p-spirit{background:#3A3322 !important;color:#D9C08A !important}
+.p-mental{background:#2E302B !important;color:#ECE6D6 !important}
+.p-phys{background:#1F3A2C !important;color:#7CC49B !important}
+.p-home{background:#2A2F2C !important;color:#B9B3A3 !important}
+.footer .slogan{color:#C9AE74 !important}
+.replist button b{color:var(--teal-bright)}
+.met,.ok{color:#7CC49B}
+.item input[type=checkbox],.top3row input[type=checkbox],.aiitem input{accent-color:#3F8A63}
+/* inline light boxes from older sections */
+#tab-workout [style*="background:#fff"],#tab-today [style*="background:#fff"],#tab-progress [style*="background:#fff"]{background:var(--surf) !important;color:var(--ink) !important;border-color:var(--edge) !important}
+[style*="linear-gradient(120deg,#efe6fc,#cef2ea)"]{background:#1F3A2C !important;color:var(--cream) !important}
+[style*="linear-gradient(120deg,#5b2d8f,#0d9284)"],[style*="linear-gradient(160deg,#5b2d8f,#0a6c60)"]{background:linear-gradient(120deg,#1F3A2C,#2D6A4F) !important}
+[style*="border-left:5px solid #0d9284"]{border-left-color:#C9AE74 !important}
+[style*="color:#0d9284"]{color:#7CC49B !important}
 </style>
 </head>
 <body>
