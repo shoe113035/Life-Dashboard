@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#2A3829">
+<meta name="theme-color" content="#24452E">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Thrive³</title>
@@ -460,6 +460,17 @@ body{background:url('flake.png') repeat,radial-gradient(ellipse at 40% 0%,#46584
 .hdr .sub{color:#C3D1C3 !important}
 .topbtn.active{color:#2A3829 !important}
 .topbtn.active .ti{color:#2A3829 !important}
+
+/* ===== greener forest metallic ===== */
+body{background:url('flake.png') repeat,
+  linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(190,235,200,.10) 45%,rgba(255,255,255,0) 60%),
+  radial-gradient(ellipse at 40% 0%,#55845f 0%,#346340 35%,#24452e 68%,#173020 100%) fixed !important;
+  background-size:256px 256px,100% 100%,100% 100% !important;background-color:#24452e !important}
+.topbtn.active,.topbtn.active .ti{color:#24452E !important}
+.t-daily,.block .bic.t-daily,.t-phys,.block .bic.t-phys,.t-prog,.block .bic.t-prog,.t-mental,.block .bic.t-mental{background:linear-gradient(150deg,#5a9a6c 0%,#2f6a44 45%,#1d4a2d 100%) !important;color:#fff !important}
+.btn,.btn.teal{background:linear-gradient(150deg,#4f8f61,#24543a) !important}
+.bar>div{background:linear-gradient(90deg,#24543a,#5a9a6c) !important}
+.block:has(.t-daily),.block:has(.t-phys),.block:has(.t-prog),.block:has(.t-mental),.hero.t,.sumstrip{border-color:#2f6a44 !important}
 </style>
 </head>
 <body>
