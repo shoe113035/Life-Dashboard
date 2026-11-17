@@ -9,7 +9,7 @@
 <title>Thrive³</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.52.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
-<script>if(window.Chart){Chart.defaults.color="#A8B0AA";Chart.defaults.borderColor="rgba(255,255,255,.08)";}</script>
+<script>if(window.Chart){Chart.defaults.color="#5E5E5E";Chart.defaults.borderColor="rgba(0,0,0,.08)";}</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root { color-scheme: light;
@@ -523,6 +523,45 @@ input::placeholder,textarea::placeholder{color:#6F7872 !important}
 .hdr img{border:1.5px solid #fff !important}
 
 .hdr img{background:#fff !important;border:1.5px solid #0A0C0B !important}
+
+/* ===== white buttons/cards, black text, metallic forest background ===== */
+:root{--ink:#111111;--cream:#111111;--muted:#5E5E5E;--line:#E2E2E2;--surf:#FFFFFF;--surf2:#F4F4F4;--edge:#E2E2E2;--purple:#1F5A36;--teal-bright:#1F5A36}
+.card,.block,.hero,.sumstrip,.lbtn,.smdbar,.backbtn,.chip,.printbtn,.btn.ghost,.replist button,#smdOverlay .smdcard,.counter button,.topbtn{background:#fff !important;color:#111 !important;border:1px solid #E2E2E2 !important;box-shadow:0 6px 18px rgba(0,0,0,.22) !important}
+.block .btitle,.hero .htitle,.lbtn .lname,.smdrow .smdt,.stat .v{color:#111 !important}
+.block .bstat,.block .muted,.hero .hline,.hero .hmut,.sumstrip .bstat,.lbtn .lsub,.card .muted{color:#5E5E5E !important}
+h1,.tabtitle{color:#fff !important}
+.hdr .sub{color:#D3DED6 !important}
+.card h2{color:#1F5A36 !important}
+.topbtn .ti{color:#111 !important}
+.topbtn.active{background:linear-gradient(150deg,#4f8f61,#24543a) !important;border-color:#24543a !important;color:#fff !important}
+.topbtn.active .ti{color:#fff !important}
+.navbar{background:#fff !important;border:1px solid #E2E2E2 !important}
+.navbar .navbtn{color:#5E5E5E !important}
+.navbar .navbtn.active{color:#111 !important}
+input[type=text],input[type=number],input[type=url],input[type=email],input[type=date],select,textarea{background:#F4F4F4 !important;color:#111 !important;border-color:#E2E2E2 !important}
+input::placeholder,textarea::placeholder{color:#9A9A9A !important}
+.summary-note,.stat{background:rgba(0,0,0,.04) !important;color:#111 !important}
+.coach{background:#E8F1EA !important;color:#111 !important}
+.bar{background:rgba(0,0,0,.08) !important}
+.ring svg text{fill:#111 !important}
+.ring svg circle:first-child{stroke:rgba(0,0,0,.08) !important}
+.ring .rl{color:#1F5A36 !important}
+.mg-cell{background:rgba(0,0,0,.05) !important}
+.mg-sel{background:#E5E5E5 !important}
+.p-mental,.p-phys,.smdrow .smdn{background:#E3EFE6 !important;color:#1F5A36 !important}
+.p-spirit,.pill.p-spirit,.smdbar .pill{background:#111 !important;color:#fff !important}
+.p-home{background:#EEEEEE !important;color:#333 !important}
+.t-spirit,.block .bic.t-spirit{background:#111 !important;color:#fff !important}
+.t-gray,.block .bic.t-gray{background:#EEEEEE !important;color:#111 !important}
+.block:has(.t-spirit){border-top:3px solid #111 !important}
+.hero.p{border-left:4px solid #111 !important}
+.hero .hbig,.hero.p .hbig,.sumstrip .big{color:#1F5A36 !important}
+.replist button b{color:#1F5A36 !important}
+.smdchk{background:#fff !important;border-color:#2f6a44 !important}
+.smdrow.done .smdchk{background:#2f6a44 !important}
+[style*="linear-gradient(120deg,#efe6fc,#cef2ea)"]{background:#E3EFE6 !important;color:#111 !important}
+#tab-workout [style*="background:#fff"],#tab-today [style*="background:#fff"],#tab-progress [style*="background:#fff"]{background:#fff !important;color:#111 !important;border-color:#E2E2E2 !important}
+.met,.ok{color:#1F7A4A !important}
 </style>
 </head>
 <body>
