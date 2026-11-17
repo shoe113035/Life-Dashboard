@@ -1,4 +1,4 @@
-const CACHE = 'life-dash-v35';
+const CACHE = 'life-dash-v37';
 const ASSETS = [
   './index.html',
   './manifest.webmanifest',
