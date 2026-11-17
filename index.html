@@ -9,7 +9,7 @@
 <title>Thrive³</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.52.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
-<script>if(window.Chart){Chart.defaults.color="#6B6B6B";Chart.defaults.borderColor="rgba(0,0,0,.08)";}</script>
+<script>if(window.Chart){Chart.defaults.color="#A8B0AA";Chart.defaults.borderColor="rgba(255,255,255,.08)";}</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root { color-scheme: light;
@@ -471,6 +471,49 @@ body{background:url('flake.png') repeat,
 .btn,.btn.teal{background:linear-gradient(150deg,#4f8f61,#24543a) !important}
 .bar>div{background:linear-gradient(90deg,#24543a,#5a9a6c) !important}
 .block:has(.t-daily),.block:has(.t-phys),.block:has(.t-prog),.block:has(.t-mental),.hero.t,.sumstrip{border-color:#2f6a44 !important}
+
+/* ===== PRIMARY: forest green metallic + black · white accents ===== */
+:root{--ink:#FFFFFF;--cream:#FFFFFF;--muted:#A8B0AA;--line:#2A2F2C;--surf:#0E100F;--surf2:#1A1D1B;--edge:#262B28;--purple:#7CC492;--teal-bright:#7CC492}
+.card,.block,.hero,.sumstrip,.lbtn,.smdbar,.backbtn,.chip,.printbtn,.btn.ghost,.replist button,#smdOverlay .smdcard,.counter button,.topbtn{background:#0E100F !important;color:#fff !important;border:1px solid #262B28 !important;box-shadow:0 6px 18px rgba(0,0,0,.35) !important}
+.block .btitle,.hero .htitle,.lbtn .lname,.smdrow .smdt,.stat .v{color:#fff !important}
+.block .bstat,.block .muted,.hero .hline,.hero .hmut,.sumstrip .bstat,.lbtn .lsub,.muted{color:#A8B0AA !important}
+.card h2{color:#7CC492 !important}
+.topbtn .ti{color:#fff !important}
+.topbtn.active{background:#fff !important;border:1px solid #fff !important;color:#0E100F !important}
+.topbtn.active .ti{color:#0E100F !important}
+.navbar{background:#0B0C0B !important;border:1px solid #262B28 !important}
+.navbar .navbtn{color:#A8B0AA !important}
+.navbar .navbtn.active{color:#fff !important}
+.navbar .navbtn.active .tile{outline:2px solid #fff !important}
+input[type=text],input[type=number],input[type=url],input[type=email],input[type=date],select,textarea{background:#1A1D1B !important;color:#fff !important;border-color:#2A2F2C !important}
+input::placeholder,textarea::placeholder{color:#6F7872 !important}
+.summary-note,.stat{background:rgba(255,255,255,.06) !important;color:#fff !important}
+.coach{background:#13261A !important;color:#fff !important}
+.bar{background:rgba(255,255,255,.12) !important}
+.ring svg text{fill:#fff !important}
+.ring svg circle:first-child{stroke:rgba(255,255,255,.12) !important}
+.ring .rl{color:#7CC492 !important}
+.mg-cell{background:rgba(255,255,255,.06) !important}
+.mg-sel{background:#262B28 !important}
+.p-mental,.p-phys,.smdrow .smdn{background:#17311F !important;color:#9AD6AC !important}
+.p-spirit,.pill.p-spirit,.smdbar .pill{background:#fff !important;color:#0E100F !important}
+.p-home{background:#1E2220 !important;color:#D0D5D2 !important}
+.t-spirit,.block .bic.t-spirit{background:#fff !important;color:#0E100F !important}
+.t-gray,.block .bic.t-gray{background:#262B28 !important;color:#fff !important}
+.block:has(.t-spirit){border-color:#262B28 !important}
+.hero.p{border-left:4px solid #fff !important}
+.hero.t,.sumstrip{border-left:4px solid #3f8a57 !important}
+.block:has(.t-daily),.block:has(.t-phys),.block:has(.t-prog),.block:has(.t-mental){border-top:3px solid #3f8a57 !important}
+.block:has(.t-spirit){border-top:3px solid #fff !important}
+.hero .hbig,.hero.p .hbig,.sumstrip .big{color:#fff !important}
+.replist button b{color:#7CC492 !important}
+.footer .slogan{color:#fff !important}
+.smdchk{background:#1A1D1B !important;border-color:#fff !important}
+.smdrow.done .smdchk{background:#3f8a57 !important}
+.item input[type=checkbox],.top3row input[type=checkbox],.aiitem input{accent-color:#3f8a57}
+[style*="linear-gradient(120deg,#efe6fc,#cef2ea)"]{background:#17311F !important;color:#fff !important}
+#tab-workout [style*="background:#fff"],#tab-today [style*="background:#fff"],#tab-progress [style*="background:#fff"]{background:#0E100F !important;color:#fff !important;border-color:#262B28 !important}
+.met,.ok{color:#9AD6AC !important}
 </style>
 </head>
 <body>
