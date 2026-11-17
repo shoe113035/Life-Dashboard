@@ -172,6 +172,42 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 .rpt .ok{color:#0f8f81;font-weight:700}
 .rpt .no{color:#c05a4e;font-weight:700}
 .rpt .note{font-size:12px;color:#444;margin-top:10px;line-height:1.5}
+/* ===== v2 layout ===== */
+.topbtn.topdaily{width:auto;padding:0 14px;border-radius:999px;font-weight:800;font-size:14px;color:var(--purple)}
+.topbtn.topdaily.active{color:#fff}
+.navbar .navbtn{flex-direction:column;gap:2px;padding:6px 10px;font-size:10.5px;flex:1;border-radius:16px}
+.navbar .navbtn .lbl{display:inline}
+.navbar{display:flex;justify-content:space-around}
+.tabtitle{font-size:20px;font-weight:800;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.3);margin:4px 2px 8px}
+.launch{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-top:12px}
+.lbtn{background:#fff;border:2px solid var(--trim);border-radius:18px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);color:var(--ink);font-family:inherit}
+.lbtn .lico{font-size:26px}
+.lbtn .lname{font-weight:800;font-size:13px}
+.lbtn .lsub{font-size:11px;color:var(--muted)}
+.rings{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ring{text-align:center}
+.ring svg{width:100%;max-width:74px}
+.ring .rl{font-size:11px;font-weight:700;color:var(--purple)}
+.ring .rv{font-size:11px;color:var(--muted)}
+.qwater{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:13px;font-weight:600}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink);margin:0 4px 6px 0;font-family:inherit}
+.mrow{margin-top:8px}
+.mtop{display:flex;justify-content:space-between;font-size:13.5px}
+.aiitem{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+.aiitem input{width:20px;height:20px;accent-color:var(--teal);margin-top:2px;flex-shrink:0}
+.yt{text-decoration:none;font-size:15px;margin-left:4px}
+.fav{background:none;border:none;cursor:pointer;font-size:16px;padding:2px 4px;color:#d4a017}
+ol.steps{margin:12px 0 12px 18px;font-size:13px;line-height:1.55}
+ol.steps li{margin-bottom:4px}
+.smdbar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:2px solid var(--trim);border-radius:18px;padding:12px 14px;margin-bottom:12px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);font-weight:800;color:var(--purple);font-size:15px}
+#smdOverlay{display:none;position:fixed;inset:0;background:rgba(10,8,20,.75);z-index:60;align-items:center;justify-content:center;padding:16px}
+#smdOverlay .smdcard{background:#fff;border-radius:22px;padding:18px;width:100%;max-width:440px;border:2px solid var(--trim)}
+.smdrow{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.smdrow .smdn{width:24px;height:24px;border-radius:50%;background:var(--spirit-bg);color:var(--purple);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.smdrow .smdt{flex:1;font-weight:700;font-size:14.5px}
+.smdrow.done .smdt{text-decoration:line-through;color:var(--muted)}
+.smdchk{width:34px;height:34px;border-radius:10px;border:2px solid var(--teal);background:#fff;color:#fff;font-weight:800;font-size:17px;cursor:pointer}
+.smdrow.done .smdchk{background:var(--teal)}
 @media print{
   body{background:#fff;color:#232336;padding:10px;max-width:none}
   body>:not(#printArea){display:none !important}
@@ -183,6 +219,7 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 <body>
 <div class="hdr"><img src="icon-192.png" alt="Thrive³"><div><h1>Thrive³</h1><div class="sub" id="todayLabel"></div></div>
 <div class="topbtns">
+  <button class="topbtn topdaily active" id="tb-today" onclick="showTab('today')" title="Daily">☀️ Daily</button>
   <button class="topbtn" id="tb-reports" onclick="showTab('reports')" title="Reports">🗂️</button>
   <button class="topbtn" id="tb-settings" onclick="showTab('settings')" title="Settings">⚙️</button>
 </div></div>
@@ -190,6 +227,12 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 <!-- ============ TODAY ============ -->
 <div id="tab-today">
   <div class="home" id="home-today"></div>
+  <div class="card section" id="sec-calhub">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">📅 Calendar & Dates</h2>
+    <div class="muted" style="margin-bottom:6px">Everything from your calendar setup — today, the week ahead, the month, special dates and recurring tasks.</div>
+    <div class="blocks" id="calHubBlocks"></div>
+  </div>
 
   <div class="card section" id="sec-top3">
     <button class="backbtn" onclick="closeSection()">‹ Back</button>
@@ -236,12 +279,29 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
     <button class="backbtn" onclick="closeSection()">‹ Back</button>
     <h2 style="margin-top:10px">Calorie Tracker <button class="printbtn" onclick="editBudget()">🎯 Budget</button></h2>
     <div class="sumstrip" style="cursor:default;border-left-color:#5b2d8f;margin-bottom:8px" id="calSummary"></div>
+    <div class="summary-note" style="margin-top:4px">
+      <b>🔎 Smart add</b> <span class="muted">— type it or snap it, I'll look up the nutrition</span>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input type="text" id="ai_text" placeholder="e.g. 2 eggs, turkey sausage, black coffee" style="flex:1" onkeydown="if(event.key==='Enter')smartAdd()">
+        <button class="btn teal" onclick="smartAdd()">Look up</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn" onclick="aiPhotoPick()">📸 Photo of my food</button>
+        <button class="btn ghost" onclick="scanBarcode()">▥ Barcode</button>
+      </div>
+      <input type="file" id="ai_photo" accept="image/*" capture="environment" style="display:none" onchange="aiPhotoChosen(this.files[0]);this.value=''">
+      <div id="aiFoodOut" style="display:none;margin-top:10px"></div>
+      <div id="favChips"></div>
+    </div>
     <div id="calEntries"></div>
-    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+    <div class="muted" style="margin-top:12px">Or add manually:</div>
+    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
       <input type="text" id="cal_name" placeholder="Food item" style="flex:1;min-width:110px">
       <input type="number" id="cal_amt" placeholder="cal" style="width:74px">
       <input type="number" id="cal_p" placeholder="protein g" style="width:88px">
       <input type="number" id="cal_f" placeholder="fat g" style="width:70px">
+      <input type="number" id="cal_c" placeholder="carbs g" style="width:80px">
+      <input type="number" id="cal_fib" placeholder="fiber g" style="width:76px">
       <button class="btn teal" onclick="addCalEntry()">Add</button>
       <button class="btn" onclick="scanBarcode()">📷 Camera</button>
     </div>
@@ -509,6 +569,35 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
   </div>
 </div>
 
+<!-- ============ SPIRITUAL ============ -->
+<div id="tab-spirit" style="display:none"><div class="home" id="home-spirit"></div></div>
+<!-- ============ MENTAL ============ -->
+<div id="tab-mental" style="display:none"><div class="home" id="home-mental"></div></div>
+<!-- ============ TRACK & PROGRESS ============ -->
+<div id="tab-progress" style="display:none">
+  <div class="home" id="home-progress"></div>
+  <div class="card section" id="sec-nutprofile">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">🎯 My Nutrition Plan</h2>
+    <div id="nutProfileBody"></div>
+  </div>
+</div>
+<!-- Samsung Health / Health Connect sync (moved into Physical at startup) -->
+<div id="hc-holder" style="display:none">
+  <div class="card section" id="sec-hconnect">
+    <button class="backbtn" onclick="closeSection()">‹ Back</button>
+    <h2 style="margin-top:10px">🔗 Samsung Health Sync</h2>
+    <div id="hcBody"></div>
+  </div>
+</div>
+<!-- Start my day -->
+<div id="smdOverlay" onclick="if(event.target===this)closeSMD()">
+  <div class="smdcard">
+    <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:18px;color:var(--purple)">☀️ Start my day</b><button class="printbtn" onclick="closeSMD()">✕</button></div>
+    <div class="muted" style="margin:4px 0 6px">Tap Go to open each one, then ✓ when it's done.</div>
+    <div id="smdList"></div>
+  </div>
+</div>
 <!-- ============ REPORTS ============ -->
 <div id="tab-reports" style="display:none">
   <div class="card" id="repViewerCard" style="display:none">
@@ -640,10 +729,10 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 <div id="printArea" class="rpt"></div>
 
 <nav class="navbar">
-  <button class="navbtn active" data-tab="today"><span class="ico">☀️</span><span class="lbl">Today</span></button>
-  <button class="navbtn" data-tab="week"><span class="neontile"><svg viewBox="0 0 88 24" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngW" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><text x="44" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" letter-spacing="2.5" font-size="12.5" fill="#ffb3ec" stroke="#ff4fd8" stroke-width="0.9" filter="url(#ngW)">WEEKLY</text></svg></span><span class="lbl">Week</span></button>
-  <button class="navbtn" data-tab="month"><span class="neontile"><svg viewBox="0 0 72 28" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngC" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="0.9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke-linecap="round" stroke-width="1.6" filter="url(#ngC)"><g stroke="#a86bff"><rect x="3" y="7" width="16" height="15" rx="2"/><line x1="7" y1="4" x2="7" y2="9"/><line x1="15" y1="4" x2="15" y2="9"/><line x1="3" y1="12" x2="19" y2="12"/><rect x="6.5" y="15" width="3" height="3"/><rect x="12.5" y="15" width="3" height="3"/></g><g stroke="#ff5c5c"><rect x="28" y="7" width="16" height="15" rx="2"/><line x1="32" y1="4" x2="32" y2="9"/><line x1="40" y1="4" x2="40" y2="9"/><line x1="28" y1="12" x2="44" y2="12"/><rect x="31.5" y="15" width="3" height="3"/><rect x="37.5" y="15" width="3" height="3"/></g><g stroke="#b7e94a"><rect x="53" y="7" width="16" height="15" rx="2"/><line x1="57" y1="4" x2="57" y2="9"/><line x1="65" y1="4" x2="65" y2="9"/><line x1="53" y1="12" x2="69" y2="12"/><rect x="56.5" y="15" width="3" height="3"/><rect x="62.5" y="15" width="3" height="3"/></g></g></svg></span><span class="lbl">Month</span></button>
-  <button class="navbtn" data-tab="workout"><span class="neontile"><svg viewBox="0 0 64 38" xmlns="http://www.w3.org/2000/svg"><defs><filter id="ngF" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g fill="none" stroke="#ff4f6e" stroke-width="3" stroke-linecap="round" filter="url(#ngF)"><line x1="10" y1="6" x2="10" y2="18"/><line x1="17" y1="3" x2="17" y2="21"/><line x1="47" y1="3" x2="47" y2="21"/><line x1="54" y1="6" x2="54" y2="18"/><line x1="17" y1="12" x2="47" y2="12"/></g><text x="32" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="8" letter-spacing="1.5" fill="#7fd4ff" filter="url(#ngF)">FITNESS</text><text x="32" y="37.5" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="7" letter-spacing="1.5" fill="#ffb14d" filter="url(#ngF)">CLUB</text></svg></span><span class="lbl">Workout</span></button>
+  <button class="navbtn" data-tab="spirit"><span class="ico">🙏</span><span class="lbl">Spiritual</span></button>
+  <button class="navbtn" data-tab="mental"><span class="ico">🧠</span><span class="lbl">Mental</span></button>
+  <button class="navbtn" data-tab="workout"><span class="ico">💪</span><span class="lbl">Physical</span></button>
+  <button class="navbtn" data-tab="progress"><span class="ico">📈</span><span class="lbl">Progress</span></button>
 </nav>
 
 <script>
@@ -687,7 +776,8 @@ const FLOSS_GOAL = 3;
 /* Keys that live as their own cloud row under kind='setting'. Anything not
    listed here stays device-local (transient UI state). */
 const SETTING_KEYS=['dates','custom','customW','customM','catov','hgoals','prayers',
-  'calbudget','fintx','finaccts','finsnaps','calurl','progstart','wlogs'];
+  'calbudget','fintx','finaccts','finsnaps','calurl','progstart','wlogs',
+  'nutprofile','foodfavs','launchurls'];
 const store = {
   get(k, fb){ try{ const v = localStorage.getItem('ld_'+k); return v?JSON.parse(v):fb; }catch(e){ return fb; } },
   /* quiet=true writes locally without queueing a cloud push — used by the
@@ -786,9 +876,10 @@ const HEALTH_METRICS = [
   {k:'score',  label:'😴 Sleep Number score', rlabel:'Sleep Number score', step:1},
   {k:'water',  label:'💧 Water (oz)',         rlabel:'Water (oz)',         step:5},
   {k:'steps',  label:'👟 Steps',              rlabel:'Steps',              step:100},
+  {k:'sleephrs',label:'🛌 Sleep (hrs)',         rlabel:'Sleep (hrs)',        step:0.25},
 ];
 const HGOAL_DEFAULTS = {
-  score:{type:'gte',a:75}, water:{type:'gte',a:75}, steps:{type:'gte',a:7000}
+  score:{type:'gte',a:75}, water:{type:'gte',a:75}, steps:{type:'gte',a:7000}, sleephrs:{type:'gte',a:7}
 };
 /* One-time migration: the steps goal used to be a 7,000–10,000 range, which
    marked big step days (12k, 13k…) as a miss. Convert any saved range on steps
@@ -873,6 +964,11 @@ function renderHealth(){
         const ws=healthSuccess(dd.health,'water');
         if(dd.health.water!=null && ws!=null) dd.checks.water=ws;
       }
+      if(m.k==='sleephrs'){
+        const ss=healthSuccess(dd.health,'sleephrs');
+        if(dd.health.sleephrs!=null && ss!=null) dd.checks.sleep7=ss;
+      }
+      if(dd.health._hc) delete dd.health._hc[m.k];   // a manual entry wins over Samsung Health
       saveDay(TKEY,dd); renderHealth(); renderDaily(); renderPillars(); coach(); renderHomes();
     };
     row.appendChild(inp);
@@ -929,12 +1025,15 @@ function renderCalories(){
   document.getElementById('calSummary').innerHTML=
     `<div style="display:flex;justify-content:space-between;align-items:center"><b>${used.toLocaleString()} cal eaten</b><b style="color:${left>=0?'#7effe9':'#ffb3ec'}">${left>=0?left.toLocaleString()+' left':Math.abs(left).toLocaleString()+' over'}</b></div>
      <div class="bar"><div style="width:${pctUsed}%"></div></div>
-     <div class="bstat">budget ${budget.toLocaleString()} cal · 💪 protein <b>${totP}g</b> of 210–220g · 🧈 fat <b>${totF}g</b> of 75–80g</div>`;
+     <div class="bstat">budget ${budget.toLocaleString()} cal · 💪 protein <b>${totP}g</b> of ${(nutTargets()||{}).protein? nutTargets().protein+'g':'210–220g'} · 🧈 fat <b>${totF}g</b> of ${(nutTargets()||{}).fat? nutTargets().fat+'g':'75–80g'} · 🍞 carbs <b>${dayMacros(d).carbs}g</b> · 🌾 fiber <b>${dayMacros(d).fiber}g</b></div>`;
   const el=document.getElementById('calEntries'); el.innerHTML='';
   list.forEach(e=>{
     const row=document.createElement('div'); row.className='hrow';
-    const macros=(e.p!=null||e.f!=null)?`<span class="goalhint">${e.p!=null?'P '+Math.round(e.p)+'g':''}${e.p!=null&&e.f!=null?' · ':''}${e.f!=null?'F '+Math.round(e.f)+'g':''}</span>`:'';
-    row.innerHTML=`<span class="lbl"></span>${macros}<b>${(e.cal||0).toLocaleString()}</b><button class="del" style="background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:4px">✕</button>`;
+    const mp=[]; if(e.p!=null)mp.push('P '+Math.round(e.p)+'g'); if(e.c!=null)mp.push('C '+Math.round(e.c)+'g'); if(e.f!=null)mp.push('F '+Math.round(e.f)+'g'); if(e.fib!=null)mp.push('Fib '+Math.round(e.fib)+'g');
+    const macros=mp.length?`<span class="goalhint">${mp.join(' · ')}</span>`:'';
+    const isFav=foodFavs().some(x=>x.name===e.name);
+    row.innerHTML=`<button class="fav" title="Save as quick re-log">${isFav?'★':'☆'}</button><span class="lbl"></span>${macros}<b>${(e.cal||0).toLocaleString()}</b><button class="del" style="background:none;border:none;color:var(--bad);cursor:pointer;font-size:16px;padding:4px">✕</button>`;
+    row.querySelector('.fav').onclick=()=>toggleFav(e);
     row.querySelector('.lbl').textContent=e.name||'Item';
     row.querySelector('.del').onclick=()=>{
       const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.cals=calsFor(dd).filter(x=>x.id!==e.id);
@@ -942,6 +1041,7 @@ function renderCalories(){
     };
     el.appendChild(row);
   });
+  try{ renderFavs(); }catch(err){}
 }
 function addCalEntry(prefName,prefCal){
   const nameEl=document.getElementById('cal_name'), amtEl=document.getElementById('cal_amt');
@@ -952,6 +1052,11 @@ function addCalEntry(prefName,prefCal){
   const p=parseFloat(pEl.value), f=parseFloat(fEl.value);
   if(!isNaN(p)) entry.p=p;
   if(!isNaN(f)) entry.f=f;
+  const cEl=document.getElementById('cal_c'), fibEl=document.getElementById('cal_fib');
+  const cc=parseFloat(cEl&&cEl.value), fb=parseFloat(fibEl&&fibEl.value);
+  if(!isNaN(cc)) entry.c=cc;
+  if(!isNaN(fb)) entry.fib=fb;
+  if(cEl) cEl.value=''; if(fibEl) fibEl.value='';
   const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.cals=calsFor(dd);
   dd.health.cals.push(entry);
   saveDay(TKEY,dd); nameEl.value=''; amtEl.value=''; pEl.value=''; fEl.value='';
@@ -2277,6 +2382,7 @@ function openSection(id){
 }
 function closeSection(){
   if(!openSec) return;
+  if(SECTION_PARENT[openSec]){ const p=SECTION_PARENT[openSec]; document.getElementById(openSec).classList.remove('open'); openSec=null; openSection(p); return; }
   const sec=document.getElementById(openSec);
   const tab=sec.closest('div[id^="tab-"]');
   sec.classList.remove('open');
@@ -2312,25 +2418,25 @@ function renderHomes(){
       <div class="bar"><div style="width:${pct}%"></div></div>
       <div class="bstat">${done}/${items.length} daily items complete · tap to open</div>
     </div>
+    <div class="smdbar" onclick="openSMD()"><span>☀️ Start my day</span><span class="pill p-spirit" id="smdBtnLbl">${smdCount()}/${SMD_STEPS.length}</span></div>
     <div class="heroes">
-      <div class="hero p" onclick="openSection('sec-pillars')">
-        <div class="htitle">Three Pillars</div>
-        <div class="hline">📖 Bible ${streak('bible')}🔥<br>🙏 Prayer ${streak('prayer')}🔥<br>🧠 Madison ${streak('madison')}🔥</div>
-        <div class="hmut">Sleep avg ${hw.avgScore} · Z2 ${weekData(WKEY).counts.z2days||0} sessions this wk · tap for more</div>
+      <div class="hero p" onclick="openSection('sec-top3')">
+        <div class="htitle">Top 3 Today</div>
+        ${t3all.length?`<div class="hbig">${t3done}/${t3all.length}</div><div class="hline">${esc((d.top3.find(t=>t.text&&!t.done)||{}).text||'all done 🎉').slice(0,60)}</div>`:'<div class="hline">Tap to set today\'s priorities</div>'}
+        <div class="hmut">tap to open</div>
       </div>
-      <div class="hero t" onclick="openSection('sec-cal')">
-        <div class="htitle">Today's Calendar</div>
+      <div class="hero t" onclick="openSection('sec-calhub')">
+        <div class="htitle">📅 Calendar</div>
         ${CAL_EVENTS===null?'<div class="hline">Connect in Settings</div>':
-          (evsToday.length?`<div class="hbig">${evsToday.length}</div><div class="hline"></div><div class="hmut">next: ${firstEv?esc(fmtTime(firstEv)+' '+(firstEv.title||'')).slice(0,60):''}</div>`:'<div class="hbig">0</div><div class="hline">events today</div><div class="hmut">enjoy the open day</div>')}
+          (evsToday.length?`<div class="hbig">${evsToday.length}</div><div class="hmut">next: ${firstEv?esc(fmtTime(firstEv)+' '+(firstEv.title||'')).slice(0,60):''}</div>`:'<div class="hbig">0</div><div class="hline">events today</div>')}
+        <div class="hmut">week · month · dates · tasks</div>
       </div>
     </div>
     <div class="blocks">
-      ${blockHtml('sec-top3',NEON_TOP3,'Top 3 Today', t3all.length?`${t3done}/${t3all.length} done`:'Tap to set priorities','bw')}
       ${blockHtml('sec-daily','✅','Daily To-Do', `${done}/${items.length} done`,'bp')}
-      ${blockHtml('sec-prayer',NEON_CROSSHANDS,'Prayer Requests', (()=>{const pl=prayersFor(WKEY);const act=pl.filter(p=>!p.answered).length;return pl.length?`${act} active this week`:'Add requests';})(),'bt')}
-      ${blockHtml('sec-health',NEON_WATCH,'Health Log', gTot?`${gHit}/${gTot} goals hit${gLog<gTot?' · '+(gTot-gLog)+' unlogged':''}`:'Log today\'s numbers','bw')}
-      ${blockHtml('sec-food',NEON_FOODLIST,'Food & Calories', (()=>{const used=calsUsed(d);const left=calBudget()-used;return used?`${used.toLocaleString()} cal · ${left>=0?left.toLocaleString()+' left':'over'}`:'📷 Scan or snap to log';})(),'bp')}
-      ${blockHtml('sec-skin','🧴','Skincare', 'Tonight: '+skinTodayLabel(),'bt')}
+      ${blockHtml('sec-top3',NEON_TOP3,'Top 3', t3all.length?`${t3done}/${t3all.length} done`:'Set priorities','bw')}
+      ${blockHtml('sec-cal','📆','Today\'s Events', CAL_EVENTS===null?'Connect calendar':evsToday.length+' today','bt')}
+      ${blockHtml('sec-calhub','🗓️','Calendar & Dates','Week · month · birthdays','bp')}
     </div>`;
   // WEEK
   const all=store.get('days',{}); let sumw=0;
@@ -2398,13 +2504,14 @@ function renderHomes(){
       ${blockHtml('sec-managedates','🎂','Manage Dates', (store.get('dates',[]).length||0)+' saved dates','bt')}
     </div>`;
   if(document.getElementById('home-workout')) renderWorkout();
+  try{ renderNewHomes(); }catch(e){ console.error(e); }
 }
 
 /* ================= NAV ================= */
 function showTab(name){
   document.querySelectorAll('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.tab===name));
   document.querySelectorAll('.topbtn').forEach(x=>x.classList.toggle('active',x.id==='tb-'+name));
-  ['today','week','month','workout','reports','settings'].forEach(n=>document.getElementById('tab-'+n).style.display = n===name?'':'none');
+  ['today','spirit','mental','workout','progress','week','month','reports','settings'].forEach(n=>{ const t=document.getElementById('tab-'+n); if(t) t.style.display = n===name?'':'none'; });
   // reset any open section and show that tab's home
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('open'));
   document.querySelectorAll('.home').forEach(hm=>hm.style.display='');
@@ -2507,7 +2614,7 @@ function renderWorkout(){
     +'<div style="font-size:12px;line-height:1.6;color:#fff">Upper-body priority · Achilles-safe (no explosive work) · never above 15 reps · 3 sets on everything.<br>'
     +'<b style="color:#fff">Gear:</b> dumbbells · barbell + rack · bands · bench · pull-up bar · landmine.<br>'
     +'<b style="color:#fff">Stages alternate monthly:</b> odd = Stage 1 (8–10 reps, 60s) · even = Stage 3 (12–15 reps, 45s).</div></div>';
-  document.getElementById('home-workout').innerHTML=html;
+  (document.getElementById('wk-home')||document.getElementById('home-workout')).innerHTML=html;
 }
 function wkOpenDay(m,day){ WK_SEL={m,day}; openSection('sec-wkday'); }
 function renderWkDay(){
@@ -2524,7 +2631,7 @@ function renderWkDay(){
     const slot=WK_SLOTS[base+k];
     const alt=k%2===1?'background:'+(d.stage==='Stage 1'?'rgba(13,146,132,.06)':'rgba(138,95,214,.07)'):'';
     html+='<tr style="'+alt+'"><td style="padding:8px 4px;border-bottom:1px solid var(--line);font-weight:700;color:var(--purple);white-space:nowrap">'+slot+'</td>'
-      +'<td style="padding:8px 4px;border-bottom:1px solid var(--line)"><div style="font-weight:600">'+esc(d.ex[base+k])+'</div><div class="muted" style="font-size:11px">'+esc(d.mus[base+k])+'</div></td>'
+      +'<td style="padding:8px 4px;border-bottom:1px solid var(--line)"><div style="font-weight:600">'+esc(d.ex[base+k])+ytLink(d.ex[base+k])+'</div><div class="muted" style="font-size:11px">'+esc(d.mus[base+k])+'</div></td>'
       +'<td style="padding:8px 4px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap">3 × '+d.reps+'</td></tr>';
   }
   html+='</table>';
@@ -2549,7 +2656,7 @@ function renderWlogRows(){
     const name=d.ex[base+k]; const slot=WK_SLOTS[base+k];
     const entry=today.find(e=>e.name===name);
     h+='<div style="padding:9px 0;border-bottom:1px dashed var(--line)">'
-      +'<div style="font-weight:700;font-size:13.5px"><span style="color:var(--purple)">'+slot+'</span> '+esc(name)+'</div>';
+      +'<div style="font-weight:700;font-size:13.5px"><span style="color:var(--purple)">'+slot+'</span> '+esc(name)+ytLink(name)+'</div>';
     if(entry&&entry.sets.length){
       h+='<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px">';
       entry.sets.forEach((s,si)=>{ h+='<button class="printbtn" style="padding:3px 8px;font-size:12px" onclick="wlogDelSet('+k+','+si+')">'+s.w+'×'+s.r+' ✕</button>'; });
@@ -2899,6 +3006,7 @@ async function sbSetUser(u){
     }
     await sbFlush();
     try{ brLoad(); }catch(e){}
+    try{ hcPull(); }catch(e){}
   } else {
     sbLastUid=null; sbRestored=false;
     sbRefreshBanner();
@@ -3172,8 +3280,408 @@ async function brReopen(id){
   brLoad();
 }
 
+/* =====================================================================
+   THRIVE³ v2 LAYOUT — Daily (top) + Spiritual · Mental · Physical · Progress
+   Added 2026-11. Only moves existing sections and adds new ones; the data
+   model (ld_* keys, state_rows sync) is unchanged.
+   ===================================================================== */
+
+/* ---------- app launchers (no API → open the app) ---------- */
+const LAUNCH_APPS={
+  bible:      {name:'Bible in a Year', ico:'📖', pkg:'com.sirma.mobile.bible.android', web:'https://www.bible.com/reading-plans'},
+  growthday:  {name:'GrowthDay',       ico:'🌱', pkg:'com.growthday',                  web:'https://app.growthday.com'},
+  blinkist:   {name:'Blinkist',        ico:'💡', pkg:'com.blinkslabs.blinkist.android',web:'https://www.blinkist.com/app'},
+  kindle:     {name:'Kindle',          ico:'📚', pkg:'com.amazon.kindle',              web:'https://read.amazon.com'},
+  peloton:    {name:'Peloton',         ico:'🚴', pkg:'com.onepeloton.callisto',        web:'https://members.onepeloton.com'},
+  sleepnumber:{name:'Sleep Number',    ico:'🛏️', pkg:'com.selectcomfort.SleepIQ',      web:'https://www.sleepnumber.com'},
+  shealth:    {name:'Samsung Health',  ico:'❤️', pkg:'com.sec.android.app.shealth',    web:'https://www.samsung.com/us/apps/samsung-health/'},
+  rocket:     {name:'Rocket Money',    ico:'🚀', pkg:'com.truebill',                   web:'https://app.rocketmoney.com'}
+};
+function isAndroid(){ return /Android/i.test(navigator.userAgent); }
+function launchUrl(id){
+  const a=LAUNCH_APPS[id]; const custom=(store.get('launchurls',{})||{})[id];
+  if(custom) return custom;
+  if(isAndroid()) return 'intent://#Intent;package='+a.pkg+';S.browser_fallback_url='
+    +encodeURIComponent('https://play.google.com/store/apps/details?id='+a.pkg)+';end';
+  return a.web;
+}
+function launchApp(id){
+  const u=launchUrl(id);
+  if(u.indexOf('intent:')===0) window.location.href=u; else window.open(u,'_blank');
+}
+function launchBtn(id,sub){
+  const a=LAUNCH_APPS[id];
+  return '<button class="lbtn" onclick="launchApp(\''+id+'\')"><span class="lico">'+a.ico+'</span>'
+    +'<span class="lname">'+esc(a.name)+'</span>'+(sub?'<span class="lsub">'+sub+'</span>':'')+'</button>';
+}
+function editLaunchLinks(ids){
+  const cur=store.get('launchurls',{})||{};
+  for(const id of ids){
+    const a=LAUNCH_APPS[id];
+    const v=prompt('Link for '+a.name+' (leave blank to open the app normally).\nTip: for Bible in a Year, paste your plan link from the Bible app → Share → Copy link.', cur[id]||'');
+    if(v===null) return;
+    if(v.trim()) cur[id]=v.trim(); else delete cur[id];
+  }
+  store.set('launchurls',cur); renderHomes();
+}
+
+/* ---------- pillar checklists inside each tab ---------- */
+function pillarChecklist(cat, elId){
+  const el=document.getElementById(elId); if(!el) return;
+  el.innerHTML='';
+  const items=dailyItems().filter(i=>i.cat===cat);
+  if(!items.length){ el.innerHTML='<div class="muted">No daily items in this category.</div>'; return; }
+  items.forEach(item=>el.appendChild(taskWidgetRow(item, ()=>dayData(TKEY), dd=>{ saveDay(TKEY,dd); renderHomes(); })));
+}
+function catDone(cat){ const d=dayData(TKEY); const it=dailyItems().filter(i=>i.cat===cat); return [it.filter(i=>itemSuccess(d,i)).length, it.length]; }
+
+/* ---------- progress rings ---------- */
+function ring(pct,label,val,color){
+  const p=Math.max(0,Math.min(100,pct||0)); const r=26, c=2*Math.PI*r;
+  return '<div class="ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="'+r+'" stroke="rgba(0,0,0,.08)" stroke-width="7" fill="none"/>'
+    +'<circle cx="32" cy="32" r="'+r+'" stroke="'+color+'" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+(c*(1-p/100)).toFixed(1)+'" transform="rotate(-90 32 32)"/>'
+    +'<text x="32" y="36" text-anchor="middle" font-size="13" font-weight="800" fill="#2a1150">'+Math.round(p)+'%</text></svg>'
+    +'<div class="rl">'+label+'</div><div class="rv">'+val+'</div></div>';
+}
+
+/* ---------- water quick-add ---------- */
+function addWater(oz){
+  const dd=dayData(TKEY); dd.health=dd.health||{};
+  dd.health.water=Math.max(0,(dd.health.water||0)+oz);
+  const ws=healthSuccess(dd.health,'water'); if(ws!=null) dd.checks.water=ws;
+  saveDay(TKEY,dd); renderHealth(); renderHomes();
+}
+
+/* ---------- YouTube form links ---------- */
+function ytLink(name){
+  return ' <a class="yt" href="https://www.youtube.com/results?search_query='+encodeURIComponent(name+' exercise proper form')
+    +'" target="_blank" rel="noopener" title="Watch on YouTube" onclick="event.stopPropagation()">🎬</a>';
+}
+
+/* ================= NUTRITION PLAN ================= */
+const ACT_LEVELS=[[1.2,'Sedentary (desk job, little exercise)'],[1.375,'Light (1–3 workouts/wk)'],[1.55,'Moderate (3–5 workouts/wk)'],[1.725,'Very active (6–7 hard workouts/wk)'],[1.9,'Athlete / physical job + training']];
+const GOALS=[[-1000,'Lose ~2 lb/week'],[-500,'Lose ~1 lb/week'],[-250,'Lose ~0.5 lb/week'],[0,'Maintain'],[250,'Lean gain ~0.5 lb/week']];
+function nutProfile(){ return Object.assign({sex:'m',age:'',ft:'',inch:'',lb:'',goalLb:'',act:1.55,goal:-500}, store.get('nutprofile',{})||{}); }
+function nutTargets(){
+  const p=nutProfile();
+  const lb=parseFloat(p.lb), age=parseFloat(p.age), ht=(parseFloat(p.ft)||0)*12+(parseFloat(p.inch)||0);
+  if(!lb||!age||!ht) return null;
+  const kg=lb*0.4536, cm=ht*2.54;
+  const bmr=10*kg+6.25*cm-5*age+(p.sex==='f'?-161:5);              // Mifflin-St Jeor
+  const tdee=bmr*parseFloat(p.act);
+  let cal=Math.round((tdee+parseFloat(p.goal))/10)*10;
+  cal=Math.max(cal, p.sex==='f'?1200:1500);                           // safety floor
+  const refLb=parseFloat(p.goalLb)||lb;
+  const protein=Math.round((parseFloat(p.goal)<0?1.0:0.9)*refLb);    // g/lb of goal weight
+  const fat=Math.round(cal*0.27/9);
+  const carbs=Math.max(0,Math.round((cal-protein*4-fat*9)/4));
+  const fiber=Math.round(cal/1000*14);
+  return {bmr:Math.round(bmr),tdee:Math.round(tdee),cal,protein,carbs,fat,fiber};
+}
+function dayMacros(d){
+  const l=calsFor(d); const s=k=>Math.round(l.reduce((a,e)=>a+(parseFloat(e[k])||0),0));
+  return {cal:s('cal'),protein:s('p'),carbs:s('c'),fat:s('f'),fiber:s('fib')};
+}
+const MACROS=[['cal','🔥 Calories','',''],['protein','💪 Protein','g',''],['carbs','🍞 Carbs','g',''],['fat','🧈 Fat','g',''],['fiber','🌾 Fiber','g','']];
+function macroBars(t,m){
+  return MACROS.map(([k,l,u])=>{
+    const tgt=t?t[k]:null; const v=m[k]; const pct=tgt?Math.min(100,Math.round(v/tgt*100)):0;
+    const over=tgt&&v>tgt*1.05&&(k==='cal'||k==='fat');
+    return '<div class="mrow"><div class="mtop"><span>'+l+'</span><span><b>'+v.toLocaleString()+u+'</b>'+(tgt?' / '+tgt.toLocaleString()+u:'')+'</span></div>'
+      +'<div class="bar"><div style="width:'+pct+'%;'+(over?'background:#c05a4e':'')+'"></div></div></div>';
+  }).join('');
+}
+function renderNutProfile(){
+  const p=nutProfile(); const el=document.getElementById('nutProfileBody');
+  const opt=(arr,v)=>arr.map(([val,t])=>'<option value="'+val+'"'+(String(val)===String(v)?' selected':'')+'>'+t+'</option>').join('');
+  el.innerHTML=
+    '<div class="hrow"><span class="lbl">Sex</span><select id="np_sex"><option value="m"'+(p.sex==='m'?' selected':'')+'>Male</option><option value="f"'+(p.sex==='f'?' selected':'')+'>Female</option></select></div>'
+   +'<div class="hrow"><span class="lbl">Age</span><input type="number" id="np_age" value="'+esc(p.age)+'"></div>'
+   +'<div class="hrow"><span class="lbl">Height</span><span><input type="number" id="np_ft" value="'+esc(p.ft)+'" placeholder="ft" style="width:60px"> <input type="number" id="np_in" value="'+esc(p.inch)+'" placeholder="in" style="width:60px"></span></div>'
+   +'<div class="hrow"><span class="lbl">Current weight (lb)</span><input type="number" id="np_lb" value="'+esc(p.lb)+'"></div>'
+   +'<div class="hrow"><span class="lbl">Goal weight (lb)</span><input type="number" id="np_glb" value="'+esc(p.goalLb)+'"></div>'
+   +'<div class="hrow"><span class="lbl">Activity</span><select id="np_act" style="max-width:190px">'+opt(ACT_LEVELS,p.act)+'</select></div>'
+   +'<div class="hrow"><span class="lbl">Goal</span><select id="np_goal">'+opt(GOALS,p.goal)+'</select></div>'
+   +'<button class="btn teal" style="margin-top:12px;width:100%" onclick="saveNutProfile()">Save & build my plan</button>'
+   +'<div id="np_out" style="margin-top:12px"></div>';
+  showNutOut();
+}
+function showNutOut(){
+  const t=nutTargets(); const el=document.getElementById('np_out'); if(!el) return;
+  if(!t){ el.innerHTML='<div class="muted">Fill in age, height and weight to build your plan.</div>'; return; }
+  el.innerHTML='<div class="coach"><b>Your daily plan</b><br>BMR '+t.bmr.toLocaleString()+' · maintenance ~'+t.tdee.toLocaleString()+' cal<br>'
+    +'🔥 <b>'+t.cal.toLocaleString()+'</b> cal · 💪 <b>'+t.protein+'g</b> protein · 🍞 <b>'+t.carbs+'g</b> carbs · 🧈 <b>'+t.fat+'g</b> fat · 🌾 <b>'+t.fiber+'g</b> fiber</div>'
+    +'<div class="disc">Mifflin-St Jeor formula × activity, adjusted for your goal. Protein ~1 g per lb of goal weight; fat ~27% of calories; fiber 14 g per 1,000 cal. Ballpark guidance, not medical or dietetic advice.</div>';
+}
+function saveNutProfile(){
+  const g=id=>document.getElementById(id).value;
+  store.set('nutprofile',{sex:g('np_sex'),age:g('np_age'),ft:g('np_ft'),inch:g('np_in'),lb:g('np_lb'),goalLb:g('np_glb'),act:parseFloat(g('np_act')),goal:parseFloat(g('np_goal'))});
+  const t=nutTargets();
+  if(t){ store.set('calbudget',t.cal); }
+  showNutOut(); renderCalories(); coach(); renderHomes();
+}
+
+/* ================= SMART FOOD (Supabase → Claude) ================= */
+let FOOD_PENDING=[];
+async function foodAI(payload){
+  const box=document.getElementById('aiFoodOut');
+  if(!sb||!sbUser){ box.style.display=''; box.innerHTML='Sign in under ⚙️ Settings → Cloud Sync to use smart lookup.'; return; }
+  box.style.display=''; box.innerHTML='<span class="muted">'+(payload.image?'📸 Reading your photo…':'🔎 Looking it up…')+'</span>';
+  try{
+    const { data, error } = await sb.functions.invoke('food-analyze',{ body: payload });
+    if(error){ let msg=error.message; try{ const j=await error.context.json(); if(j&&j.error) msg=j.error; }catch(e){} throw new Error(msg); }
+    FOOD_PENDING=(data.items||[]).map((it,i)=>Object.assign({sel:true,_i:i},it));
+    renderFoodPending(data.note);
+  }catch(e){ box.innerHTML='<span class="err">'+esc(e.message||'Lookup failed')+'</span>'; }
+}
+function renderFoodPending(note){
+  const box=document.getElementById('aiFoodOut');
+  if(!FOOD_PENDING.length){ box.innerHTML='<span class="muted">Nothing recognized — try describing it.</span>'; return; }
+  let h='<b>Found:</b>';
+  FOOD_PENDING.forEach((it,i)=>{
+    h+='<label class="aiitem"><input type="checkbox" '+(it.sel?'checked':'')+' onchange="FOOD_PENDING['+i+'].sel=this.checked">'
+      +'<span><b>'+esc(it.name)+'</b><br><span class="goalhint">'+Math.round(it.cal)+' cal · P '+Math.round(it.p)+'g · C '+Math.round(it.c)+'g · F '+Math.round(it.f)+'g · Fib '+Math.round(it.fib)+'g</span></span></label>';
+  });
+  if(note) h+='<div class="muted" style="font-size:11.5px;margin-top:4px">'+esc(note)+'</div>';
+  h+='<div style="display:flex;gap:8px;margin-top:8px"><button class="btn teal" onclick="addFoodPending()">＋ Add selected</button><button class="btn ghost" onclick="document.getElementById(\'aiFoodOut\').style.display=\'none\'">Cancel</button></div>';
+  box.innerHTML=h;
+}
+function pushFood(items){
+  const dd=dayData(TKEY); dd.health=dd.health||{}; dd.health.cals=calsFor(dd);
+  items.forEach((it,i)=>dd.health.cals.push({id:'c'+Date.now()+'_'+i,name:it.name,cal:Math.round(it.cal||0),p:Math.round(it.p||0),c:Math.round(it.c||0),f:Math.round(it.f||0),fib:Math.round(it.fib||0)}));
+  saveDay(TKEY,dd); renderCalories(); coach(); renderHomes();
+}
+function addFoodPending(){
+  const sel=FOOD_PENDING.filter(x=>x.sel); if(!sel.length) return;
+  pushFood(sel); FOOD_PENDING=[];
+  document.getElementById('aiFoodOut').style.display='none';
+  document.getElementById('ai_text').value='';
+}
+function smartAdd(){ const t=document.getElementById('ai_text').value.trim(); if(!t){ alert('Type what you ate, e.g. "2 eggs, turkey sausage, black coffee".'); return; } foodAI({text:t}); }
+function aiPhotoPick(){ document.getElementById('ai_photo').click(); }
+function aiPhotoChosen(file){
+  if(!file) return;
+  const img=new Image(); const url=URL.createObjectURL(file);
+  img.onload=()=>{
+    const max=1024, s=Math.min(1,max/Math.max(img.width,img.height));
+    const c=document.createElement('canvas'); c.width=Math.round(img.width*s); c.height=Math.round(img.height*s);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url);
+    const b64=c.toDataURL('image/jpeg',0.8).split(',')[1];
+    foodAI({image:b64, mime:'image/jpeg', text:document.getElementById('ai_text').value.trim()});
+  };
+  img.src=url;
+}
+/* favorites — one-tap re-log */
+function foodFavs(){ return store.get('foodfavs',[])||[]; }
+function toggleFav(e){
+  let f=foodFavs(); const ix=f.findIndex(x=>x.name===e.name);
+  if(ix>=0) f.splice(ix,1); else f.push({name:e.name,cal:e.cal,p:e.p,c:e.c,f:e.f,fib:e.fib});
+  store.set('foodfavs',f); renderCalories();
+}
+function renderFavs(){
+  const el=document.getElementById('favChips'); if(!el) return;
+  const f=foodFavs();
+  el.innerHTML=f.length?('<div class="muted" style="margin:10px 0 4px">⭐ Quick re-log — tap to add:</div>'
+    +f.map((x,i)=>'<button class="chip" onclick="pushFood([foodFavs()['+i+']])">'+esc(x.name)+' <span class="goalhint">'+Math.round(x.cal||0)+'</span></button>').join(''))
+    :'<div class="muted" style="margin-top:8px;font-size:12px">Tip: tap ☆ on any logged item to save it as a quick re-log favorite.</div>';
+}
+
+/* ================= HEALTH CONNECT (Samsung Health) ================= */
+const HC_URL=SB_URL+'/functions/v1/health-ingest';
+async function hcGetToken(create){
+  if(!sb||!sbUser) return null;
+  const { data } = await sb.from('health_tokens').select('token').eq('user_id',sbUser.id).maybeSingle();
+  if(data) return data.token;
+  if(!create) return null;
+  const tok=[...crypto.getRandomValues(new Uint8Array(24))].map(b=>b.toString(16).padStart(2,'0')).join('');
+  const { error } = await sb.from('health_tokens').insert({token:tok,user_id:sbUser.id});
+  if(error){ alert('Could not create key: '+error.message); return null; }
+  return tok;
+}
+async function renderHConnect(){
+  const el=document.getElementById('hcBody'); if(!el) return;
+  if(!sbUser){ el.innerHTML='<div class="muted">Sign in under ⚙️ Settings → Cloud Sync first.</div>'; return; }
+  const tok=await hcGetToken(false);
+  const last=store.get('hclast',null);
+  el.innerHTML=
+    '<div class="muted" style="margin-bottom:8px">Samsung Health → Health Connect → the free-standing <b>Health Connect Webhook</b> app → your Thrive³ cloud. Steps, sleep and workouts (incl. Peloton, if it shares to Health Connect) then fill in automatically.</div>'
+   +(tok
+     ? '<div class="summary-note" style="word-break:break-all"><b>Webhook URL</b><br>'+HC_URL+'<br><br><b>Header name</b><br>x-api-key<br><br><b>Header value</b><br><span id="hcTok">'+tok+'</span></div>'
+       +'<button class="btn ghost" style="margin-top:8px" onclick="navigator.clipboard.writeText(\''+HC_URL+'\');this.textContent=\'✓ URL copied\'">Copy URL</button> '
+       +'<button class="btn ghost" style="margin-top:8px" onclick="navigator.clipboard.writeText(\''+tok+'\');this.textContent=\'✓ Key copied\'">Copy key</button>'
+     : '<button class="btn teal" onclick="hcGetToken(true).then(renderHConnect)">🔑 Create my sync key</button>')
+   +'<ol class="steps"><li>Samsung Health → ⚙ Settings → <b>Health Connect</b> → allow it to share Steps, Sleep, Exercise.</li>'
+   +'<li>Install <b>Health Connect Webhook</b> (by Naveen) from Google Play.</li>'
+   +'<li>In it: grant Steps, Sleep, Exercise (and Hydration if you log water in Samsung Health). Set Steps resolution to <b>Daily</b>.</li>'
+   +'<li>Add a webhook: paste the URL above, add a header <b>x-api-key</b> with your key, format JSON. Tap <b>Test</b>.</li>'
+   +'<li>Turn on interval sync (every 1 hr is plenty). Then tap <b>Pull now</b> below.</li></ol>'
+   +'<button class="btn" onclick="hcPull(true)">↻ Pull now</button>'
+   +'<div class="muted" id="hcStatus" style="margin-top:8px">'+(last?'Last pulled '+new Date(last).toLocaleString():'Not pulled yet.')+'</div>';
+}
+async function hcPull(manual){
+  if(!sb||!sbUser) return;
+  const since=new Date(TODAY); since.setDate(since.getDate()-10);
+  const { data, error } = await sb.from('health_records').select('type,start_time,end_time,value,data')
+    .gte('end_time',since.toISOString()).in('type',['steps','sleep','exercise','hydration']).limit(5000);
+  const st=document.getElementById('hcStatus');
+  if(error){ if(st) st.textContent='Pull failed: '+error.message; return; }
+  const by={};
+  const day=t=>dkey(new Date(t));
+  (data||[]).forEach(r=>{
+    if(r.type==='steps' && r.start_time){ const k=day(r.start_time); (by[k]=by[k]||{}).steps=(by[k].steps||0)+(+r.value||0); }
+    if(r.type==='sleep' && r.end_time){ const k=day(r.end_time); (by[k]=by[k]||{}).sleep=(by[k].sleep||0)+(+r.value||0)/3600; }
+    if(r.type==='hydration' && r.start_time){ const k=day(r.start_time); (by[k]=by[k]||{}).waterOz=(by[k].waterOz||0)+(+r.value||0)*33.814; }
+    if(r.type==='exercise' && r.start_time){ const k=day(r.start_time); (by[k]=by[k]||{}).ex=(by[k].ex||[]);
+      by[k].ex.push({type:(r.data&&r.data.type)||'Workout',min:Math.round((+r.value||0)/60),src:(r.data&&r.data.metadata&&r.data.metadata.data_origin)||''}); }
+  });
+  store.set('hcdaily',by,true);                      // local cache only (re-pullable)
+  let changed=0;
+  Object.keys(by).forEach(k=>{
+    const b=by[k]; const dd=dayData(k); dd.health=dd.health||{}; const src=dd.health._hc||{}; let ch=false;
+    if(b.steps!=null && (dd.health.steps==null||src.steps)){ const v=Math.round(b.steps); if(dd.health.steps!==v){dd.health.steps=v;ch=true;} src.steps=true; }
+    if(b.sleep!=null && (dd.health.sleephrs==null||src.sleephrs)){ const v=Math.round(b.sleep*4)/4; if(dd.health.sleephrs!==v){dd.health.sleephrs=v;ch=true;}
+      src.sleephrs=true; const s=healthSuccess(dd.health,'sleephrs'); if(s!=null&&dd.checks.sleep7!==s){dd.checks.sleep7=s;ch=true;} }
+    if(ch){ dd.health._hc=src; saveDay(k,dd); changed++; }
+  });
+  store.set('hclast',Date.now(),true);
+  if(st) st.textContent='✅ Pulled '+(data||[]).length+' records'+(changed?' · updated '+changed+' day'+(changed===1?'':'s'):'')+' · '+new Date().toLocaleTimeString();
+  renderHealth(); renderHomes();
+}
+
+/* ================= START MY DAY ================= */
+const SMD_STEPS=[
+  {id:'prayer', ico:'🙏', t:'Prayer',          go:()=>{closeSMD(); showTab('spirit'); openSection('sec-prayer');}, check:'prayer'},
+  {id:'bible',  ico:'📖', t:'Bible in a Year', go:()=>launchApp('bible'), check:'bible'},
+  {id:'growth', ico:'🌱', t:'GrowthDay',       go:()=>launchApp('growthday')},
+  {id:'blink',  ico:'💡', t:'Blinkist',        go:()=>launchApp('blinkist')},
+  {id:'work',   ico:'🏋️', t:'Workout',          go:()=>{closeSMD(); showTab('workout');}},
+  {id:'bfast',  ico:'🍳', t:'Log breakfast',   go:()=>{closeSMD(); showTab('workout'); openSection('sec-food');}}
+];
+function smdState(){ return (dayData(TKEY).smd)||{}; }
+function smdCount(){ const s=smdState(); return SMD_STEPS.filter(x=>s[x.id]).length; }
+function openSMD(){ document.getElementById('smdOverlay').style.display='flex'; renderSMD(); }
+function closeSMD(){ document.getElementById('smdOverlay').style.display='none'; renderHomes(); }
+function smdToggle(id){
+  const dd=dayData(TKEY); dd.smd=dd.smd||{}; dd.smd[id]=!dd.smd[id];
+  const st=SMD_STEPS.find(x=>x.id===id); if(st&&st.check){ dd.checks[st.check]=dd.smd[id]; }
+  saveDay(TKEY,dd); renderSMD();
+}
+function renderSMD(){
+  const s=smdState();
+  document.getElementById('smdList').innerHTML=SMD_STEPS.map((x,i)=>
+    '<div class="smdrow'+(s[x.id]?' done':'')+'"><span class="smdn">'+(i+1)+'</span><span class="smdt">'+x.ico+' '+x.t+'</span>'
+    +'<button class="btn ghost" style="padding:7px 12px" onclick="SMD_STEPS['+i+'].go()">Go ›</button>'
+    +'<button class="smdchk" onclick="smdToggle(\''+x.id+'\')">'+(s[x.id]?'✓':'')+'</button></div>').join('')
+    +'<div class="muted" style="margin-top:10px;text-align:center">'+smdCount()+' of '+SMD_STEPS.length+' done</div>';
+}
+
+/* ================= CALENDAR HUB (Daily) ================= */
+function renderCalHub(){
+  const evsToday=CAL_BY_DAY[TKEY]||[];
+  let evWeek=0; { const dd=new Date(TODAY); dd.setHours(0,0,0,0); for(let i=0;i<7;i++){ evWeek+=(CAL_BY_DAY[dkey(dd)]||[]).length; dd.setDate(dd.getDate()+1);} }
+  const mdl=monthDatesList(); const wm=weeklyMet();
+  const listM=store.get('customM',[]); const mm=monthData(MKEY);
+  let mMet=0; listM.forEach(item=>{ if(item.type==='check'?mm.checks[item.id]:itemSuccess(mm,item)) mMet++; });
+  document.getElementById('calHubBlocks').innerHTML=
+     blockHtml('sec-cal','📅','Today', CAL_EVENTS===null?'Connect in Settings':evsToday.length+' event'+(evsToday.length===1?'':'s'),'bt')
+    +blockHtml('sec-wcal','📆','Week Look-Ahead', CAL_EVENTS===null?'Connect calendar':evWeek+' events next 7 days','bw')
+    +blockHtml('sec-mcal','🗓️','Month Calendar','Scores + events by day','bp')
+    +blockHtml('sec-mdates','🎂','This Month’s Dates', mdl.length+' birthdays · anniv. · dog meds','bt')
+    +blockHtml('sec-wtasks',NEON_CHECKLIST,'Weekly Tasks', wm.met+'/'+wm.total+' goals met','bw')
+    +blockHtml('sec-mtasks','📌','Monthly Tasks', listM.length?mMet+'/'+listM.length+' met':'Tap to add tasks','bp')
+    +blockHtml('sec-managedates','✏️','Manage Dates', (store.get('dates',[]).length||0)+' saved dates','bt');
+}
+
+/* ================= TAB HOMES ================= */
+function renderNewHomes(){
+  const d=dayData(TKEY); const h=d.health||{}; const goals=hGoals();
+  /* ---- SPIRITUAL ---- */
+  const [sd,st]=catDone('spirit');
+  const pl=prayersFor(WKEY); const act=pl.filter(p=>!p.answered).length;
+  document.getElementById('home-spirit').innerHTML=
+    '<div class="tabtitle">🙏 Spiritual</div>'
+   +'<div class="launch">'+launchBtn('bible','Today’s reading')+'</div>'
+   +'<div class="blocks">'+blockHtml('sec-prayer',NEON_CROSSHANDS,'Prayer Requests', pl.length?act+' active this week':'Add requests','bt')
+   +'<div class="block bp" style="cursor:default"><span class="btitle">Streaks</span><span class="bstat">📖 Bible '+streak('bible')+'🔥<br>🙏 Prayer '+streak('prayer')+'🔥</span></div></div>'
+   +'<div class="card"><h2>Today · '+sd+'/'+st+' done</h2><div id="pc-spirit"></div></div>'
+   +'<div style="text-align:right;margin-top:8px"><button class="printbtn" onclick="editLaunchLinks([\'bible\'])">✎ Set my Bible plan link</button></div>';
+  pillarChecklist('spirit','pc-spirit');
+  /* ---- MENTAL ---- */
+  const [md,mt]=catDone('mental');
+  document.getElementById('home-mental').innerHTML=
+    '<div class="tabtitle">🧠 Mental</div>'
+   +'<div class="launch">'+launchBtn('growthday')+launchBtn('blinkist')+launchBtn('kindle')+'</div>'
+   +'<div class="card"><h2>Today · '+md+'/'+mt+' done</h2><div id="pc-mental"></div></div>'
+   +'<div style="text-align:right;margin-top:8px"><button class="printbtn" onclick="editLaunchLinks([\'growthday\',\'blinkist\',\'kindle\'])">✎ App links</button></div>';
+  pillarChecklist('mental','pc-mental');
+  /* ---- PHYSICAL (top part; workout program renders below) ---- */
+  const t=nutTargets(); const m=dayMacros(d);
+  const gS=(goals.steps&&goals.steps.a)||7000, gW=(goals.water&&goals.water.a)||75, gSl=(goals.sleephrs&&goals.sleephrs.a)||7;
+  const protT=t?t.protein:210;
+  const hc=(store.get('hcdaily',{})||{})[TKEY]||{}; const exs=hc.ex||[];
+  const [pd,pt]=catDone('phys');
+  const pt_el=document.getElementById('phys-top');
+  if(pt_el) pt_el.innerHTML=
+    '<div class="tabtitle">💪 Physical</div>'
+   +'<div class="card" style="margin-top:8px"><div class="rings">'
+     +ring((h.steps||0)/gS*100,'👟 Steps',(h.steps!=null?h.steps.toLocaleString():'—'),'#0d9284')
+     +ring((h.water||0)/gW*100,'💧 Water',(h.water||0)+' oz','#3b8fd6')
+     +ring((h.sleephrs||0)/gSl*100,'🛌 Sleep',(h.sleephrs!=null?h.sleephrs+' h':'—'),'#5b2d8f')
+     +ring(m.protein/protT*100,'💪 Protein',m.protein+'g','#8a5fd6')
+   +'</div><div class="qwater"><span>💧 Quick water:</span><button class="chip" onclick="addWater(8)">+8 oz</button><button class="chip" onclick="addWater(16)">+16 oz</button><button class="chip" onclick="addWater(24)">+24 oz</button><button class="chip" onclick="addWater(-8)">−8</button></div>'
+   +(exs.length?'<div class="muted" style="margin-top:8px">🏅 Synced workouts today: '+exs.map(x=>esc(String(x.type).replace(/_/g,' ').toLowerCase())+' '+x.min+' min').join(' · ')+'</div>':'')
+   +'</div>'
+   +'<div class="launch">'+launchBtn('peloton')+launchBtn('shealth')+launchBtn('sleepnumber')+'</div>'
+   +'<div class="blocks">'
+     +blockHtml('sec-food',NEON_FOODLIST,'Food & Nutrition', m.cal?m.cal.toLocaleString()+' cal · '+m.protein+'g protein':'📸 Snap, scan or type','bp')
+     +blockHtml('sec-health',NEON_WATCH,'Health Log','Sleep score · water · steps · sleep','bw')
+     +blockHtml('sec-hconnect','🔗','Samsung Health Sync', store.get('hclast',null)?'Last pull '+new Date(store.get('hclast')).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'Set up auto steps & sleep','bt')
+     +blockHtml('sec-skin','🧴','Skincare','Tonight: '+skinTodayLabel(),'bp')
+   +'</div>'
+   +'<div class="card"><h2>Physical to-dos · '+pd+'/'+pt+' done</h2><div id="pc-phys"></div></div>'
+   +'<div class="dayhdr" style="margin-top:16px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.25)">🏋️ Workout Program</div>';
+  pillarChecklist('phys','pc-phys');
+  /* ---- TRACK & PROGRESS ---- */
+  const items=dailyItems(); const all=store.get('days',{});
+  let sumw=0; { const dd=new Date(TODAY); dd.setDate(dd.getDate()-6); for(let i=0;i<7;i++){ const x=all[dkey(dd)]; sumw+= x?Math.round(dayDone(x,items)/items.length*100):0; dd.setDate(dd.getDate()+1);} }
+  let avg={cal:0,protein:0,carbs:0,fat:0,fiber:0}, n=0;
+  { const dd=new Date(TODAY); dd.setDate(dd.getDate()-7); for(let i=0;i<7;i++){ const x=all[dkey(dd)]; if(x&&calsFor(x).length){ const mm=dayMacros(x); Object.keys(avg).forEach(k=>avg[k]+=mm[k]); n++; } dd.setDate(dd.getDate()+1);} }
+  if(n) Object.keys(avg).forEach(k=>avg[k]=Math.round(avg[k]/n));
+  document.getElementById('home-progress').innerHTML=
+    '<div class="tabtitle">📈 Track & Progress</div>'
+   +'<div class="card"><h2>Today’s Nutrition <button class="printbtn" onclick="openSection(\'sec-nutprofile\')">🎯 My plan</button></h2>'
+     +(t?'':'<div class="coach" style="margin-bottom:8px">Set up your plan (age, height, weight, goal) to get personalized daily targets. <button class="btn teal" style="margin-top:8px" onclick="openSection(\'sec-nutprofile\')">Build my plan</button></div>')
+     +macroBars(t,m)
+     +(n?'<div class="muted" style="margin-top:8px;font-size:12px">Last '+n+' logged day'+(n===1?'':'s')+' avg: '+avg.cal.toLocaleString()+' cal · P '+avg.protein+'g · C '+avg.carbs+'g · F '+avg.fat+'g · Fib '+avg.fiber+'g</div>':'')
+   +'</div>'
+   +'<div class="blocks">'
+     +blockHtml('sec-wsnap','📊','Weekly Snapshot', avgW7(sumw)+'% 7-day avg · report','bw')
+     +blockHtml('sec-pillars','🔥','Streaks & Pillars','Bible · prayer · therapy · sleep','bp')
+   +'</div>'
+   +'<div class="card"><h2>🤖 AI Summaries</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" onclick="aiShowList(\'weekly\')">Weekly</button><button class="btn ghost" onclick="aiShowList(\'monthly\')">Monthly</button></div></div>'
+   +'<div class="launch">'+launchBtn('rocket','Finances')+'</div>';
+  /* ---- DAILY: start-my-day label ---- */
+  const sb2=document.getElementById('smdBtnLbl'); if(sb2) sb2.textContent=smdCount()+'/'+SMD_STEPS.length;
+}
+function avgW7(s){ return Math.round(s/7); }
+
+/* ================= RELAYOUT (runs once at startup) ================= */
+const SECTION_PARENT={'sec-cal':'sec-calhub','sec-wcal':'sec-calhub','sec-mcal':'sec-calhub','sec-mdates':'sec-calhub',
+  'sec-managedates':'sec-calhub','sec-wtasks':'sec-calhub','sec-mtasks':'sec-calhub'};
+function relayout(){
+  const mv=(ids,tab)=>{ const t=document.getElementById(tab); ids.forEach(id=>{ const s=document.getElementById(id); if(s&&t) t.appendChild(s); }); };
+  mv(['sec-calhub','sec-wcal','sec-mcal','sec-mdates','sec-managedates','sec-wtasks','sec-mtasks'],'tab-today');
+  mv(['sec-prayer'],'tab-spirit');
+  mv(['sec-food','sec-health','sec-skin','sec-hconnect'],'tab-workout');
+  mv(['sec-wsnap','sec-pillars','sec-nutprofile'],'tab-progress');
+  const hw=document.getElementById('home-workout');
+  if(hw && !document.getElementById('wk-home')) hw.innerHTML='<div id="phys-top"></div><div id="wk-home"></div>';
+  Object.assign(SECTION_RENDER,{'sec-calhub':renderCalHub,'sec-nutprofile':renderNutProfile,'sec-hconnect':renderHConnect,'sec-food':function(){renderFoodSec();renderFavs();}});
+}
+
 /* ================= INIT ================= */
 document.getElementById('tab-workout').appendChild(document.getElementById('sec-stretch'));
+relayout();
 document.getElementById('s_calurl').value = store.get('calurl','');
 document.getElementById('finFile').onchange=function(){ if(this.files[0]) importFinCSV(this.files[0]); this.value=''; };
 renderHomes(); renderHealth(); renderCalories(); loadCalendar();
