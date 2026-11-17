@@ -7,6 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Thrive³</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.52.0/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
@@ -172,6 +173,27 @@ ul.cal .t{color:var(--muted);font-size:12px;min-width:64px;font-variant-numeric:
 .rpt .ok{color:#0f8f81;font-weight:700}
 .rpt .no{color:#c05a4e;font-weight:700}
 .rpt .note{font-size:12px;color:#444;margin-top:10px;line-height:1.5}
+/* ===== icon tiles (style A) ===== */
+.tile{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;flex-shrink:0}
+.tile .ti{line-height:1}
+.t-daily{background:#FAEEDA;color:#854F0B}
+.t-spirit{background:#EEEDFE;color:#3C3489}
+.t-mental{background:#FBEAF0;color:#72243E}
+.t-phys{background:#E1F5EE;color:#085041}
+.t-prog{background:#E6F1FB;color:#0C447C}
+.t-gray{background:#F1EFE8;color:#444441}
+.block .bic.tile{border-radius:12px;box-shadow:none;font-size:23px}
+.block .bic.t-daily{background:#FAEEDA}.block .bic.t-spirit{background:#EEEDFE}.block .bic.t-mental{background:#FBEAF0}
+.block .bic.t-phys{background:#E1F5EE}.block .bic.t-prog{background:#E6F1FB}.block .bic.t-gray{background:#F1EFE8}
+.navbar .navbtn .tile{width:34px;height:30px;font-size:19px;border-radius:10px}
+.navbar .navbtn.active{background:transparent;color:var(--purple);box-shadow:none}
+.navbar .navbtn.active .tile{outline:2px solid currentColor;outline-offset:1px}
+.navbar .navbtn{color:#6f6488}
+.topbtn .ti{font-size:21px;color:var(--purple)}
+.topbtn.active .ti{color:#fff}
+.lbtn .lico.tile{width:46px;height:46px;font-size:25px}
+.tabtitle .tile{width:34px;height:34px;font-size:20px;margin-right:8px;vertical-align:-8px}
+.ic{font-size:1.1em;vertical-align:-2px}
 /* ===== v2 layout ===== */
 .topbtn.topdaily{width:auto;padding:0 14px;border-radius:999px;font-weight:800;font-size:14px;color:var(--purple)}
 .topbtn.topdaily.active{color:#fff}
@@ -219,9 +241,9 @@ ol.steps li{margin-bottom:4px}
 <body>
 <div class="hdr"><img src="icon-192.png" alt="Thrive³"><div><h1>Thrive³</h1><div class="sub" id="todayLabel"></div></div>
 <div class="topbtns">
-  <button class="topbtn topdaily active" id="tb-today" onclick="showTab('today')" title="Daily">☀️ Daily</button>
-  <button class="topbtn" id="tb-reports" onclick="showTab('reports')" title="Reports">🗂️</button>
-  <button class="topbtn" id="tb-settings" onclick="showTab('settings')" title="Settings">⚙️</button>
+  <button class="topbtn topdaily active" id="tb-today" onclick="showTab('today')" title="Daily"><i class="ti ti-sun" style="font-size:18px;vertical-align:-3px"></i> Daily</button>
+  <button class="topbtn" id="tb-reports" onclick="showTab('reports')" title="Reports"><i class="ti ti-folder"></i></button>
+  <button class="topbtn" id="tb-settings" onclick="showTab('settings')" title="Settings"><i class="ti ti-settings"></i></button>
 </div></div>
 
 <!-- ============ TODAY ============ -->
@@ -596,7 +618,7 @@ ol.steps li{margin-bottom:4px}
 <!-- Start my day -->
 <div id="smdOverlay" onclick="if(event.target===this)closeSMD()">
   <div class="smdcard">
-    <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:18px;color:var(--purple)">☀️ Start my day</b><button class="printbtn" onclick="closeSMD()">✕</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:18px;color:var(--purple)"><i class="ti ti-sunrise"></i> Start my day</b><button class="printbtn" onclick="closeSMD()">✕</button></div>
     <div class="muted" style="margin:4px 0 6px">Tap Go to open each one, then ✓ when it's done.</div>
     <div id="smdList"></div>
   </div>
@@ -732,10 +754,10 @@ ol.steps li{margin-bottom:4px}
 <div id="printArea" class="rpt"></div>
 
 <nav class="navbar">
-  <button class="navbtn" data-tab="spirit"><span class="ico">🙏</span><span class="lbl">Spiritual</span></button>
-  <button class="navbtn" data-tab="mental"><span class="ico">🧠</span><span class="lbl">Mental</span></button>
-  <button class="navbtn" data-tab="workout"><span class="ico">💪</span><span class="lbl">Physical</span></button>
-  <button class="navbtn" data-tab="progress"><span class="ico">📈</span><span class="lbl">Progress</span></button>
+  <button class="navbtn" data-tab="spirit"><span class="tile t-spirit"><i class="ti ti-pray"></i></span><span class="lbl">Spiritual</span></button>
+  <button class="navbtn" data-tab="mental"><span class="tile t-mental"><i class="ti ti-brain"></i></span><span class="lbl">Mental</span></button>
+  <button class="navbtn" data-tab="workout"><span class="tile t-phys"><i class="ti ti-barbell"></i></span><span class="lbl">Physical</span></button>
+  <button class="navbtn" data-tab="progress"><span class="tile t-prog"><i class="ti ti-chart-line"></i></span><span class="lbl">Progress</span></button>
 </nav>
 
 <script>
@@ -2398,8 +2420,19 @@ function closeSection(){
   renderHomes();
   window.scrollTo(0,0);
 }
+const BLOCK_ICONS={
+  'sec-daily':['list-check','t-daily'],'sec-top3':['target','t-daily'],'sec-calhub':['calendar','t-daily'],'sec-cal':['calendar-event','t-daily'],
+  'sec-mcal':['calendar-month','t-daily'],'sec-mdates':['cake','t-daily'],'sec-wtasks':['checklist','t-daily'],'sec-mtasks':['pin','t-daily'],
+  'sec-managedates':['pencil','t-gray'],'sec-wcal':['calendar-event','t-daily'],
+  'sec-prayer':['pray','t-spirit'],
+  'sec-food':['salad','t-phys'],'sec-health':['heart-rate-monitor','t-phys'],'sec-hconnect':['link','t-phys'],'sec-skin':['sparkles','t-phys'],
+  'sec-wkprogram':['calendar-stats','t-phys'],'sec-wksettings':['flag','t-phys'],'sec-stretch':['stretching','t-phys'],
+  'sec-pillars':['flame','t-prog'],'sec-wsnap':['chart-bar','t-prog'],'sec-nutprofile':['target','t-prog'],'sec-finance':['coin','t-gray']
+};
+function tileIcon(name,cls){ return '<span class="bic tile '+cls+'"><i class="ti ti-'+name+'"></i></span>'; }
 function blockHtml(sec,ico,title,stat,cls){
   const isSvg = typeof ico==='string' && ico.indexOf('<svg')===0;
+  if(BLOCK_ICONS[sec]) return `<div class="block ${cls}" onclick="openSection('${sec}')">${tileIcon(BLOCK_ICONS[sec][0],BLOCK_ICONS[sec][1])}<span class="btitle">${title}</span><span class="bstat">${stat}</span></div>`;
   return `<div class="block ${cls}" onclick="openSection('${sec}')"><span class="bic${isSvg?' neon':''}">${ico}</span><span class="btitle">${title}</span><span class="bstat">${stat}</span></div>`;
 }
 /* neon sign icons (recreated from John's reference images — transparent, no boxes) */
@@ -2425,7 +2458,7 @@ function renderHomes(){
       <div class="bar"><div style="width:${pct}%"></div></div>
       <div class="bstat">${done}/${items.length} daily items complete · tap to open</div>
     </div>
-    <div class="smdbar" onclick="openSMD()"><span>☀️ Start my day</span><span class="pill p-spirit" id="smdBtnLbl">${smdCount()}/${SMD_STEPS.length}</span></div>
+    <div class="smdbar" onclick="openSMD()"><span><span class="tile t-daily" style="width:32px;height:32px;font-size:19px;margin-right:8px;vertical-align:-9px"><i class="ti ti-sunrise"></i></span>Start my day</span><span class="pill p-spirit" id="smdBtnLbl">${smdCount()}/${SMD_STEPS.length}</span></div>
     <div class="heroes">
       <div class="hero p" onclick="openSection('sec-top3')">
         <div class="htitle">Top 3 Today</div>
@@ -2433,7 +2466,7 @@ function renderHomes(){
         <div class="hmut">tap to open</div>
       </div>
       <div class="hero t" onclick="openSection('sec-calhub')">
-        <div class="htitle">📅 Calendar</div>
+        <div class="htitle"><i class="ti ti-calendar"></i> Calendar</div>
         ${CAL_EVENTS===null?'<div class="hline">Connect in Settings</div>':
           (evsToday.length?`<div class="hbig">${evsToday.length}</div><div class="hmut">next: ${firstEv?esc(fmtTime(firstEv)+' '+(firstEv.title||'')).slice(0,60):''}</div>`:'<div class="hbig">0</div><div class="hline">events today</div>')}
         <div class="hmut">tap for all events · dates · tasks</div>
@@ -3292,14 +3325,14 @@ async function brReopen(id){
 
 /* ---------- app launchers (no API → open the app) ---------- */
 const LAUNCH_APPS={
-  bible:      {name:'Bible in a Year', ico:'📖', pkg:'com.sirma.mobile.bible.android', web:'https://www.bible.com/reading-plans'},
-  growthday:  {name:'GrowthDay',       ico:'🌱', pkg:'com.growthday',                  web:'https://app.growthday.com'},
-  blinkist:   {name:'Blinkist',        ico:'💡', pkg:'com.blinkslabs.blinkist.android',web:'https://www.blinkist.com/app'},
-  kindle:     {name:'Kindle',          ico:'📚', pkg:'com.amazon.kindle',              web:'https://read.amazon.com'},
-  peloton:    {name:'Peloton',         ico:'🚴', pkg:'com.onepeloton.callisto',        web:'https://members.onepeloton.com'},
-  sleepnumber:{name:'Sleep Number',    ico:'🛏️', pkg:'com.selectcomfort.SleepIQ',      web:'https://www.sleepnumber.com'},
-  shealth:    {name:'Samsung Health',  ico:'❤️', pkg:'com.sec.android.app.shealth',    web:'https://www.samsung.com/us/apps/samsung-health/'},
-  rocket:     {name:'Rocket Money',    ico:'🚀', pkg:'com.truebill',                   web:'https://app.rocketmoney.com'}
+  bible:      {name:'Bible in a Year', ico:'bible', tc:'t-spirit', pkg:'com.sirma.mobile.bible.android', web:'https://www.bible.com/reading-plans'},
+  growthday:  {name:'GrowthDay',       ico:'plant-2', tc:'t-mental', pkg:'com.growthday',                  web:'https://app.growthday.com'},
+  blinkist:   {name:'Blinkist',        ico:'bulb', tc:'t-mental', pkg:'com.blinkslabs.blinkist.android',web:'https://www.blinkist.com/app'},
+  kindle:     {name:'Kindle',          ico:'books', tc:'t-mental', pkg:'com.amazon.kindle',              web:'https://read.amazon.com'},
+  peloton:    {name:'Peloton',         ico:'bike', tc:'t-phys', pkg:'com.onepeloton.callisto',        web:'https://members.onepeloton.com'},
+  sleepnumber:{name:'Sleep Number',    ico:'bed', tc:'t-phys', pkg:'com.selectcomfort.SleepIQ',      web:'https://www.sleepnumber.com'},
+  shealth:    {name:'Samsung Health',  ico:'heartbeat', tc:'t-phys', pkg:'com.sec.android.app.shealth',    web:'https://www.samsung.com/us/apps/samsung-health/'},
+  rocket:     {name:'Rocket Money',    ico:'rocket', tc:'t-gray', pkg:'com.truebill',                   web:'https://app.rocketmoney.com'}
 };
 function isAndroid(){ return /Android/i.test(navigator.userAgent); }
 function launchUrl(id){
@@ -3315,7 +3348,7 @@ function launchApp(id){
 }
 function launchBtn(id,sub){
   const a=LAUNCH_APPS[id];
-  return '<button class="lbtn" onclick="launchApp(\''+id+'\')"><span class="lico">'+a.ico+'</span>'
+  return '<button class="lbtn" onclick="launchApp(\''+id+'\')"><span class="lico tile '+a.tc+'"><i class="ti ti-'+a.ico+'"></i></span>'
     +'<span class="lname">'+esc(a.name)+'</span>'+(sub?'<span class="lsub">'+sub+'</span>':'')+'</button>';
 }
 function editLaunchLinks(ids){
@@ -3386,7 +3419,7 @@ function dayMacros(d){
   const l=calsFor(d); const s=k=>Math.round(l.reduce((a,e)=>a+(parseFloat(e[k])||0),0));
   return {cal:s('cal'),protein:s('p'),carbs:s('c'),fat:s('f'),fiber:s('fib')};
 }
-const MACROS=[['cal','🔥 Calories','',''],['protein','💪 Protein','g',''],['carbs','🍞 Carbs','g',''],['fat','🧈 Fat','g',''],['fiber','🌾 Fiber','g','']];
+const MACROS=[['cal','<i class="ti ti-flame ic"></i> Calories','',''],['protein','<i class="ti ti-meat ic"></i> Protein','g',''],['carbs','<i class="ti ti-bread ic"></i> Carbs','g',''],['fat','<i class="ti ti-droplet-half-2 ic"></i> Fat','g',''],['fiber','<i class="ti ti-leaf ic"></i> Fiber','g','']];
 function macroBars(t,m){
   return MACROS.map(([k,l,u])=>{
     const tgt=t?t[k]:null; const v=m[k]; const pct=tgt?Math.min(100,Math.round(v/tgt*100)):0;
@@ -3554,12 +3587,12 @@ async function hcPull(manual){
 
 /* ================= START MY DAY ================= */
 const SMD_STEPS=[
-  {id:'prayer', ico:'🙏', t:'Prayer',          go:()=>{closeSMD(); showTab('spirit'); openSection('sec-prayer');}, check:'prayer'},
-  {id:'bible',  ico:'📖', t:'Bible in a Year', go:()=>launchApp('bible'), check:'bible'},
-  {id:'growth', ico:'🌱', t:'GrowthDay',       go:()=>launchApp('growthday')},
-  {id:'blink',  ico:'💡', t:'Blinkist',        go:()=>launchApp('blinkist')},
-  {id:'work',   ico:'🏋️', t:'Workout',          go:()=>{closeSMD(); showTab('workout');}},
-  {id:'bfast',  ico:'🍳', t:'Log breakfast',   go:()=>{closeSMD(); showTab('workout'); openSection('sec-food');}}
+  {id:'prayer', ico:'pray', t:'Prayer',          go:()=>{closeSMD(); showTab('spirit'); openSection('sec-prayer');}, check:'prayer'},
+  {id:'bible',  ico:'bible', t:'Bible in a Year', go:()=>launchApp('bible'), check:'bible'},
+  {id:'growth', ico:'plant-2', t:'GrowthDay',       go:()=>launchApp('growthday')},
+  {id:'blink',  ico:'bulb', t:'Blinkist',        go:()=>launchApp('blinkist')},
+  {id:'work',   ico:'barbell', t:'Workout',          go:()=>{closeSMD(); showTab('workout');}},
+  {id:'bfast',  ico:'salad', t:'Log breakfast',   go:()=>{closeSMD(); showTab('workout'); openSection('sec-food');}}
 ];
 function smdState(){ return (dayData(TKEY).smd)||{}; }
 function smdCount(){ const s=smdState(); return SMD_STEPS.filter(x=>s[x.id]).length; }
@@ -3573,7 +3606,7 @@ function smdToggle(id){
 function renderSMD(){
   const s=smdState();
   document.getElementById('smdList').innerHTML=SMD_STEPS.map((x,i)=>
-    '<div class="smdrow'+(s[x.id]?' done':'')+'"><span class="smdn">'+(i+1)+'</span><span class="smdt">'+x.ico+' '+x.t+'</span>'
+    '<div class="smdrow'+(s[x.id]?' done':'')+'"><span class="smdn">'+(i+1)+'</span><span class="smdt"><i class="ti ti-'+x.ico+'" style="color:var(--purple)"></i> '+x.t+'</span>'
     +'<button class="btn ghost" style="padding:7px 12px" onclick="SMD_STEPS['+i+'].go()">Go ›</button>'
     +'<button class="smdchk" onclick="smdToggle(\''+x.id+'\')">'+(s[x.id]?'✓':'')+'</button></div>').join('')
     +'<div class="muted" style="margin-top:10px;text-align:center">'+smdCount()+' of '+SMD_STEPS.length+' done</div>';
@@ -3602,17 +3635,17 @@ function renderNewHomes(){
   const [sd,st]=catDone('spirit');
   const pl=prayersFor(WKEY); const act=pl.filter(p=>!p.answered).length;
   document.getElementById('home-spirit').innerHTML=
-    '<div class="tabtitle">🙏 Spiritual</div>'
+    '<div class="tabtitle"><span class="tile t-spirit"><i class="ti ti-pray"></i></span>Spiritual</div>'
    +'<div class="launch">'+launchBtn('bible','Today’s reading')+'</div>'
    +'<div class="blocks">'+blockHtml('sec-prayer',NEON_CROSSHANDS,'Prayer Requests', pl.length?act+' active this week':'Add requests','bt')
-   +'<div class="block bp" style="cursor:default"><span class="btitle">Streaks</span><span class="bstat">📖 Bible '+streak('bible')+'🔥<br>🙏 Prayer '+streak('prayer')+'🔥</span></div></div>'
+   +'<div class="block bp" style="cursor:default">'+tileIcon('flame','t-spirit')+'<span class="btitle">Streaks</span><span class="bstat">Bible '+streak('bible')+' days<br>Prayer '+streak('prayer')+' days</span></div></div>'
    +'<div class="card"><h2>Today · '+sd+'/'+st+' done</h2><div id="pc-spirit"></div></div>'
    +'<div style="text-align:right;margin-top:8px"><button class="printbtn" onclick="editLaunchLinks([\'bible\'])">✎ Set my Bible plan link</button></div>';
   pillarChecklist('spirit','pc-spirit');
   /* ---- MENTAL ---- */
   const [md,mt]=catDone('mental');
   document.getElementById('home-mental').innerHTML=
-    '<div class="tabtitle">🧠 Mental</div>'
+    '<div class="tabtitle"><span class="tile t-mental"><i class="ti ti-brain"></i></span>Mental</div>'
    +'<div class="launch">'+launchBtn('growthday')+launchBtn('blinkist')+launchBtn('kindle')+'</div>'
    +'<div class="card"><h2>Today · '+md+'/'+mt+' done</h2><div id="pc-mental"></div></div>'
    +'<div style="text-align:right;margin-top:8px"><button class="printbtn" onclick="editLaunchLinks([\'growthday\',\'blinkist\',\'kindle\'])">✎ App links</button></div>';
@@ -3625,18 +3658,18 @@ function renderNewHomes(){
   const [pd,pt]=catDone('phys');
   const pt_el=document.getElementById('phys-top');
   if(pt_el) pt_el.innerHTML=
-    '<div class="tabtitle">💪 Physical</div>'
+    '<div class="tabtitle"><span class="tile t-phys"><i class="ti ti-barbell"></i></span>Physical</div>'
    +'<div class="card" style="margin-top:8px"><div class="rings">'
-     +ring((h.steps||0)/gS*100,'👟 Steps',(h.steps!=null?h.steps.toLocaleString():'—'),'#0d9284')
-     +ring((h.water||0)/gW*100,'💧 Water',(h.water||0)+' oz','#3b8fd6')
-     +ring((h.sleephrs||0)/gSl*100,'🛌 Sleep',(h.sleephrs!=null?h.sleephrs+' h':'—'),'#5b2d8f')
-     +ring(m.protein/protT*100,'💪 Protein',m.protein+'g','#8a5fd6')
-   +'</div><div class="qwater"><span>💧 Quick water:</span><button class="chip" onclick="addWater(8)">+8 oz</button><button class="chip" onclick="addWater(16)">+16 oz</button><button class="chip" onclick="addWater(24)">+24 oz</button><button class="chip" onclick="addWater(-8)">−8</button></div>'
+     +ring((h.steps||0)/gS*100,'<i class="ti ti-shoe ic"></i> Steps',(h.steps!=null?h.steps.toLocaleString():'—'),'#0d9284')
+     +ring((h.water||0)/gW*100,'<i class="ti ti-droplet ic"></i> Water',(h.water||0)+' oz','#3b8fd6')
+     +ring((h.sleephrs||0)/gSl*100,'<i class="ti ti-moon ic"></i> Sleep',(h.sleephrs!=null?h.sleephrs+' h':'—'),'#5b2d8f')
+     +ring(m.protein/protT*100,'<i class="ti ti-meat ic"></i> Protein',m.protein+'g','#8a5fd6')
+   +'</div><div class="qwater"><span><i class="ti ti-droplet ic"></i> Quick water:</span><button class="chip" onclick="addWater(8)">+8 oz</button><button class="chip" onclick="addWater(16)">+16 oz</button><button class="chip" onclick="addWater(24)">+24 oz</button><button class="chip" onclick="addWater(-8)">−8</button></div>'
    +(exs.length?'<div class="muted" style="margin-top:8px">🏅 Synced workouts today: '+exs.map(x=>esc(String(x.type).replace(/_/g,' ').toLowerCase())+' '+x.min+' min').join(' · ')+'</div>':'')
    +'</div>'
    +'<div class="launch">'+launchBtn('peloton')+launchBtn('shealth')+launchBtn('sleepnumber')+'</div>'
    +'<div class="blocks">'
-     +blockHtml('sec-food',NEON_FOODLIST,'Food & Nutrition', m.cal?m.cal.toLocaleString()+' cal · '+m.protein+'g protein':'📸 Snap, scan or type','bp')
+     +blockHtml('sec-food',NEON_FOODLIST,'Food & Nutrition', m.cal?m.cal.toLocaleString()+' cal · '+m.protein+'g protein':'Snap, scan or type','bp')
      +blockHtml('sec-health',NEON_WATCH,'Health Log','Sleep score · water · steps · sleep','bw')
      +blockHtml('sec-hconnect','🔗','Samsung Health Sync', store.get('hclast',null)?'Last pull '+new Date(store.get('hclast')).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'Set up auto steps & sleep','bt')
      +blockHtml('sec-skin','🧴','Skincare','Tonight: '+skinTodayLabel(),'bp')
@@ -3651,7 +3684,7 @@ function renderNewHomes(){
   { const dd=new Date(TODAY); dd.setDate(dd.getDate()-7); for(let i=0;i<7;i++){ const x=all[dkey(dd)]; if(x&&calsFor(x).length){ const mm=dayMacros(x); Object.keys(avg).forEach(k=>avg[k]+=mm[k]); n++; } dd.setDate(dd.getDate()+1);} }
   if(n) Object.keys(avg).forEach(k=>avg[k]=Math.round(avg[k]/n));
   document.getElementById('home-progress').innerHTML=
-    '<div class="tabtitle">📈 Track & Progress</div>'
+    '<div class="tabtitle"><span class="tile t-prog"><i class="ti ti-chart-line"></i></span>Track & Progress</div>'
    +'<div class="card"><h2>Today’s Nutrition <button class="printbtn" onclick="openSection(\'sec-nutprofile\')">🎯 My plan</button></h2>'
      +(t?'':'<div class="coach" style="margin-bottom:8px">Set up your plan (age, height, weight, goal) to get personalized daily targets. <button class="btn teal" style="margin-top:8px" onclick="openSection(\'sec-nutprofile\')">Build my plan</button></div>')
      +macroBars(t,m)
@@ -3659,7 +3692,7 @@ function renderNewHomes(){
    +'</div>'
    +'<div class="blocks">'
      +blockHtml('sec-pillars','🔥','Streaks & Pillars','Bible · prayer · learning · sleep','bp')
-     +'<div class="block bw" onclick="showTab(\'reports\')"><span class="bic">🗂️</span><span class="btitle">Weekly & Monthly</span><span class="bstat">'+avgW7(sumw)+'% 7-day avg · tap for tabulations</span></div>'
+     +'<div class="block bw" onclick="showTab(\'reports\')">'+tileIcon('folder','t-prog')+'<span class="btitle">Weekly & Monthly</span><span class="bstat">'+avgW7(sumw)+'% 7-day avg · tap for tabulations</span></div>'
    +'</div>'
    +'<div class="card"><h2>🤖 AI Summaries</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" onclick="aiShowList(\'weekly\')">Weekly</button><button class="btn ghost" onclick="aiShowList(\'monthly\')">Monthly</button></div></div>'
    +'<div class="launch">'+launchBtn('rocket','Finances')+'</div>';
