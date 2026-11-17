@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#f4f5f9">
+<meta name="theme-color" content="#2D6A4F">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Thrive³</title>
@@ -273,6 +273,33 @@ body{background:linear-gradient(170deg,#e3f6f2 0%,#f1edfa 55%,#e9e3f7 100%) fixe
 .block:has(.t-gray){border-top:3px solid #B4B2A9 !important}
 .sumstrip{border-left:4px solid var(--teal) !important}
 .tabtitle{color:var(--purple)}
+
+/* ===== palette: forest green + logo teal + logo plum ===== */
+:root{--purple:#2D6A4F;--purple-md:#2D6A4F;--ink:#1B2E25;--muted:#5E6E66;--line:#d7e2da;
+  --forest:#2D6A4F;--plum:#5B2D8F;--teal:#12BFA9;--teal-dk:#0D9284;--teal-bright:#0D9284}
+body{background:linear-gradient(170deg,#e6f1ea 0%,#f3f6f1 55%,#eef0f7 100%) fixed !important}
+.bar>div{background:linear-gradient(90deg,#2D6A4F,#12BFA9) !important}
+.card,.block,.hero,.sumstrip,.topbtn,.lbtn,.smdbar,.navbar,.backbtn,.footer{border-color:#d7e2da !important}
+.t-daily{background:#DCEBE2;color:#1F4D36}
+.t-spirit{background:#ECE4F6;color:#4A2470}
+.t-mental{background:#D6F3EE;color:#0B6F63}
+.t-phys{background:#DCEBE2;color:#1F4D36}
+.t-prog{background:#D6F3EE;color:#0B6F63}
+.block .bic.t-daily,.block .bic.t-phys{background:#DCEBE2}
+.block .bic.t-spirit{background:#ECE4F6}
+.block .bic.t-mental,.block .bic.t-prog{background:#D6F3EE}
+.block:has(.t-daily),.block:has(.t-phys){border-top:3px solid #2D6A4F !important}
+.block:has(.t-spirit){border-top:3px solid #5B2D8F !important}
+.block:has(.t-mental),.block:has(.t-prog){border-top:3px solid #12BFA9 !important}
+.hero.p{border-left:4px solid #5B2D8F !important}
+.hero.t{border-left:4px solid #12BFA9 !important}
+.hero .hbig{color:#5B2D8F}
+.sumstrip{border-left:4px solid #2D6A4F !important}
+.footer .slogan{color:#5B2D8F !important}
+.pill.p-spirit{background:#ECE4F6;color:#4A2470}
+.smdrow .smdn{background:#DCEBE2;color:#1F4D36}
+.smdchk{border-color:#2D6A4F}.smdrow.done .smdchk{background:#2D6A4F}
+.item input[type=checkbox],.top3row input[type=checkbox],.aiitem input{accent-color:#2D6A4F}
 </style>
 </head>
 <body>
