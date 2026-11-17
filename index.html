@@ -229,9 +229,12 @@ ol.steps li{margin-bottom:4px}
   <div class="home" id="home-today"></div>
   <div class="card section" id="sec-calhub">
     <button class="backbtn" onclick="closeSection()">‹ Back</button>
-    <h2 style="margin-top:10px">📅 Calendar & Dates</h2>
-    <div class="muted" style="margin-bottom:6px">Everything from your calendar setup — today, the week ahead, the month, special dates and recurring tasks.</div>
-    <div class="blocks" id="calHubBlocks"></div>
+    <h2 style="margin-top:10px">📅 Calendar</h2>
+    <div class="dayhdr">Today</div>
+    <div id="hubToday"></div>
+    <div class="dayhdr" style="margin-top:14px">Next 7 days</div>
+    <div id="hubWeek"></div>
+    <div class="blocks" id="calHubBlocks" style="margin-top:14px"></div>
   </div>
 
   <div class="card section" id="sec-top3">
@@ -740,7 +743,9 @@ ol.steps li{margin-bottom:4px}
 const DAILY_BASE = [
   {id:'bible',    label:'Bible-in-a-Year reading', cat:'spirit'},
   {id:'prayer',   label:'Prayer',                  cat:'spirit'},
-  {id:'madison',  label:'Madison therapy',         cat:'mental'},
+  {id:'readnew',  label:'Read a book / 20 min learning something new', cat:'mental'},
+  {id:'bluebird', label:'BlueBird Shona',          cat:'mental'},
+  {id:'ailearn',  label:'AI learning',             cat:'mental'},
   {id:'sleep7',   label:'7+ hours in bed',         cat:'phys'},
   {id:'water',    label:'75–100 oz water',         cat:'phys'},
   {id:'teethAM',  label:'Brush teeth (morning)',   cat:'phys'},
@@ -1653,7 +1658,8 @@ function renderPillars(){
     <div class="pillarcard" style="background:var(--mental-bg)">
       <div class="pillarhead"><span class="dot" style="background:var(--mental)"></span>Mental</div>
       <div class="statrow"><div class="stat"><div class="v">${w.counts.blinkist||0}/3</div><div class="l">Blinkist books this week</div></div>
-      <div class="stat"><div class="v">${streak('madison')}🔥</div><div class="l">Madison therapy streak</div></div></div>
+      <div class="stat"><div class="v">${streak('readnew')}🔥</div><div class="l">Read / learn streak</div></div>
+      <div class="stat"><div class="v">${streak('ailearn')}🔥</div><div class="l">AI learning streak</div></div></div>
     </div>
     <div class="pillarcard" style="background:var(--phys-bg)">
       <div class="pillarhead"><span class="dot" style="background:var(--phys)"></span>Physical</div>
@@ -2095,6 +2101,7 @@ function isoWeekMonday(wk){
 }
 function renderReports(){
   aiRenderLists();
+  try{ renderWeek(); renderTabulations(); }catch(e){ console.error(e); }
   const all=store.get('days',{});
   const dayKeys=Object.keys(all).sort().reverse();
   const el=document.getElementById('repDaily');
@@ -2429,14 +2436,11 @@ function renderHomes(){
         <div class="htitle">📅 Calendar</div>
         ${CAL_EVENTS===null?'<div class="hline">Connect in Settings</div>':
           (evsToday.length?`<div class="hbig">${evsToday.length}</div><div class="hmut">next: ${firstEv?esc(fmtTime(firstEv)+' '+(firstEv.title||'')).slice(0,60):''}</div>`:'<div class="hbig">0</div><div class="hline">events today</div>')}
-        <div class="hmut">week · month · dates · tasks</div>
+        <div class="hmut">tap for all events · dates · tasks</div>
       </div>
     </div>
-    <div class="blocks">
-      ${blockHtml('sec-daily','✅','Daily To-Do', `${done}/${items.length} done`,'bp')}
-      ${blockHtml('sec-top3',NEON_TOP3,'Top 3', t3all.length?`${t3done}/${t3all.length} done`:'Set priorities','bw')}
-      ${blockHtml('sec-cal','📆','Today\'s Events', CAL_EVENTS===null?'Connect calendar':evsToday.length+' today','bt')}
-      ${blockHtml('sec-calhub','🗓️','Calendar & Dates','Week · month · birthdays','bp')}
+    <div class="blocks" style="grid-template-columns:1fr">
+      ${blockHtml('sec-daily','✅','Daily To-Do', `${done}/${items.length} done · tap to open your list`,'bp')}
     </div>`;
   // WEEK
   const all=store.get('days',{}); let sumw=0;
@@ -3582,10 +3586,9 @@ function renderCalHub(){
   const mdl=monthDatesList(); const wm=weeklyMet();
   const listM=store.get('customM',[]); const mm=monthData(MKEY);
   let mMet=0; listM.forEach(item=>{ if(item.type==='check'?mm.checks[item.id]:itemSuccess(mm,item)) mMet++; });
+  try{ renderCalToday(); renderCalWeek(); }catch(e){}
   document.getElementById('calHubBlocks').innerHTML=
-     blockHtml('sec-cal','📅','Today', CAL_EVENTS===null?'Connect in Settings':evsToday.length+' event'+(evsToday.length===1?'':'s'),'bt')
-    +blockHtml('sec-wcal','📆','Week Look-Ahead', CAL_EVENTS===null?'Connect calendar':evWeek+' events next 7 days','bw')
-    +blockHtml('sec-mcal','🗓️','Month Calendar','Scores + events by day','bp')
+     blockHtml('sec-mcal','🗓️','Month Calendar','Scores + events by day','bp')
     +blockHtml('sec-mdates','🎂','This Month’s Dates', mdl.length+' birthdays · anniv. · dog meds','bt')
     +blockHtml('sec-wtasks',NEON_CHECKLIST,'Weekly Tasks', wm.met+'/'+wm.total+' goals met','bw')
     +blockHtml('sec-mtasks','📌','Monthly Tasks', listM.length?mMet+'/'+listM.length+' met':'Tap to add tasks','bp')
@@ -3655,8 +3658,8 @@ function renderNewHomes(){
      +(n?'<div class="muted" style="margin-top:8px;font-size:12px">Last '+n+' logged day'+(n===1?'':'s')+' avg: '+avg.cal.toLocaleString()+' cal · P '+avg.protein+'g · C '+avg.carbs+'g · F '+avg.fat+'g · Fib '+avg.fiber+'g</div>':'')
    +'</div>'
    +'<div class="blocks">'
-     +blockHtml('sec-wsnap','📊','Weekly Snapshot', avgW7(sumw)+'% 7-day avg · report','bw')
-     +blockHtml('sec-pillars','🔥','Streaks & Pillars','Bible · prayer · therapy · sleep','bp')
+     +blockHtml('sec-pillars','🔥','Streaks & Pillars','Bible · prayer · learning · sleep','bp')
+     +'<div class="block bw" onclick="showTab(\'reports\')"><span class="bic">🗂️</span><span class="btitle">Weekly & Monthly</span><span class="bstat">'+avgW7(sumw)+'% 7-day avg · tap for tabulations</span></div>'
    +'</div>'
    +'<div class="card"><h2>🤖 AI Summaries</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" onclick="aiShowList(\'weekly\')">Weekly</button><button class="btn ghost" onclick="aiShowList(\'monthly\')">Monthly</button></div></div>'
    +'<div class="launch">'+launchBtn('rocket','Finances')+'</div>';
@@ -3665,15 +3668,71 @@ function renderNewHomes(){
 }
 function avgW7(s){ return Math.round(s/7); }
 
+
+/* ================= REPORTS TAB: tabulations ================= */
+function buildReportTabs(){
+  const rt=document.getElementById('tab-reports'); if(!rt||document.getElementById('repTabs')) return;
+  const viewer=document.getElementById('repViewerCard');
+  const wrap=document.createElement('div'); wrap.id='repTabs';
+  wrap.innerHTML='<div class="card"><h2>🗓️ Monthly Tabulation <button class="printbtn" onclick="printMonthReport()">🖨 Print month</button></h2><div id="repMonthTab"></div></div>'
+    +'<div class="card"><h2>🙏🧠💪 Spiritual · Mental · Physical To-Dos</h2><div id="repPillarTab"></div></div>';
+  viewer.after(wrap);
+  const ws=document.getElementById('sec-wsnap');
+  if(ws){ ws.classList.remove('section'); const b=ws.querySelector('.backbtn'); if(b) b.remove();
+    const h=ws.querySelector('h2'); if(h){ h.style.marginTop='0'; h.firstChild.textContent='📊 Weekly Tabulation '; }
+    viewer.after(ws); }
+}
+function tabRange(start,end){
+  const out=[]; const d=new Date(start); d.setHours(12,0,0,0);
+  while(dkey(d)<=dkey(end)){ out.push(dkey(d)); d.setDate(d.getDate()+1); }
+  return out;
+}
+function renderTabulations(){
+  const all=store.get('days',{}); const items=dailyItems();
+  const mStart=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
+  const wStart=mondayOf(TODAY);
+  const monthKeys=tabRange(mStart,TODAY), weekKeys=tabRange(wStart,TODAY);
+  const CATS=[['spirit','🙏 Spiritual'],['mental','🧠 Mental'],['phys','💪 Physical'],['home','🏠 Home']];
+  const pct=(keys,list)=>{ let hit=0,tot=0; keys.forEach(k=>{ const d=all[k]; list.forEach(i=>{ tot++; if(d&&itemSuccess(d,i)) hit++; }); }); return tot?Math.round(hit/tot*100):0; };
+  /* monthly */
+  let h='<div class="statrow">'
+    +'<div class="stat"><div class="v">'+pct(monthKeys,items)+'%</div><div class="l">'+MONTHS[TODAY.getMonth()]+' to date</div></div>'
+    +'<div class="stat"><div class="v">'+monthKeys.filter(k=>all[k]).length+'/'+monthKeys.length+'</div><div class="l">days tracked</div></div>';
+  let calDays=0,calSum=0; monthKeys.forEach(k=>{ const d=all[k]; if(d&&calsFor(d).length){ calDays++; calSum+=calsUsed(d);} });
+  h+='<div class="stat"><div class="v">'+(calDays?Math.round(calSum/calDays).toLocaleString():'—')+'</div><div class="l">avg cal/day logged</div></div></div>';
+  h+='<div class="statrow">'+CATS.map(([c,l])=>{ const li=items.filter(i=>i.cat===c); return li.length?'<div class="stat"><div class="v">'+pct(monthKeys,li)+'%</div><div class="l">'+l+'</div></div>':''; }).join('')+'</div>';
+  document.getElementById('repMonthTab').innerHTML=h;
+  /* combined pillar to-dos */
+  const td=all[TKEY];
+  let t='<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="color:var(--purple);font-size:11px;text-align:left"><th style="padding:4px">Item</th><th style="padding:4px 6px;text-align:center">Today</th><th style="padding:4px 6px;text-align:center">Week</th><th style="padding:4px 6px;text-align:center">Month</th></tr>';
+  CATS.forEach(([c,l])=>{
+    const li=items.filter(i=>i.cat===c); if(!li.length) return;
+    t+='<tr><td colspan="4" style="padding:10px 4px 4px;font-weight:800;color:var(--purple)">'+l+' <span class="muted" style="font-weight:400">· week '+pct(weekKeys,li)+'% · month '+pct(monthKeys,li)+'%</span></td></tr>';
+    li.forEach(i=>{
+      const cnt=keys=>keys.filter(k=>all[k]&&itemSuccess(all[k],i)).length;
+      t+='<tr style="border-top:1px dashed var(--line)"><td style="padding:6px 4px">'+esc(i.label)+'</td>'
+        +'<td style="text-align:center">'+(td&&itemSuccess(td,i)?'<span class="met">✓</span>':'—')+'</td>'
+        +'<td style="text-align:center">'+cnt(weekKeys)+'/'+weekKeys.length+'</td>'
+        +'<td style="text-align:center">'+cnt(monthKeys)+'/'+monthKeys.length+'</td></tr>';
+    });
+  });
+  t+='</table>';
+  document.getElementById('repPillarTab').innerHTML=t;
+}
+
 /* ================= RELAYOUT (runs once at startup) ================= */
-const SECTION_PARENT={'sec-cal':'sec-calhub','sec-wcal':'sec-calhub','sec-mcal':'sec-calhub','sec-mdates':'sec-calhub',
+const SECTION_PARENT={'sec-mcal':'sec-calhub','sec-mdates':'sec-calhub',
   'sec-managedates':'sec-calhub','sec-wtasks':'sec-calhub','sec-mtasks':'sec-calhub'};
 function relayout(){
   const mv=(ids,tab)=>{ const t=document.getElementById(tab); ids.forEach(id=>{ const s=document.getElementById(id); if(s&&t) t.appendChild(s); }); };
   mv(['sec-calhub','sec-wcal','sec-mcal','sec-mdates','sec-managedates','sec-wtasks','sec-mtasks'],'tab-today');
   mv(['sec-prayer'],'tab-spirit');
   mv(['sec-food','sec-health','sec-skin','sec-hconnect'],'tab-workout');
-  mv(['sec-wsnap','sec-pillars','sec-nutprofile'],'tab-progress');
+  mv(['sec-pillars','sec-nutprofile'],'tab-progress');
+  const ht=document.getElementById('hubToday'), hk=document.getElementById('hubWeek');
+  if(ht&&document.getElementById('calToday')) ht.appendChild(document.getElementById('calToday'));
+  if(hk&&document.getElementById('calWeek')) hk.appendChild(document.getElementById('calWeek'));
+  buildReportTabs();
   const hw=document.getElementById('home-workout');
   if(hw && !document.getElementById('wk-home')) hw.innerHTML='<div id="phys-top"></div><div id="wk-home"></div>';
   Object.assign(SECTION_RENDER,{'sec-calhub':renderCalHub,'sec-nutprofile':renderNutProfile,'sec-hconnect':renderHConnect,'sec-food':function(){renderFoodSec();renderFavs();}});
